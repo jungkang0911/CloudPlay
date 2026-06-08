@@ -6,6 +6,7 @@
 <title>雲遊國際 · 一站式觀光</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&family=Be+Vietnam+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="js/i18n.js"></script>
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
@@ -916,10 +917,14 @@ const { useState, useEffect, useRef } = React;
 
 // ─── 語言設定 ─────────────────────────────────────────
 const LANGS = {
-  tc: { code: 'tc', label: '繁中', flag: '🇹🇼', bodyClass: '' },
-  vi: { code: 'vi', label: 'VI', flag: '🇻🇳', bodyClass: 'lang-vi' },
-  ja: { code: 'ja', label: '日本語', flag: '🇯🇵', bodyClass: 'lang-ja' },
-  en: { code: 'en', label: 'EN', flag: '🇬🇧', bodyClass: '' },
+  tc: { code: 'tc', label: '繁中',  flag: '🇹🇼', bodyClass: '',        currency: 'TWD' },
+  vi: { code: 'vi', label: 'VI',    flag: '🇻🇳', bodyClass: 'lang-vi', currency: 'VND' },
+  ja: { code: 'ja', label: '日本語', flag: '🇯🇵', bodyClass: 'lang-ja', currency: 'JPY' },
+  en: { code: 'en', label: 'EN',    flag: '🇬🇧', bodyClass: '',        currency: 'USD' },
+};
+const _t = (key) => {
+  const data = (window.I18N && window.I18N[localStorage.getItem('yy_lang') || 'tc']) || (window.I18N && window.I18N.tc) || {};
+  return key.split('.').reduce((o, k) => (o && o[k] != null ? o[k] : ''), data) || '';
 };
 
 // ─── Data ─────────────────────────────────────────────
@@ -1104,24 +1109,24 @@ function App() {
           <button className="drawer-close" onClick={() => setDrawerOpen(false)}>×</button>
         </div>
 
-        <div className="drawer-section">選單</div>
+        <div className="drawer-section">{_t('nav.menu') || '選單'}</div>
         <a className="drawer-link" href="index.html" onClick={() => setDrawerOpen(false)}>
-          <span className="drawer-link-icon">⌂</span>首頁
+          <span className="drawer-link-icon">⌂</span>{_t('nav.home') || '首頁'}
         </a>
-        <a className="drawer-link" href="服務項目.html" onClick={() => setDrawerOpen(false)}>
-          <span className="drawer-link-icon">◇</span>服務項目
+        <a className="drawer-link" href="services.html" onClick={() => setDrawerOpen(false)}>
+          <span className="drawer-link-icon">◇</span>{_t('nav.services') || '服務項目'}
         </a>
-        <a className="drawer-link" href="出行流程.html" onClick={() => setDrawerOpen(false)}>
-          <span className="drawer-link-icon">→</span>出行流程
+        <a className="drawer-link" href="how-it-works.html" onClick={() => setDrawerOpen(false)}>
+          <span className="drawer-link-icon">→</span>{_t('nav.steps') || '出行流程'}
         </a>
-        <a className="drawer-link" href="常見問題.html" onClick={() => setDrawerOpen(false)}>
-          <span className="drawer-link-icon">?</span>常見問題
+        <a className="drawer-link" href="faq.html" onClick={() => setDrawerOpen(false)}>
+          <span className="drawer-link-icon">?</span>{_t('nav.faq') || '常見問題'}
         </a>
-        <a className="drawer-link" href="about-page.html" onClick={() => setDrawerOpen(false)}>
-          <span className="drawer-link-icon">i</span>關於我們
+        <a className="drawer-link" href="about.html" onClick={() => setDrawerOpen(false)}>
+          <span className="drawer-link-icon">i</span>{_t('nav.about') || '關於我們'}
         </a>
 
-        <div className="drawer-section">聯絡客服</div>
+        <div className="drawer-section">{_t('nav.contact') || '聯絡客服'}</div>
         <a className="drawer-link" href="https://line.me/" target="_blank" rel="noopener noreferrer">
           <span className="drawer-link-icon">💬</span>LINE：@yunyou_travel
         </a>
@@ -1132,7 +1137,7 @@ function App() {
           <span className="drawer-link-icon">☎</span>0800-123-456
         </a>
 
-        <div className="drawer-section">語言</div>
+        <div className="drawer-section">{_t('nav.lang') || '語言'}</div>
         <div className="drawer-lang">
           {Object.entries(LANGS).map(([k, v]) => (
             <button key={k} className={`drawer-lang-btn${lang === k ? ' active' : ''}`} onClick={() => setLang(k)}>
@@ -1143,7 +1148,7 @@ function App() {
         </div>
 
         <div style={{padding:'24px',marginTop:'auto',fontSize:'11px',color:'var(--text-muted)',textAlign:'center',borderTop:'1px solid rgba(200,169,110,0.08)'}}>
-          © 2026 雲遊國際 · All rights reserved.
+          {_t('footer.copy') || '© 2026 雲遊國際 · All rights reserved.'}
         </div>
       </aside>
 
@@ -1186,7 +1191,7 @@ function App() {
                 <div className="cat-tile-label">
                   <div className="cat-tile-name">{cat.name}</div>
                   <div className="cat-tile-cta">
-                    精品行程 <span>→</span>
+                    {_t('page.index.banner_cta') || '精品行程'} <span>→</span>
                   </div>
                 </div>
               ) : (
@@ -1206,9 +1211,9 @@ function App() {
           <img src="uploads/logo-mark.png" alt="雲遊國際" />
           <span className="footer-logo-text">雲遊國際</span>
         </div>
-        <p className="footer-tagline">以尊貴的眼光，探索世界每一個值得被記住的角落。</p>
+        <p className="footer-tagline">{_t('footer.tagline') || '以尊貴的眼光，探索世界每一個值得被記住的角落。'}</p>
       </footer>
-      <div className="footer-bottom">© 2026 雲遊國際 · All rights reserved.</div>
+      <div className="footer-bottom">{_t('footer.copy') || '© 2026 雲遊國際 · All rights reserved.'}</div>
 
       {/* ── CS Widget ── */}
       <div className="cs-widget">

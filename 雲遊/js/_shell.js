@@ -1,18 +1,20 @@
-/* 共用 navbar / drawer / footer 注入器（vanilla JS）
-   每個頁面在 <body> 開頭加入 <div data-shell></div>，並設置 data-shell-active="服務項目" 之類。
-*/
+/* 共用 navbar / drawer / footer 注入器 + i18n 套用 */
 (function() {
-  const LANG_LABELS = {
-    tc: { flag: '🇹🇼', label: '繁中' },
-    vi: { flag: '🇻🇳', label: 'VI' },
-    ja: { flag: '🇯🇵', label: '日本語' },
-    en: { flag: '🇬🇧', label: 'EN' },
+  const LANGS = {
+    tc: { flag: '🇹🇼', label: '繁中', currency: 'TWD' },
+    vi: { flag: '🇻🇳', label: 'VI',   currency: 'VND' },
+    ja: { flag: '🇯🇵', label: '日本語', currency: 'JPY' },
+    en: { flag: '🇬🇧', label: 'EN',   currency: 'USD' },
   };
   const LANG_ORDER = ['tc', 'vi', 'ja', 'en'];
   let curLang = localStorage.getItem('yy_lang') || 'tc';
-  if (!LANG_LABELS[curLang]) curLang = 'tc';
+  if (!LANGS[curLang]) curLang = 'tc';
 
-  // Use DB.countries if _db.js is loaded on this page, otherwise fall back to local copy.
+  function T(key) {
+    const data = (window.I18N && window.I18N[curLang]) || (window.I18N && window.I18N.tc) || {};
+    return key.split('.').reduce((o, k) => (o && o[k] != null ? o[k] : ''), data) || '';
+  }
+
   const COUNTRIES = (window.DB && window.DB.countries) || [
     { code: 'vn', name: '越南', flag: '🇻🇳', cities: [
       { code: 'hcm', name: '胡志明', en: 'Ho Chi Minh' },
@@ -35,19 +37,18 @@
     return { country: COUNTRIES[0], city: COUNTRIES[0].cities[0] };
   }
 
-  function writeCurrent(code) {
-    localStorage.setItem('yy_city', code);
-  }
+  function writeCurrent(code) { localStorage.setItem('yy_city', code); }
 
   function esc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-  function renderNavbar(active) {
+  function renderNavbar() {
     const { country, city } = readCurrent();
+    const marquee = T('marquee') || '✦ 一站式觀光，從機場到飯店全程無憂 · 24H 中文客服在線 ✦';
     return `
       <div class="marquee-bar">
         <div class="marquee-track">
-          <span class="marquee-item">✦ 一站式觀光，從機場到飯店全程無憂 · 24H 中文客服在線 · 客製行程量身打造 · 越南｜日本｜泰國｜台灣 ✦</span>
-          <span class="marquee-item">✦ 一站式觀光，從機場到飯店全程無憂 · 24H 中文客服在線 · 客製行程量身打造 · 越南｜日本｜泰國｜台灣 ✦</span>
+          <span class="marquee-item">${esc(marquee)}</span>
+          <span class="marquee-item">${esc(marquee)}</span>
         </div>
       </div>
       <nav class="navbar">
@@ -76,8 +77,8 @@
           <span class="nav-logo-text">雲遊國際</span>
         </a>
         <div class="nav-right">
-          <button class="lang-mini" data-action="cycle-lang">${LANG_LABELS[curLang].flag} ${LANG_LABELS[curLang].label}</button>
-          <button class="hamburger" data-action="open-drawer" aria-label="選單">
+          <button class="lang-mini" data-action="cycle-lang">${LANGS[curLang].flag} ${LANGS[curLang].label}</button>
+          <button class="hamburger" data-action="open-drawer" aria-label="${T('nav.home')}">
             <span></span><span></span><span></span>
           </button>
         </div>
@@ -98,25 +99,25 @@
           <button class="drawer-close" data-action="close-drawer">×</button>
         </div>
 
-        <div class="drawer-section">選單</div>
-        <a class="drawer-link${isActive('home')}"       href="index.html"><span class="drawer-link-icon">⌂</span>首頁</a>
-        <a class="drawer-link${isActive('service')}"    href="服務項目.html"><span class="drawer-link-icon">◇</span>服務項目</a>
-        <a class="drawer-link${isActive('howitworks')}" href="出行流程.html"><span class="drawer-link-icon">→</span>出行流程</a>
-        <a class="drawer-link${isActive('faq')}"        href="常見問題.html"><span class="drawer-link-icon">?</span>常見問題</a>
-        <a class="drawer-link${isActive('about')}"      href="about-page.html"><span class="drawer-link-icon">i</span>關於我們</a>
+        <div class="drawer-section">${T('nav.menu') || '選單'}</div>
+        <a class="drawer-link${isActive('home')}"       href="index.html"><span class="drawer-link-icon">⌂</span>${T('nav.home') || '首頁'}</a>
+        <a class="drawer-link${isActive('service')}"    href="services.html"><span class="drawer-link-icon">◇</span>${T('nav.services') || '服務項目'}</a>
+        <a class="drawer-link${isActive('howitworks')}" href="how-it-works.html"><span class="drawer-link-icon">→</span>${T('nav.steps') || '出行流程'}</a>
+        <a class="drawer-link${isActive('faq')}"        href="faq.html"><span class="drawer-link-icon">?</span>${T('nav.faq') || '常見問題'}</a>
+        <a class="drawer-link${isActive('about')}"      href="about.html"><span class="drawer-link-icon">i</span>${T('nav.about') || '關於我們'}</a>
 
-        <div class="drawer-section">聯絡客服</div>
+        <div class="drawer-section">${T('nav.contact') || '聯絡客服'}</div>
         <a class="drawer-link" href="https://line.me/" target="_blank" rel="noopener noreferrer"><span class="drawer-link-icon">💬</span>LINE：@yunyou_travel</a>
         <a class="drawer-link" href="https://wa.me/" target="_blank" rel="noopener noreferrer"><span class="drawer-link-icon">📱</span>WhatsApp</a>
         <a class="drawer-link" href="tel:0800123456"><span class="drawer-link-icon">☎</span>0800-123-456</a>
 
-        <div class="drawer-section">語言</div>
+        <div class="drawer-section">${T('nav.lang') || '語言'}</div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;padding:6px 24px 18px">
-          ${LANG_ORDER.map(l => `<button class="drawer-lang-btn${l === curLang ? ' active' : ''}" data-lang="${l}"><span>${LANG_LABELS[l].flag}</span><span style="margin-left:6px">${LANG_LABELS[l].label}</span></button>`).join('')}
+          ${LANG_ORDER.map(l => `<button class="drawer-lang-btn${l === curLang ? ' active' : ''}" data-lang="${l}"><span>${LANGS[l].flag}</span><span style="margin-left:6px">${LANGS[l].label}</span></button>`).join('')}
         </div>
 
         <div style="padding:24px;margin-top:auto;font-size:11px;color:var(--text-muted);text-align:center;border-top:1px solid rgba(200,169,110,0.08)">
-          © 2026 雲遊國際 · All rights reserved.
+          ${T('footer.copy') || '© 2026 雲遊國際 · All rights reserved.'}
         </div>
       </aside>
     `;
@@ -129,15 +130,15 @@
           <img src="uploads/logo-mark.png" alt="雲遊國際" />
           <span class="footer-logo-text">雲遊國際</span>
         </div>
-        <p class="footer-tagline">以尊貴的眼光，探索世界每一個值得被記住的角落。</p>
+        <p class="footer-tagline">${T('footer.tagline') || '以尊貴的眼光，探索世界每一個值得被記住的角落。'}</p>
       </footer>
-      <div class="footer-bottom">© 2026 雲遊國際 · All rights reserved.</div>
+      <div class="footer-bottom">${T('footer.copy') || '© 2026 雲遊國際 · All rights reserved.'}</div>
     `;
   }
 
   function renderCsFab() {
     return `
-      <a class="cs-fab" href="https://line.me/" target="_blank" rel="noopener noreferrer" aria-label="客服">
+      <a class="cs-fab" href="https://line.me/" target="_blank" rel="noopener noreferrer" aria-label="${T('nav.contact') || '客服'}">
         <div class="cs-fab-inner">
           <img class="cs-fab-face" src="uploads/ChatGPT Image 2026年5月1日 下午08_00_14.png" alt="客服" />
         </div>
@@ -145,14 +146,28 @@
     `;
   }
 
+  function applyI18n() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const val = T(el.dataset.i18n);
+      if (val) el.innerHTML = val;
+    });
+  }
+
+  function applyBodyClass() {
+    document.body.classList.remove('lang-vi', 'lang-ja');
+    if (curLang === 'vi') document.body.classList.add('lang-vi');
+    if (curLang === 'ja') document.body.classList.add('lang-ja');
+  }
+
   function init() {
+    applyBodyClass();
     const slot = document.querySelector('[data-shell-top]');
     const active = slot ? slot.dataset.shellActive : '';
-    if (slot) slot.innerHTML = renderNavbar(active) + renderDrawer(active);
+    if (slot) slot.innerHTML = renderNavbar() + renderDrawer(active);
     const bottom = document.querySelector('[data-shell-bottom]');
     if (bottom) bottom.innerHTML = renderFooter() + renderCsFab();
+    applyI18n();
 
-    // Event delegation
     document.addEventListener('click', (e) => {
       const t = e.target.closest('[data-action]');
       if (t) {
@@ -169,32 +184,18 @@
         }
         if (a === 'toggle-city') {
           const menu = document.getElementById('city-menu');
-          const trig = t;
-          if (menu) {
-            menu.classList.toggle('open');
-            trig.classList.toggle('open');
-          }
+          if (menu) { menu.classList.toggle('open'); t.classList.toggle('open'); }
         }
         if (a === 'cycle-lang') {
           const idx = LANG_ORDER.indexOf(curLang);
-          const next = LANG_ORDER[(idx + 1) % LANG_ORDER.length];
-          localStorage.setItem('yy_lang', next);
+          localStorage.setItem('yy_lang', LANG_ORDER[(idx + 1) % LANG_ORDER.length]);
           location.reload();
         }
       }
-      // Language selection (drawer)
       const langBtn = e.target.closest('[data-lang]');
-      if (langBtn) {
-        localStorage.setItem('yy_lang', langBtn.dataset.lang);
-        location.reload();
-      }
-      // City selection
+      if (langBtn) { localStorage.setItem('yy_lang', langBtn.dataset.lang); location.reload(); }
       const cityBtn = e.target.closest('[data-city]');
-      if (cityBtn) {
-        writeCurrent(cityBtn.dataset.city);
-        location.reload();
-      }
-      // Close city menu when clicking outside
+      if (cityBtn) { writeCurrent(cityBtn.dataset.city); location.reload(); }
       if (!e.target.closest('#city-wrap')) {
         document.getElementById('city-menu')?.classList.remove('open');
         document.querySelector('.city-trigger')?.classList.remove('open');
@@ -207,4 +208,6 @@
   } else {
     init();
   }
+
+  window._shell = { T, curLang, LANGS };
 })();

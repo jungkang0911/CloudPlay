@@ -163,15 +163,15 @@
 <div data-shell-top data-shell-active="faq"></div>
 
 <section class="page-hero">
-  <div class="page-eyebrow">Frequently Asked</div>
-  <h1 class="page-title">常見 <em>問題</em></h1>
-  <p class="page-subtitle">整理旅客最常詢問的問題，幫您快速找到答案。<br>如有其他疑問，歡迎隨時聯絡客服。</p>
+  <div class="page-eyebrow" data-i18n="page.faq.eyebrow">Frequently Asked</div>
+  <h1 class="page-title" data-i18n="page.faq.title">常見 <em>問題</em></h1>
+  <p class="page-subtitle" data-i18n="page.faq.subtitle">整理旅客最常詢問的問題，幫您快速找到答案。<br>如有其他疑問，歡迎隨時聯絡客服。</p>
   <div class="page-rule"></div>
 </section>
 
 <!-- 類別切換 -->
 <div class="faq-cat-tabs" id="faq-tabs">
-  <button class="faq-cat-tab active" data-cat="all">全部</button>
+  <button class="faq-cat-tab active" data-cat="all" data-i18n="page.faq.all">全部</button>
   <button class="faq-cat-tab" data-cat="trip">行程</button>
   <button class="faq-cat-tab" data-cat="money">費用</button>
   <button class="faq-cat-tab" data-cat="visa">證件</button>
@@ -345,16 +345,17 @@
 
 <!-- 找不到答案？聯絡客服 -->
 <div class="ask-cta">
-  <h2 class="ask-cta-title">沒找到 <em>您的問題</em>？</h2>
-  <p class="ask-cta-desc">每位旅客的需求都不同，歡迎直接聯絡客服詢問。</p>
+  <h2 class="ask-cta-title" data-i18n="page.faq.cta_title">還有 <em>其他問題</em>？</h2>
+  <p class="ask-cta-desc" data-i18n="page.faq.cta_desc">歡迎直接聯絡我們的客服團隊，24 小時線上為您服務。</p>
   <div class="ask-cta-btns">
-    <a class="btn-primary" href="https://line.me/" target="_blank" rel="noopener noreferrer">LINE 諮詢</a>
-    <a class="btn-outline" href="tel:0800123456">撥打 0800-123-456</a>
+    <a class="btn-primary" href="https://line.me/" target="_blank" rel="noopener noreferrer" data-i18n="page.faq.cta_line">LINE 諮詢</a>
+    <a class="btn-outline" href="tel:0800123456" data-i18n="page.faq.cta_phone">撥打客服</a>
   </div>
 </div>
 
 <div data-shell-bottom></div>
 
+<script src="js/i18n.js"></script>
 <script src="js/_shell.js"></script>
 <script>
   // 開合
