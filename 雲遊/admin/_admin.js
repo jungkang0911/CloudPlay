@@ -161,6 +161,34 @@ function highlightList(items = []) {
   return { el, getValue: () => arr.filter(r => r.t.trim() || r.d.trim()) };
 }
 
+// ── SortableJS 注入 ────────────────────────────────────────────────────────
+(function(){
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js';
+  document.head.appendChild(s);
+})();
+
+// 拖拉排序 helper：呼叫後自動更新 DB sort_order
+async function makeSortable(tbody, table, pkField) {
+  const init = () => {
+    if (tbody._sortable) tbody._sortable.destroy();
+    tbody._sortable = Sortable.create(tbody, {
+      handle: '.drag-handle',
+      animation: 150,
+      ghostClass: 'sort-ghost',
+      onEnd: async () => {
+        const rows = [...tbody.querySelectorAll('tr[data-id]')];
+        await Promise.all(rows.map((tr, i) =>
+          sb.from(table).update({ sort_order: (i + 1) * 10 }).eq(pkField, tr.dataset.id)
+        ));
+        toast('排序已儲存');
+      }
+    });
+  };
+  if (window.Sortable) { init(); }
+  else { const t = setInterval(() => { if (window.Sortable) { clearInterval(t); init(); } }, 100); }
+}
+
 // ── 共用 CSS 注入 ──────────────────────────────────────────────────────────
 (function injectAdminCSS() {
   const style = document.createElement('style');
@@ -270,6 +298,11 @@ function highlightList(items = []) {
     /* Toolbar */
     .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
     .toolbar-right { margin-left: auto; }
+
+    /* Drag handle */
+    .drag-handle { cursor: grab; color: var(--muted); font-size: 16px; padding: 0 6px; user-select: none; }
+    .drag-handle:active { cursor: grabbing; }
+    .sort-ghost { opacity: 0.4; background: rgba(200,169,110,0.1); }
   `;
   document.head.appendChild(style);
 })();

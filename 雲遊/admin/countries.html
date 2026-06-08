@@ -18,7 +18,7 @@
   <table class="adm-table">
     <thead>
       <tr>
-        <th>旗幟</th><th>代碼</th><th>名稱</th><th>樂遊標題</th><th>排序</th><th></th>
+        <th style="width:32px;"></th><th>旗幟</th><th>代碼</th><th>名稱</th><th>樂遊標題</th><th></th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -96,15 +96,17 @@ function renderTable() {
   tbody.innerHTML = '';
   rows.forEach(r => {
     const tr = document.createElement('tr');
+    tr.dataset.id = r.code;
     tr.innerHTML = `
+      <td><span class="drag-handle">⠿</span></td>
       <td style="font-size:22px;">${r.flag || '—'}</td>
       <td><span class="badge badge-muted">${r.code}</span></td>
       <td style="font-weight:500;">${r.name}</td>
       <td style="color:var(--muted);">${r.feature_title || '—'}</td>
-      <td style="color:var(--muted);">${r.sort_order}</td>
       <td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel('${r.code}')">編輯</button></td>`;
     tbody.appendChild(tr);
   });
+  makeSortable(tbody, 'countries', 'code');
 }
 
 function openPanel(code) {

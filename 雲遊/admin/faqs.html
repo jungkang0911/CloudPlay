@@ -16,7 +16,7 @@
     <button class="btn-primary toolbar-right" onclick="openPanel()">＋ 新增問題</button>
   </div>
   <table class="adm-table">
-    <thead><tr><th>#</th><th>問題</th><th>排序</th><th></th></tr></thead>
+    <thead><tr><th style="width:32px;"></th><th>問題</th><th></th></tr></thead>
     <tbody id="tbody"></tbody>
   </table>
 </main>
@@ -55,7 +55,8 @@ async function load(){ const{data}=await sb.from('faqs').select('*').order('sort
 
 function render(){
   const tbody=document.getElementById('tbody'); tbody.innerHTML='';
-  rows.forEach((r,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td style="color:var(--muted);">${i+1}</td><td style="font-weight:500;max-width:320px;">${r.question}</td><td style="color:var(--muted);">${r.sort_order}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel(${r.id})">編輯</button></td>`; tbody.appendChild(tr); });
+  rows.forEach((r,i)=>{ const tr=document.createElement('tr'); tr.dataset.id=r.id; tr.innerHTML=`<td><span class="drag-handle">⠿</span></td><td style="font-weight:500;max-width:320px;">${r.question}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel(${r.id})">編輯</button></td>`; tbody.appendChild(tr); });
+  makeSortable(tbody,'faqs','id');
 }
 
 function openPanel(id){ editId=id||null; const r=id?rows.find(x=>x.id===id):null; document.getElementById('panel-heading').textContent=r?'編輯問題':'新增問題'; document.getElementById('f-q').value=r?.question||''; document.getElementById('f-a').value=r?.answer||''; document.getElementById('f-sort').value=r?.sort_order??0; document.getElementById('btn-delete').style.display=r?'inline-block':'none'; document.getElementById('panel-overlay').style.display='flex'; }

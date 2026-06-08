@@ -16,7 +16,7 @@
     <button class="btn-primary toolbar-right" onclick="openPanel()">＋ 新增步驟</button>
   </div>
   <table class="adm-table">
-    <thead><tr><th>編號</th><th>標題</th><th>副標</th><th>排序</th><th></th></tr></thead>
+    <thead><tr><th style="width:32px;"></th><th>編號</th><th>標題</th><th>副標</th><th></th></tr></thead>
     <tbody id="tbody"></tbody>
   </table>
 </main>
@@ -61,7 +61,8 @@ async function load(){ const{data}=await sb.from('steps').select('*').order('sor
 
 function render(){
   const tbody=document.getElementById('tbody'); tbody.innerHTML='';
-  rows.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td><span class="badge badge-gold">${r.num||'—'}</span></td><td style="font-weight:500;">${r.label}</td><td style="color:var(--muted);">${r.sub||'—'}</td><td style="color:var(--muted);">${r.sort_order}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel(${r.id})">編輯</button></td>`; tbody.appendChild(tr); });
+  rows.forEach(r=>{ const tr=document.createElement('tr'); tr.dataset.id=r.id; tr.innerHTML=`<td><span class="drag-handle">⠿</span></td><td><span class="badge badge-gold">${r.num||'—'}</span></td><td style="font-weight:500;">${r.label}</td><td style="color:var(--muted);">${r.sub||'—'}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel(${r.id})">編輯</button></td>`; tbody.appendChild(tr); });
+  makeSortable(tbody,'steps','id');
 }
 
 function openPanel(id){ editId=id||null; const r=id?rows.find(x=>x.id===id):null; document.getElementById('panel-heading').textContent=r?'編輯步驟':'新增步驟'; document.getElementById('f-num').value=r?.num||''; document.getElementById('f-label').value=r?.label||''; document.getElementById('f-sub').value=r?.sub||''; document.getElementById('f-sort').value=r?.sort_order??0; document.getElementById('btn-delete').style.display=r?'inline-block':'none'; document.getElementById('panel-overlay').style.display='flex'; }

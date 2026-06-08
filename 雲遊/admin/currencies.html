@@ -16,7 +16,7 @@
     <button class="btn-primary toolbar-right" onclick="openPanel()">＋ 新增幣別</button>
   </div>
   <table class="adm-table">
-    <thead><tr><th>代碼</th><th>符號</th><th>名稱</th><th>匯率（對 NTD）</th><th>進位</th><th></th></tr></thead>
+    <thead><tr><th style="width:32px;"></th><th>代碼</th><th>符號</th><th>名稱</th><th>匯率（對 NTD）</th><th>進位</th><th></th></tr></thead>
     <tbody id="tbody"></tbody>
   </table>
 </main>
@@ -67,7 +67,8 @@ async function load(){ const{data}=await sb.from('currencies').select('*').order
 
 function render(){
   const tbody=document.getElementById('tbody'); tbody.innerHTML='';
-  rows.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td><span class="badge badge-muted">${r.code}</span></td><td style="font-size:18px;">${r.symbol||'—'}</td><td style="font-weight:500;">${r.label||'—'}</td><td style="color:var(--gold);">${r.rate}</td><td style="color:var(--muted);">${r.round_to}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel('${r.code}')">編輯</button></td>`; tbody.appendChild(tr); });
+  rows.forEach(r=>{ const tr=document.createElement('tr'); tr.dataset.id=r.code; tr.innerHTML=`<td><span class="drag-handle">⠿</span></td><td><span class="badge badge-muted">${r.code}</span></td><td style="font-size:18px;">${r.symbol||'—'}</td><td style="font-weight:500;">${r.label||'—'}</td><td style="color:var(--gold);">${r.rate}</td><td style="color:var(--muted);">${r.round_to}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel('${r.code}')">編輯</button></td>`; tbody.appendChild(tr); });
+  makeSortable(tbody,'currencies','code');
 }
 
 function openPanel(code){ editCode=code||null; const r=code?rows.find(x=>x.code===code):null; document.getElementById('panel-heading').textContent=r?'編輯幣別':'新增幣別'; document.getElementById('f-code').value=r?.code||''; document.getElementById('f-code').disabled=!!r; document.getElementById('f-symbol').value=r?.symbol||''; document.getElementById('f-label').value=r?.label||''; document.getElementById('f-rate').value=r?.rate??''; document.getElementById('f-round').value=r?.round_to??1; document.getElementById('btn-delete').style.display=r?'inline-block':'none'; document.getElementById('panel-overlay').style.display='flex'; }

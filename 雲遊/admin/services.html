@@ -16,7 +16,7 @@
     <button class="btn-primary toolbar-right" onclick="openPanel()">＋ 新增服務卡</button>
   </div>
   <table class="adm-table">
-    <thead><tr><th>Tag</th><th>標題</th><th>描述</th><th>排序</th><th></th></tr></thead>
+    <thead><tr><th style="width:32px;"></th><th>Tag</th><th>標題</th><th>描述</th><th></th></tr></thead>
     <tbody id="tbody"></tbody>
   </table>
 </main>
@@ -79,9 +79,11 @@ function render() {
   const tbody = document.getElementById('tbody'); tbody.innerHTML = '';
   rows.forEach(r => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><span class="badge badge-muted">${r.tag||'—'}</span></td><td style="font-weight:500;">${r.title}</td><td style="color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.description||'—'}</td><td style="color:var(--muted);">${r.sort_order}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel(${r.id})">編輯</button></td>`;
+    tr.dataset.id = r.id;
+    tr.innerHTML = `<td><span class="drag-handle">⠿</span></td><td><span class="badge badge-muted">${r.tag||'—'}</span></td><td style="font-weight:500;">${r.title}</td><td style="color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.description||'—'}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel(${r.id})">編輯</button></td>`;
     tbody.appendChild(tr);
   });
+  makeSortable(tbody, 'services', 'id');
 }
 
 function openPanel(id) {

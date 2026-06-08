@@ -20,7 +20,7 @@
   </div>
   <table class="adm-table">
     <thead>
-      <tr><th>代碼</th><th>國家</th><th>城市</th><th>英文</th><th>地區數</th><th>排序</th><th></th></tr>
+      <tr><th style="width:32px;"></th><th>代碼</th><th>國家</th><th>城市</th><th>英文</th><th>地區數</th><th></th></tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
@@ -118,16 +118,18 @@ function renderTable(rows) {
     const c = countries.find(x => x.code === r.country_code);
     const regions = Array.isArray(r.regions) ? r.regions : [];
     const tr = document.createElement('tr');
+    tr.dataset.id = r.code;
     tr.innerHTML = `
+      <td><span class="drag-handle">⠿</span></td>
       <td><span class="badge badge-muted">${r.code}</span></td>
       <td>${c ? `${c.flag || ''} ${c.name}` : r.country_code}</td>
       <td style="font-weight:500;">${r.name}</td>
       <td style="color:var(--muted);">${r.name_en || '—'}</td>
       <td style="color:var(--muted);">${regions.length}</td>
-      <td style="color:var(--muted);">${r.sort_order}</td>
       <td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel('${r.code}')">編輯</button></td>`;
     tbody.appendChild(tr);
   });
+  makeSortable(tbody, 'cities', 'code');
 }
 
 function openPanel(code) {
