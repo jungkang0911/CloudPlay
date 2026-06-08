@@ -343,6 +343,14 @@
 
     async getCurrencies() { return _currencies; },
 
+    async getMarqueeItems() {
+      const enabled = await _sbFetch('site_config', 'key=eq.marquee_enabled&select=value');
+      if (enabled && enabled.length && enabled[0].value === 'false') return [];
+      const rows = await _sbFetch('marquee_items', 'order=sort_order&select=*');
+      if (rows && rows.length) return rows.map(r => r.text);
+      return ['✦ 一站式觀光，從機場到飯店全程無憂 · 24H 中文客服在線 · 客製行程量身打造 · 越南｜日本｜泰國｜台灣 ✦'];
+    },
+
     async getConfig(key) {
       const rows = await _sbFetch('site_config', `key=eq.${encodeURIComponent(key)}&select=value`);
       if (rows && rows.length) return rows[0].value;

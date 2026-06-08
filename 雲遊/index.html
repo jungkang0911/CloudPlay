@@ -957,6 +957,7 @@ function App() {
   // Data state — seeds from local DB for immediate render, refreshes from Supabase when connected
   const [countries,  setCountries]  = useState(window.DB.countries);
   const [categories, setCategories] = useState(() => window.DB.getCategoriesSync('vn'));
+  const [marqueeItems, setMarqueeItems] = useState(['✦ 一站式觀光，從機場到飯店全程無憂 · 24H 中文客服在線 · 客製行程量身打造 · 越南｜日本｜泰國｜台灣 ✦']);
 
   // 找出目前城市、國家
   let currentCountry = countries[0], currentCity = countries[0].cities[0];
@@ -1005,6 +1006,7 @@ function App() {
   // Async refresh — fires when Supabase is connected via DB.init()
   useEffect(() => { window.DB.getCountries().then(setCountries); }, []);
   useEffect(() => { window.DB.getCategories(currentCountry.code).then(setCategories); }, [currentCountry.code]);
+  useEffect(() => { window.DB.getMarqueeItems().then(items => { if (items.length) setMarqueeItems(items); }); }, []);
 
   function selectCity(cityCode) {
     setCurrentCityCode(cityCode);
@@ -1024,15 +1026,19 @@ function App() {
   return (
     <div>
       {/* ── 跑馬燈 ── */}
-      <div className="marquee-bar">
-        <div className="marquee-track">
-          {[0,1].map(n => (
-            <span key={n} className="marquee-item">
-              ✦ 一站式觀光，從機場到飯店全程無憂 · 24H 中文客服在線 · 客製行程量身打造 · 越南｜日本｜泰國｜台灣 ✦
-            </span>
-          ))}
+      {marqueeItems.length > 0 && (
+        <div className="marquee-bar">
+          <div className="marquee-track">
+            {[0,1].map(n => (
+              <React.Fragment key={n}>
+                {marqueeItems.map((text, i) => (
+                  <span key={`${n}-${i}`} className="marquee-item">{text}</span>
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── Navbar ── */}
       <nav className="navbar">
