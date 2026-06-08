@@ -6,5 +6,5 @@ node_modules/
 Thumbs.db
 elfmodels/
 雲遊/supabase/.temp/
-雲遊/docs/SYSTEM.md
+雲遊/docs/SECRETS.md
 .claude/
