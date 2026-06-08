@@ -369,6 +369,12 @@
     },
   };
 
+  // Auto-connect to Supabase
+  DB.init(
+    'https://ayadandlvszhnvnciofv.supabase.co',
+    'sb_publishable_b6-9r7xQHwYADms1ZU4WuQ_uFe1q3-g'
+  );
+
   window.DB = DB;
 
   // ── Backward compat: window.YY ──────────────────────────────────
