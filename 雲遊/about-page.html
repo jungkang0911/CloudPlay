@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>關於我們 · 雲遊國際</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root { --gold:#c8a96e;--gold-light:#e2c98a;--gold-dim:#a08040;--black:#0a0906;--black2:#13110d;--black3:#1c1914;--black4:#252219;--white:#f5f0e8;--white2:#ede5d5;--text-muted:#9a9080;--font-serif:'Cormorant Garamond',Georgia,serif;--font-sans:'Noto Sans TC',sans-serif; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:var(--font-sans);font-weight:300;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--black2);}::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px;}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,9,6,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,169,110,0.15);height:60px;display:flex;align-items:center;padding:0 40px;gap:20px;}
+.nav-logo{font-family:var(--font-serif);font-size:22px;font-weight:300;font-style:italic;color:var(--gold);text-decoration:none;letter-spacing:0.08em;flex-shrink:0;}
+.nav-logo span{font-style:normal;font-weight:600;}
+.nav-divider{color:rgba(200,169,110,0.3);font-size:14px;}
+.nav-page-title{font-size:12px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;}
+.nav-spacer{flex:1;}
+.nav-back{font-size:11px;letter-spacing:0.1em;color:var(--gold);background:none;font-family:inherit;padding:6px 14px;border:1px solid rgba(200,169,110,0.3);transition:all 0.2s;text-decoration:none;display:inline-block;}
+.nav-back:hover{background:rgba(200,169,110,0.06);border-color:var(--gold);}
+
+/* Hero — full bleed */
+.page-hero{margin-top:60px;height:55vh;min-height:360px;position:relative;overflow:hidden;display:flex;align-items:center;}
+.page-hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0d0a05,#1a1305);background-size:cover;background-position:center;}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(120deg,rgba(10,9,6,0.85) 0%,rgba(10,9,6,0.3) 100%);}
+.page-hero-content{position:relative;z-index:1;padding:0 80px;max-width:700px;}
+.page-hero-tag{font-size:10px;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;}
+.page-hero-title{font-family:var(--font-serif);font-size:clamp(40px,6vw,72px);font-weight:300;color:var(--white);line-height:1.1;margin-bottom:20px;}
+.page-hero-title em{color:var(--gold);font-style:italic;}
+.page-hero-sub{font-size:15px;color:var(--white2);line-height:1.8;max-width:480px;}
+
+/* Stats bar */
+.stats-bar{background:var(--black2);border-top:1px solid rgba(200,169,110,0.15);border-bottom:1px solid rgba(200,169,110,0.15);display:grid;grid-template-columns:repeat(4,1fr);}
+.stat-item{padding:32px 40px;border-right:1px solid rgba(200,169,110,0.1);text-align:center;}
+.stat-item:last-child{border-right:none;}
+.stat-val{font-family:var(--font-serif);font-size:42px;font-weight:300;color:var(--gold);line-height:1;margin-bottom:8px;}
+.stat-label{font-size:11px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;}
+
+/* Main layout — no sidebar for about page */
+.page-body{max-width:1000px;margin:0 auto;padding:80px 40px;}
+
+/* Sections */
+.section{margin-bottom:80px;}
+.section-tag{font-size:10px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+.section-tag::after{content:'';flex:1;height:1px;background:rgba(200,169,110,0.15);}
+.section-h2{font-family:var(--font-serif);font-size:clamp(28px,4vw,44px);font-weight:300;color:var(--white);margin-bottom:28px;line-height:1.2;}
+.section-h2 em{color:var(--gold);font-style:italic;}
+.section-p{font-size:15px;color:var(--text-muted);line-height:1.9;margin-bottom:20px;text-wrap:pretty;}
+
+/* 2-col layout */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.two-col.reverse{direction:rtl;}.two-col.reverse>*{direction:ltr;}
+.img-placeholder{width:100%;aspect-ratio:4/3;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(200,169,110,0.03) 8px,rgba(200,169,110,0.03) 16px);border:1px solid rgba(200,169,110,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(200,169,110,0.25);font-size:10px;letter-spacing:0.1em;}
+
+/* Highlight */
+.highlight-box{background:var(--black2);border:1px solid rgba(200,169,110,0.2);border-left:3px solid var(--gold);padding:20px 24px;margin:24px 0;font-size:14px;color:var(--white2);line-height:1.8;}
+.highlight-box strong{color:var(--gold);}
+
+/* Values grid */
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:28px 0;}
+.value-card{background:var(--black2);border:1px solid rgba(200,169,110,0.1);padding:32px 28px;}
+.value-num{font-family:var(--font-serif);font-size:40px;font-weight:300;color:rgba(200,169,110,0.2);margin-bottom:12px;font-style:italic;}
+.value-title{font-size:15px;color:var(--white);font-weight:400;margin-bottom:10px;}
+.value-desc{font-size:13px;color:var(--text-muted);line-height:1.7;}
+
+/* Guide cards */
+.guides-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin:28px 0;}
+.guide-card{background:var(--black2);border:1px solid rgba(200,169,110,0.1);overflow:hidden;}
+.guide-photo{height:260px;background:linear-gradient(135deg,#1a1005,#2d1e0a);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:rgba(200,169,110,0.2);font-size:10px;letter-spacing:0.1em;}
+.guide-info{padding:20px 22px;}
+.guide-name{font-family:var(--font-serif);font-size:22px;font-weight:300;color:var(--white);margin-bottom:4px;}
+.guide-role{font-size:10px;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:12px;}
+.guide-desc{font-size:12px;color:var(--text-muted);line-height:1.7;}
+.guide-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
+.guide-tag{font-size:9px;letter-spacing:0.1em;color:var(--gold);border:1px solid rgba(200,169,110,0.25);padding:3px 8px;text-transform:uppercase;}
+
+/* Timeline */
+.timeline{margin:28px 0;}
+.timeline-item{display:flex;gap:24px;padding-bottom:32px;position:relative;}
+.timeline-item::before{content:'';position:absolute;left:20px;top:40px;bottom:0;width:1px;background:rgba(200,169,110,0.15);}
+.timeline-item:last-child::before{display:none;}
+.timeline-year{width:40px;height:40px;border:1px solid rgba(200,169,110,0.3);background:var(--black2);display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:11px;color:var(--gold);flex-shrink:0;position:relative;z-index:1;font-weight:300;letter-spacing:0.05em;}
+.timeline-body{flex:1;padding-top:8px;}
+.timeline-title{font-size:15px;color:var(--white);font-weight:400;margin-bottom:6px;}
+.timeline-desc{font-size:13px;color:var(--text-muted);line-height:1.7;}
+
+/* CTA */
+.cta-bar{background:linear-gradient(135deg,var(--black3),var(--black4));border:1px solid rgba(200,169,110,0.2);padding:48px 60px;text-align:center;margin-top:60px;}
+.cta-title{font-family:var(--font-serif);font-size:36px;font-weight:300;color:var(--white);margin-bottom:12px;}
+.cta-title em{color:var(--gold);font-style:italic;}
+.cta-sub{font-size:14px;color:var(--text-muted);margin-bottom:32px;line-height:1.7;}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.cta-btn-primary{padding:14px 36px;background:var(--gold);border:none;color:var(--black);font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;font-family:inherit;font-weight:600;transition:background 0.2s;text-decoration:none;}
+.cta-btn-primary:hover{background:var(--gold-light);}
+.cta-btn-outline{padding:14px 36px;background:transparent;border:1px solid rgba(200,169,110,0.4);color:var(--gold);font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all 0.2s;text-decoration:none;}
+.cta-btn-outline:hover{border-color:var(--gold);background:rgba(200,169,110,0.05);}
+
+.divider{height:1px;background:rgba(200,169,110,0.1);margin:60px 0;}
+
+@media(max-width:900px){
+  .navbar{padding:0 20px;} .page-hero-content{padding:0 24px;} .page-body{padding:48px 24px;}
+  .stats-bar{grid-template-columns:repeat(2,1fr);} .stat-item{border-right:none;border-bottom:1px solid rgba(200,169,110,0.1);padding:24px;}
+  .two-col{grid-template-columns:1fr;gap:32px;} .two-col.reverse{direction:ltr;}
+  .values-grid{grid-template-columns:1fr;} .guides-grid{grid-template-columns:1fr;}
+  .cta-bar{padding:40px 24px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo"><img src="uploads/logo-mark.png" alt="雲遊國際" style="height:30px;width:auto;vertical-align:middle;margin-right:8px;" /><span style="font-style:normal;font-weight:400;letter-spacing:0.12em;font-size:16px;">雲遊國際</span></a>
+  <span class="nav-divider">/</span>
+  <span class="nav-page-title">關於我們</span>
+  <div class="nav-spacer"></div>
+  <a href="index.html" class="nav-back">← 返回首頁</a>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-tag">About YunXiang</div>
+    <h1 class="page-hero-title">以<em>尊貴的眼光</em><br/>探索世界</h1>
+    <p class="page-hero-sub">雲遊國際，以誠信與專業陪伴每一位旅者，打造難以忘懷的旅行記憶。</p>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-val">13+</div><div class="stat-label">年豐富經驗</div></div>
+  <div class="stat-item"><div class="stat-val">5,000+</div><div class="stat-label">滿意旅客</div></div>
+  <div class="stat-item"><div class="stat-val">4</div><div class="stat-label">主要目的地</div></div>
+  <div class="stat-item"><div class="stat-val">24H</div><div class="stat-label">全天候服務</div></div>
+</div>
+
+<!-- Body -->
+<div class="page-body">
+
+  <!-- 品牌故事 -->
+  <section class="section" id="story">
+    <div class="section-tag">Our Story</div>
+    <div class="two-col">
+      <div>
+        <h2 class="section-h2">品牌<em>故事</em></h2>
+        <p class="section-p">雲遊國際創立於台北，起初以在地深度旅遊起家，13年的積累讓我們深刻理解每位旅者心中的需求——不只是「去過一個地方」，而是真正「感受一個地方」。</p>
+        <p class="section-p">我們以「雲想」為名，取自「雲想衣裳花想容」的意境，希望每一次旅行都如詩般美麗，帶給旅者由衷的感動與回憶。</p>
+        <div class="highlight-box">
+          <strong>✦ 雲想理念：</strong> 旅行不是走馬看花，而是一段改變視野的深度體驗。
+        </div>
+      </div>
+      <div class="img-placeholder">
+        [ 品牌故事照 ]<br/>
+        <span style="font-size:9px;opacity:0.6">建議: 辦公室/團隊合照 · 800×600px</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 核心價值 -->
+  <section class="section" id="values">
+    <div class="section-tag">Our Values</div>
+    <h2 class="section-h2">核心<em>價值</em></h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-num">01</div>
+        <div class="value-title">誠信透明</div>
+        <div class="value-desc">費用清清楚楚，絕無隱藏收費。商家帳單直接出給旅客，雲想不從中抽取任何費用。</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">02</div>
+        <div class="value-title">安全第一</div>
+        <div class="value-desc">合作夥伴均經嚴格篩選，24小時導遊隨行，讓旅客在異地也能安心享受每一刻。</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">03</div>
+        <div class="value-title">彈性服務</div>
+        <div class="value-desc">沒有固定框架的行程，根據每位旅客的喜好與需求，即時調整，創造個人化的旅遊體驗。</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 品牌歷程 -->
+  <section class="section" id="history">
+    <div class="section-tag">Our Journey</div>
+    <h2 class="section-h2">品牌<em>歷程</em></h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">2011</div>
+        <div class="timeline-body">
+          <div class="timeline-title">創立於台北</div>
+          <div class="timeline-desc">以在地深度遊起家，專注提供台灣旅客最道地的亞洲旅遊體驗。</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2015</div>
+        <div class="timeline-body">
+          <div class="timeline-title">進軍越南市場</div>
+          <div class="timeline-desc">開拓胡志明市深度遊路線，與當地夥伴建立長期合作關係，成為台灣赴越旅遊的重要品牌。</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2019</div>
+        <div class="timeline-body">
+          <div class="timeline-title">擴展多國目的地</div>
+          <div class="timeline-desc">加入泰國、日本等熱門目的地，服務版圖橫跨東亞與東南亞，累計服務旅客突破3,000人。</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2024</div>
+        <div class="timeline-body">
+          <div class="timeline-title">品牌升級 · 雲想2.0</div>
+          <div class="timeline-desc">全面升級服務體驗，推出多語言平台、會員制度與線上行程預訂，邁向國際化旅遊品牌。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 導遊介紹 -->
+  <section class="section" id="guides">
+    <div class="section-tag">Our Team</div>
+    <h2 class="section-h2">專業<em>導遊</em></h2>
+    <p class="section-p">我們的導遊均在當地生活超過5年，熟悉每條巷弄、每家道地餐廳，更重要的是，他們懂得如何讓旅客真正放鬆享受旅程。</p>
+    <div class="guides-grid">
+      <div class="guide-card">
+        <div class="guide-photo">
+          [ 導遊照片 ]<br/>
+          <span style="font-size:9px;opacity:0.6">400×520px</span>
+        </div>
+        <div class="guide-info">
+          <div class="guide-name">老司機 · 阿偉</div>
+          <div class="guide-role">越南 · 首席導遊</div>
+          <div class="guide-desc">在胡志明市深耕10年，走遍大街小巷，帶你見識最道地的越南。</div>
+          <div class="guide-tags"><span class="guide-tag">中文</span><span class="guide-tag">越南語</span><span class="guide-tag">英文</span></div>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-photo">
+          [ 導遊照片 ]<br/>
+          <span style="font-size:9px;opacity:0.6">400×520px</span>
+        </div>
+        <div class="guide-info">
+          <div class="guide-name">Kenny</div>
+          <div class="guide-role">泰國 · 資深導遊</div>
+          <div class="guide-desc">曼谷在地人，精通泰式美食文化，夜生活達人，帶你玩遍曼谷每個角落。</div>
+          <div class="guide-tags"><span class="guide-tag">中文</span><span class="guide-tag">泰語</span><span class="guide-tag">英文</span></div>
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="guide-photo">
+          [ 導遊照片 ]<br/>
+          <span style="font-size:9px;opacity:0.6">400×520px</span>
+        </div>
+        <div class="guide-info">
+          <div class="guide-name">Kenji</div>
+          <div class="guide-role">日本 · 文化導覽</div>
+          <div class="guide-desc">京都在地人，深諳日本傳統文化，讓你的日本之旅超越一般觀光。</div>
+          <div class="guide-tags"><span class="guide-tag">中文</span><span class="guide-tag">日語</span><span class="guide-tag">英文</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-bar">
+    <div class="cta-title">準備好開始<em>旅程</em>了嗎？</div>
+    <div class="cta-sub">聯繫我們，讓雲想為您打造專屬的旅遊體驗</div>
+    <div class="cta-btns">
+      <a href="#" class="cta-btn-primary">💬 LINE 即時諮詢</a>
+      <a href="#" class="cta-btn-outline">📱 WhatsApp</a>
+      <a href="#" class="cta-btn-outline">✈️ Telegram</a>
+      <a href="tel:0800123456" class="cta-btn-outline">📞 客服電話</a>
+      <a href="index.html" class="cta-btn-outline">← 返回首頁</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

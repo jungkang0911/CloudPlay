@@ -1,0 +1,10 @@
+node_modules/
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+elfmodels/
+雲遊/supabase/.temp/
+雲遊/docs/SYSTEM.md
+.claude/

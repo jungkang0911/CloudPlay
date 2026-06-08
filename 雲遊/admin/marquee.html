@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>跑馬燈管理 — 雲遊後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="_admin.js"></script>
+</head>
+<body>
+<main class="admin-main">
+  <h1 class="page-title">跑馬燈管理</h1>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:16px;">
+    <span style="font-size:13px;">整體開關</span>
+    <label class="toggle"><input type="checkbox" id="toggle-enabled" onchange="saveEnabled()"><span class="toggle-slider"></span></label>
+    <span id="enabled-label" style="font-size:12px;color:var(--muted);">載入中…</span>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-primary toolbar-right" onclick="openPanel()">＋ 新增條目</button>
+  </div>
+  <table class="adm-table">
+    <thead><tr><th>#</th><th>文字內容</th><th>排序</th><th></th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</main>
+
+<div id="panel-overlay" class="panel-overlay" style="display:none;" onclick="closePanel(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-title">
+      <span id="panel-heading">新增條目</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">文字內容 *</label>
+      <textarea id="f-text" class="adm-textarea" placeholder="e.g. 最新：越南五天四夜限時優惠，即刻詢問！"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">排序</label>
+      <input id="f-sort" class="adm-input" type="number" value="0">
+    </div>
+    <div class="panel-actions">
+      <button class="btn-danger" id="btn-delete" onclick="doDelete()" style="margin-right:auto;display:none;">刪除</button>
+      <button class="btn-ghost" onclick="closePanel()">取消</button>
+      <button class="btn-primary" onclick="doSave()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let rows=[], editId=null;
+
+(async()=>{
+  const s=await requireAuth(); if(!s)return;
+  injectSidebar(s);
+  await loadEnabled();
+  await load();
+})();
+
+async function loadEnabled(){
+  const{data}=await sb.from('site_config').select('value').eq('key','marquee_enabled').single();
+  const on = data?.value !== 'false';
+  document.getElementById('toggle-enabled').checked=on;
+  document.getElementById('enabled-label').textContent=on?'開啟中':'已關閉';
+}
+
+async function saveEnabled(){
+  const on=document.getElementById('toggle-enabled').checked;
+  await sb.from('site_config').update({value:String(on)}).eq('key','marquee_enabled');
+  document.getElementById('enabled-label').textContent=on?'開啟中':'已關閉';
+  toast(on?'跑馬燈已開啟':'跑馬燈已關閉');
+}
+
+async function load(){ const{data}=await sb.from('marquee_items').select('*').order('sort_order'); rows=data||[]; render(); }
+
+function render(){
+  const tbody=document.getElementById('tbody'); tbody.innerHTML='';
+  rows.forEach((r,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td style="color:var(--muted);">${i+1}</td><td style="max-width:360px;">${r.text}</td><td style="color:var(--muted);">${r.sort_order}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel(${r.id})">編輯</button></td>`; tbody.appendChild(tr); });
+}
+
+function openPanel(id){ editId=id||null; const r=id?rows.find(x=>x.id===id):null; document.getElementById('panel-heading').textContent=r?'編輯條目':'新增條目'; document.getElementById('f-text').value=r?.text||''; document.getElementById('f-sort').value=r?.sort_order??0; document.getElementById('btn-delete').style.display=r?'inline-block':'none'; document.getElementById('panel-overlay').style.display='flex'; }
+function closePanel(e){ if(e&&e.target!==document.getElementById('panel-overlay'))return; document.getElementById('panel-overlay').style.display='none'; }
+
+async function doSave(){ const text=document.getElementById('f-text').value.trim(); if(!text){toast('內容為必填','error');return;} const payload={text,sort_order:parseInt(document.getElementById('f-sort').value)||0}; const{error}=editId?await sb.from('marquee_items').update(payload).eq('id',editId):await sb.from('marquee_items').insert(payload); if(error){toast('儲存失敗：'+error.message,'error');return;} toast('已儲存'); document.getElementById('panel-overlay').style.display='none'; await load(); }
+async function doDelete(){ if(!confirm2('確定刪除？'))return; const{error}=await sb.from('marquee_items').delete().eq('id',editId); if(error){toast('刪除失敗','error');return;} toast('已刪除'); document.getElementById('panel-overlay').style.display='none'; await load(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代辦簽證 · 雲遊國際</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="content-page.html" disabled>
+<style>
+:root {
+  --gold: #c8a96e; --gold-light: #e2c98a; --gold-dim: #a08040;
+  --black: #0a0906; --black2: #13110d; --black3: #1c1914; --black4: #252219;
+  --white: #f5f0e8; --white2: #ede5d5; --text-muted: #9a9080;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Noto Sans TC', sans-serif;
+  --sidebar-w: 260px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--black); color: var(--white); font-family: var(--font-sans); font-weight: 300; overflow-x: hidden; }
+::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: var(--black2); } ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+.navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,9,6,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(200,169,110,0.15); height: 60px; display: flex; align-items: center; padding: 0 40px; gap: 20px; }
+.nav-logo { font-family: var(--font-serif); font-size: 22px; font-weight: 300; font-style: italic; color: var(--gold); cursor: pointer; text-decoration: none; letter-spacing: 0.08em; flex-shrink: 0; }
+.nav-logo span { font-style: normal; font-weight: 600; }
+.nav-divider { color: rgba(200,169,110,0.3); font-size: 14px; }
+.nav-page-title { font-size: 12px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; }
+.nav-spacer { flex: 1; }
+.nav-back { display: flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; cursor: pointer; background: none; font-family: inherit; padding: 6px 14px; border: 1px solid rgba(200,169,110,0.3); transition: all 0.2s; text-decoration: none; }
+.nav-back:hover { background: rgba(200,169,110,0.06); border-color: var(--gold); }
+.page-hero { margin-top: 60px; height: 42vh; min-height: 280px; position: relative; overflow: hidden; display: flex; align-items: flex-end; }
+.page-hero-bg { position: absolute; inset: 0; background: #0a0906 url('uploads/hero-visa.png') center/cover no-repeat; }
+.page-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(10,9,6,0.85) 0%, rgba(10,9,6,0.55) 45%, rgba(10,9,6,0.35) 100%), linear-gradient(to bottom, rgba(10,9,6,0.15) 0%, rgba(10,9,6,0.7) 100%); }
+.page-hero-content { position: relative; z-index: 1; padding: 0 60px 48px; }
+.page-hero-breadcrumb { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; opacity: 0.8; }
+.page-hero-title { font-family: var(--font-serif); font-size: clamp(32px, 5vw, 60px); font-weight: 300; color: var(--white); line-height: 1.1; margin-bottom: 12px; }
+.page-hero-title em { color: var(--gold); font-style: italic; }
+.page-layout { display: flex; min-height: 80vh; max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+.sidebar { width: var(--sidebar-w); flex-shrink: 0; padding: 40px 32px 60px 0; position: sticky; top: 60px; height: calc(100vh - 60px); overflow-y: auto; border-right: 1px solid rgba(200,169,110,0.1); }
+.sidebar-section-title { font-size: 9px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; margin-top: 32px; padding-bottom: 8px; border-bottom: 1px solid rgba(200,169,110,0.1); }
+.sidebar-section-title:first-child { margin-top: 0; }
+.sidebar-link { display: block; font-size: 13px; color: var(--text-muted); padding: 7px 0 7px 12px; cursor: pointer; transition: color 0.2s; border: none; background: none; font-family: inherit; text-align: left; width: 100%; border-left: 2px solid transparent; margin-left: -12px; line-height: 1.4; }
+.sidebar-link:hover { color: var(--white); }
+.sidebar-link.active { color: var(--gold); border-left-color: var(--gold); }
+.sidebar-cta { margin-top: 40px; padding: 20px; background: var(--black2); border: 1px solid rgba(200,169,110,0.2); }
+.sidebar-cta-title { font-size: 11px; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
+.sidebar-cta-desc { font-size: 12px; color: var(--text-muted); line-height: 1.7; margin-bottom: 14px; }
+.sidebar-cta-btn { display: block; width: 100%; padding: 10px; background: var(--gold); border: none; color: var(--black); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; font-family: inherit; font-weight: 600; transition: background 0.2s; text-align: center; text-decoration: none; }
+.sidebar-cta-btn:hover { background: var(--gold-light); }
+.main-content { flex: 1; padding: 48px 0 80px 60px; min-width: 0; }
+.content-section { margin-bottom: 64px; scroll-margin-top: 80px; }
+.content-section-tag { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+.content-section-tag::after { content: ''; flex: 1; height: 1px; background: rgba(200,169,110,0.15); }
+.content-h2 { font-family: var(--font-serif); font-size: clamp(24px, 3vw, 36px); font-weight: 300; color: var(--white); margin-bottom: 24px; line-height: 1.2; }
+.content-h2 em { color: var(--gold); font-style: italic; }
+.content-h3 { font-family: var(--font-serif); font-size: 22px; font-weight: 300; color: var(--white); margin-bottom: 14px; margin-top: 32px; }
+.content-p { font-size: 15px; color: var(--text-muted); line-height: 1.9; margin-bottom: 20px; text-wrap: pretty; }
+.highlight-box { background: var(--black2); border: 1px solid rgba(200,169,110,0.2); border-left: 3px solid var(--gold); padding: 20px 24px; margin: 24px 0; font-size: 14px; color: var(--white2); line-height: 1.8; }
+.highlight-box strong { color: var(--gold); }
+.content-divider { height: 1px; background: rgba(200,169,110,0.1); margin: 40px 0; }
+
+/* Service steps */
+.steps-grid { display: grid; grid-template-columns: 1fr; gap: 2px; margin: 24px 0; }
+.step-item { display: flex; gap: 24px; align-items: flex-start; background: var(--black2); border: 1px solid rgba(200,169,110,0.1); padding: 24px; transition: border-color 0.2s; }
+.step-item:hover { border-color: rgba(200,169,110,0.3); }
+.step-num { width: 40px; height: 40px; border: 1px solid rgba(200,169,110,0.4); display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 20px; color: var(--gold); flex-shrink: 0; font-weight: 300; }
+.step-body { flex: 1; }
+.step-title { font-size: 15px; color: var(--white); font-weight: 400; margin-bottom: 6px; }
+.step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+/* Feature cards */
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin: 24px 0; }
+.feature-card { background: var(--black2); border: 1px solid rgba(200,169,110,0.1); padding: 28px 24px; text-align: center; }
+.feature-icon { font-size: 32px; margin-bottom: 14px; display: block; opacity: 0.8; }
+.feature-title { font-family: var(--font-serif); font-size: 20px; font-weight: 300; color: var(--white); margin-bottom: 8px; }
+.feature-desc { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+
+/* Comparison table */
+.compare-table { width: 100%; border-collapse: collapse; margin: 24px 0; }
+.compare-table th { font-size: 10px; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase; padding: 12px 16px; border-bottom: 1px solid rgba(200,169,110,0.2); background: var(--black2); text-align: left; }
+.compare-table td { padding: 14px 16px; font-size: 14px; color: var(--text-muted); border-bottom: 1px solid rgba(200,169,110,0.08); }
+.compare-table .yes { color: #4ade80; }
+.compare-table .no { color: #f87171; }
+.compare-table tr:hover td { background: rgba(200,169,110,0.02); }
+
+/* CTA Bar */
+.cta-bar { background: linear-gradient(135deg, var(--black3), var(--black4)); border: 1px solid rgba(200,169,110,0.2); padding: 36px 40px; display: flex; align-items: center; gap: 40px; margin-top: 48px; }
+.cta-bar-text { flex: 1; }
+.cta-bar-title { font-family: var(--font-serif); font-size: 26px; font-weight: 300; color: var(--white); margin-bottom: 6px; }
+.cta-bar-sub { font-size: 13px; color: var(--text-muted); }
+.cta-bar-btns { display: flex; gap: 12px; flex-shrink: 0; }
+.cta-btn-primary { padding: 12px 28px; background: var(--gold); border: none; color: var(--black); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; font-family: inherit; font-weight: 600; transition: background 0.2s; text-decoration: none; display: inline-block; }
+.cta-btn-primary:hover { background: var(--gold-light); }
+.cta-btn-outline { padding: 12px 28px; background: transparent; border: 1px solid rgba(200,169,110,0.4); color: var(--gold); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; font-family: inherit; transition: all 0.2s; text-decoration: none; display: inline-block; }
+.cta-btn-outline:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
+
+@media (max-width: 900px) {
+  .navbar { padding: 0 20px; } .page-hero-content { padding: 0 24px 40px; }
+  .page-layout { flex-direction: column; padding: 0 24px; }
+  .sidebar { width: 100%; position: static; height: auto; padding: 20px 0; border-right: none; border-bottom: 1px solid rgba(200,169,110,0.1); display: flex; gap: 6px; flex-wrap: wrap; overflow-y: visible; }
+  .sidebar-section-title { display: none; } .sidebar-link { padding: 6px 10px; border: 1px solid rgba(200,169,110,0.2); border-left: 2px solid transparent; margin: 0; width: auto; white-space: nowrap; } .sidebar-cta { display: none; }
+  .main-content { padding: 32px 0 60px; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .cta-bar { flex-direction: column; padding: 28px 24px; gap: 20px; } .cta-bar-btns { width: 100%; flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo"><img src="uploads/logo-mark.png" alt="雲遊國際" style="height:30px;width:auto;vertical-align:middle;margin-right:8px;" /><span style="font-style:normal;font-weight:400;letter-spacing:0.12em;font-size:16px;">雲遊國際</span></a>
+  <span class="nav-divider">/</span>
+  <span class="nav-page-title">代辦簽證服務</span>
+  <div class="nav-spacer"></div>
+  <a href="index.html" class="nav-back">← 返回首頁</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-breadcrumb">雲遊國際 · 服務項目</div>
+    <h1 class="page-hero-title">越南電子簽證<br/><em>代辦服務</em></h1>
+  </div>
+</div>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section-title">本頁目錄</div>
+    <button class="sidebar-link active" onclick="goTo('intro')">服務說明</button>
+    <button class="sidebar-link" onclick="goTo('features')">服務特色</button>
+    <button class="sidebar-link" onclick="goTo('steps')">申辦流程</button>
+    <button class="sidebar-link" onclick="goTo('compare')">方案比較</button>
+    <button class="sidebar-link" onclick="goTo('notes')">注意事項</button>
+
+    <div class="sidebar-section-title">其他服務</div>
+    <button class="sidebar-link" onclick="location.href='service-transfer.html'">機場接送</button>
+    <button class="sidebar-link" onclick="location.href='service-charter.html'">包車服務</button>
+    <button class="sidebar-link" onclick="location.href='service-hotel.html'">訂房服務</button>
+
+    <div class="sidebar-cta">
+      <div class="sidebar-cta-title">立即辦理</div>
+      <div class="sidebar-cta-desc">護照照片一張即可開始申請，7個工作天内完成。</div>
+      <button onclick="document.getElementById('csPanel').style.display='block'" class="sidebar-cta-btn">👩‍✈️ 聯繫客服</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <section class="content-section" id="intro">
+      <div class="content-section-tag">Service Overview</div>
+      <h2 class="content-h2">服務<em>說明</em></h2>
+      <p class="content-p">雲想與越南正規簽證公司合作，提供越南電子簽證（E-Visa）代辦服務。只需提供護照照片，我們幫您處理所有申請流程，省去繁瑣手續，讓您專注在行程規劃上。</p>
+      <div class="highlight-box">
+        <strong>✦ 免手續費：</strong> 雲想代辦服務<strong>不收取任何手續費</strong>，您只需支付越南政府規定的簽證費用即可。
+      </div>
+    </section>
+
+    <div class="content-divider"></div>
+
+    <section class="content-section" id="features">
+      <div class="content-section-tag">Features</div>
+      <h2 class="content-h2">服務<em>特色</em></h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="feature-icon">📸</span>
+          <div class="feature-title">一拍即辦</div>
+          <div class="feature-desc">只需護照照片一張，其餘文件由我們代為準備，極簡流程</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <div class="feature-title">急件加速</div>
+          <div class="feature-desc">急件服務最快1個工作天出證，讓您的計劃不受影響</div>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🔒</span>
+          <div class="feature-title">安全可靠</div>
+          <div class="feature-desc">合作正規簽證公司，資料保密，核准率近100%</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="content-divider"></div>
+
+    <section class="content-section" id="steps">
+      <div class="content-section-tag">Application Process</div>
+      <h2 class="content-h2">申辦<em>流程</em></h2>
+      <div class="steps-grid">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">提供護照資料</div>
+            <div class="step-desc">透過 LINE 傳送護照照片（清晰正面），姓名拼音、出生日期、護照號碼</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">確認行程日期</div>
+            <div class="step-desc">告知入境與出境日期，單次或多次入境，以便申請正確類型的簽證</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">繳付簽證費用</div>
+            <div class="step-desc">依越南政府規定費用繳費，目前越南E-Visa費用約USD $25（費用依官方公告為準）</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">等候核發</div>
+            <div class="step-desc">一般 5–7 個工作天內完成，急件 1–3 工作天。核准後我們將電子簽證傳送給您</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-title">出發前確認</div>
+            <div class="step-desc">出發前請列印電子簽證備用，或存於手機。入境時出示護照+電子簽證即可</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="content-divider"></div>
+
+    <section class="content-section" id="compare">
+      <div class="content-section-tag">Plan Comparison</div>
+      <h2 class="content-h2">方案<em>比較</em></h2>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>自行申請</th>
+            <th>雲想代辦（一般）</th>
+            <th>雲想代辦（急件）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>處理天數</td><td>5–7 工作天</td><td>5–7 工作天</td><td>1–3 工作天</td></tr>
+          <tr><td>手續費</td><td>免費</td><td class="yes">免費</td><td>洽詢</td></tr>
+          <tr><td>語言協助</td><td class="no">✗</td><td class="yes">✓ 中文全程</td><td class="yes">✓ 中文全程</td></tr>
+          <tr><td>填表協助</td><td class="no">✗ 自行處理</td><td class="yes">✓ 代為填寫</td><td class="yes">✓ 代為填寫</td></tr>
+          <tr><td>出錯補辦</td><td class="no">✗ 自行負擔</td><td class="yes">✓ 協助補辦</td><td class="yes">✓ 優先補辦</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="content-divider"></div>
+
+    <section class="content-section" id="notes">
+      <div class="content-section-tag">Important Notes</div>
+      <h2 class="content-h2">注意<em>事項</em></h2>
+      <p class="content-p">護照效期需距離出境日期至少 <strong style="color:var(--white)">6 個月以上</strong>，否則可能無法入境越南。</p>
+      <p class="content-p">越南電子簽證目前為 <strong style="color:var(--white)">90天單次/多次入境</strong>，簽證費用依越南政府公告為準，雲想不負責費用變動。</p>
+      <div class="highlight-box">
+        <strong>⚠ 提醒：</strong> 請至少在出發前 <strong>10 個工作天</strong> 提出申請，以確保有充裕時間處理。急件雖可加速，但仍建議提早準備。
+      </div>
+    </section>
+
+    <div class="cta-bar">
+      <div class="cta-bar-text">
+        <div class="cta-bar-title">立即開始申辦</div>
+        <div class="cta-bar-sub">傳一張護照照片給我們，其餘交給雲想</div>
+      </div>
+      <div class="cta-bar-btns">
+        <button class="cta-btn-primary" onclick="document.getElementById('csPanel').style.display='block'">👩‍✈️ 聯繫客服</button>
+        <a href="index.html" class="cta-btn-outline">← 返回首頁</a>
+      </div>
+    </div>
+
+    <!-- CS Float Panel -->
+    <div id="csPanel" style="display:none;position:fixed;bottom:32px;right:32px;z-index:500;width:300px;background:#13110d;border:1px solid rgba(200,169,110,0.25);box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+      <div style="background:linear-gradient(135deg,#1c1914,#252219);border-bottom:1px solid rgba(200,169,110,0.2);padding:16px 20px;display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;border:2px solid #c8a96e;flex-shrink:0;">
+          <img src="uploads/ChatGPT Image 2026年5月1日 下午08_00_14.png" alt="Sophia" style="width:100%;height:100%;object-fit:cover;object-position:center top;" onerror="this.parentNode.innerHTML='👩&#8203;✈️'">
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:500;color:#f5f0e8">Sophia · 禮賓專員</div>
+          <div style="font-size:10px;letter-spacing:0.1em;color:#c8a96e;text-transform:uppercase">🟢 線上服務中</div>
+        </div>
+        <button onclick="document.getElementById('csPanel').style.display='none'" style="background:none;border:none;color:#9a9080;cursor:pointer;font-size:18px;line-height:1;">×</button>
+      </div>
+      <div style="padding:12px;">
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(200,169,110,0.1);background:#1c1914;text-decoration:none;margin-bottom:6px;">
+          <span style="font-size:14px;width:22px;text-align:center">💬</span><div><div style="font-size:12px;color:#f5f0e8">LINE 即時諮詢</div><div style="font-size:10px;color:#9a9080">@yunxiang_travel</div></div></a>
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(200,169,110,0.1);background:#1c1914;text-decoration:none;margin-bottom:6px;">
+          <span style="font-size:14px;width:22px;text-align:center">📱</span><div><div style="font-size:12px;color:#f5f0e8">WhatsApp</div><div style="font-size:10px;color:#9a9080">+886 2 1234 5678</div></div></a>
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(200,169,110,0.1);background:#1c1914;text-decoration:none;margin-bottom:6px;">
+          <span style="font-size:14px;width:22px;text-align:center">✈️</span><div><div style="font-size:12px;color:#f5f0e8">Telegram</div><div style="font-size:10px;color:#9a9080">@yunxiang_cs</div></div></a>
+        <a href="tel:0800123456" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(200,169,110,0.1);background:#1c1914;text-decoration:none;">
+          <span style="font-size:14px;width:22px;text-align:center">📞</span><div><div style="font-size:12px;color:#f5f0e8">客服電話</div><div style="font-size:10px;color:#9a9080">0800-123-456（免費）</div></div></a>
+      </div>
+      <div style="padding:10px 12px;border-top:1px solid rgba(200,169,110,0.1);text-align:center;font-size:10px;color:#9a9080">服務時間 09:00–22:00 (GMT+8)</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function goTo(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+const sections = ['intro','features','steps','compare','notes'];
+window.addEventListener('scroll', () => {
+  let cur = sections[0];
+  sections.forEach(id => { const el = document.getElementById(id); if (el && window.scrollY >= el.offsetTop - 100) cur = id; });
+  document.querySelectorAll('.sidebar-link').forEach(l => { l.classList.remove('active'); if (l.getAttribute('onclick')?.includes(cur)) l.classList.add('active'); });
+});
+</script>
+</body>
+</html>

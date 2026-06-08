@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常見問題 — 雲遊後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="_admin.js"></script>
+</head>
+<body>
+<main class="admin-main">
+  <h1 class="page-title">常見問題管理</h1>
+  <div class="toolbar">
+    <button class="btn-primary toolbar-right" onclick="openPanel()">＋ 新增問題</button>
+  </div>
+  <table class="adm-table">
+    <thead><tr><th>#</th><th>問題</th><th>排序</th><th></th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</main>
+
+<div id="panel-overlay" class="panel-overlay" style="display:none;" onclick="closePanel(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-title">
+      <span id="panel-heading">新增問題</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">問題 *</label>
+      <input id="f-q" class="adm-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">回答</label>
+      <textarea id="f-a" class="adm-textarea" style="min-height:120px;"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">排序</label>
+      <input id="f-sort" class="adm-input" type="number" value="0">
+    </div>
+    <div class="panel-actions">
+      <button class="btn-danger" id="btn-delete" onclick="doDelete()" style="margin-right:auto;display:none;">刪除</button>
+      <button class="btn-ghost" onclick="closePanel()">取消</button>
+      <button class="btn-primary" onclick="doSave()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let rows=[], editId=null;
+(async()=>{ const s=await requireAuth(); if(!s)return; injectSidebar(s); await load(); })();
+
+async function load(){ const{data}=await sb.from('faqs').select('*').order('sort_order'); rows=data||[]; render(); }
+
+function render(){
+  const tbody=document.getElementById('tbody'); tbody.innerHTML='';
+  rows.forEach((r,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td style="color:var(--muted);">${i+1}</td><td style="font-weight:500;max-width:320px;">${r.question}</td><td style="color:var(--muted);">${r.sort_order}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel(${r.id})">編輯</button></td>`; tbody.appendChild(tr); });
+}
+
+function openPanel(id){ editId=id||null; const r=id?rows.find(x=>x.id===id):null; document.getElementById('panel-heading').textContent=r?'編輯問題':'新增問題'; document.getElementById('f-q').value=r?.question||''; document.getElementById('f-a').value=r?.answer||''; document.getElementById('f-sort').value=r?.sort_order??0; document.getElementById('btn-delete').style.display=r?'inline-block':'none'; document.getElementById('panel-overlay').style.display='flex'; }
+function closePanel(e){ if(e&&e.target!==document.getElementById('panel-overlay'))return; document.getElementById('panel-overlay').style.display='none'; }
+
+async function doSave(){ const q=document.getElementById('f-q').value.trim(); if(!q){toast('問題為必填','error');return;} const payload={question:q,answer:document.getElementById('f-a').value.trim()||null,sort_order:parseInt(document.getElementById('f-sort').value)||0}; const{error}=editId?await sb.from('faqs').update(payload).eq('id',editId):await sb.from('faqs').insert(payload); if(error){toast('儲存失敗：'+error.message,'error');return;} toast('已儲存'); document.getElementById('panel-overlay').style.display='none'; await load(); }
+async function doDelete(){ if(!confirm2('確定刪除？'))return; const{error}=await sb.from('faqs').delete().eq('id',editId); if(error){toast('刪除失敗','error');return;} toast('已刪除'); document.getElementById('panel-overlay').style.display='none'; await load(); }
+</script>
+</body>
+</html>

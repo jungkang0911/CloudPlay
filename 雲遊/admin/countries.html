@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國家管理 — 雲遊後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="_admin.js"></script>
+</head>
+<body>
+<main class="admin-main">
+  <h1 class="page-title">國家管理</h1>
+  <div class="toolbar">
+    <button class="btn-primary" onclick="openPanel()">＋ 新增國家</button>
+  </div>
+  <table class="adm-table">
+    <thead>
+      <tr>
+        <th>旗幟</th><th>代碼</th><th>名稱</th><th>樂遊標題</th><th>排序</th><th></th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</main>
+
+<!-- 側邊編輯 Panel -->
+<div id="panel-overlay" class="panel-overlay" style="display:none;" onclick="closePanel(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-title">
+      <span id="panel-heading">新增國家</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">國家代碼 *</label>
+        <input id="f-code" class="adm-input" placeholder="e.g. vn">
+      </div>
+      <div class="form-group">
+        <label class="form-label">旗幟 Emoji</label>
+        <input id="f-flag" class="adm-input" placeholder="e.g. 🇻🇳">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">國家名稱 *</label>
+      <input id="f-name" class="adm-input" placeholder="e.g. 越南">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Banner 圖片 URL</label>
+      <input id="f-banner" class="adm-input" placeholder="https://...">
+      <div id="f-banner-preview" style="margin-top:8px;"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">樂遊 XX 標題（feature 卡大字）</label>
+      <input id="f-feature-title" class="adm-input" placeholder="e.g. 樂遊越南">
+    </div>
+    <div class="form-group">
+      <label class="form-label">樂遊 XX 副標</label>
+      <input id="f-feature-sub" class="adm-input" placeholder="e.g. 盡覽南越風華">
+    </div>
+    <div class="form-group">
+      <label class="form-label">排序（數字小的排前面）</label>
+      <input id="f-sort" class="adm-input" type="number" value="0">
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn-danger" id="btn-delete" onclick="doDelete()" style="margin-right:auto;display:none;">刪除</button>
+      <button class="btn-ghost" onclick="closePanel()">取消</button>
+      <button class="btn-primary" onclick="doSave()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let rows = [];
+let editCode = null;
+
+(async () => {
+  const session = await requireAuth();
+  if (!session) return;
+  injectSidebar(session);
+  await loadRows();
+})();
+
+async function loadRows() {
+  const { data, error } = await sb.from('countries').select('*').order('sort_order').order('name');
+  if (error) { toast('載入失敗', 'error'); return; }
+  rows = data;
+  renderTable();
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-size:22px;">${r.flag || '—'}</td>
+      <td><span class="badge badge-muted">${r.code}</span></td>
+      <td style="font-weight:500;">${r.name}</td>
+      <td style="color:var(--muted);">${r.feature_title || '—'}</td>
+      <td style="color:var(--muted);">${r.sort_order}</td>
+      <td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel('${r.code}')">編輯</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function openPanel(code) {
+  editCode = code || null;
+  const r = code ? rows.find(x => x.code === code) : null;
+  document.getElementById('panel-heading').textContent = r ? '編輯國家' : '新增國家';
+  document.getElementById('f-code').value         = r?.code         || '';
+  document.getElementById('f-code').disabled      = !!r;
+  document.getElementById('f-flag').value         = r?.flag         || '';
+  document.getElementById('f-name').value         = r?.name         || '';
+  document.getElementById('f-banner').value       = r?.banner_img   || '';
+  document.getElementById('f-feature-title').value = r?.feature_title || '';
+  document.getElementById('f-feature-sub').value  = r?.feature_sub  || '';
+  document.getElementById('f-sort').value         = r?.sort_order   ?? 0;
+  document.getElementById('btn-delete').style.display = r ? 'inline-block' : 'none';
+  previewBanner(r?.banner_img || '');
+  document.getElementById('panel-overlay').style.display = 'flex';
+}
+
+function closePanel(e) {
+  if (e && e.target !== document.getElementById('panel-overlay')) return;
+  document.getElementById('panel-overlay').style.display = 'none';
+}
+
+document.getElementById('f-banner').addEventListener('input', e => previewBanner(e.target.value));
+function previewBanner(url) {
+  const el = document.getElementById('f-banner-preview');
+  el.innerHTML = url ? `<img src="${url}" style="max-width:100%;max-height:120px;border-radius:4px;border:1px solid var(--border);" onerror="this.style.display='none'">` : '';
+}
+
+async function doSave() {
+  const code = document.getElementById('f-code').value.trim().toLowerCase();
+  const name = document.getElementById('f-name').value.trim();
+  if (!code || !name) { toast('代碼與名稱為必填', 'error'); return; }
+
+  const payload = {
+    code,
+    name,
+    flag:          document.getElementById('f-flag').value.trim(),
+    banner_img:    document.getElementById('f-banner').value.trim() || null,
+    feature_title: document.getElementById('f-feature-title').value.trim() || null,
+    feature_sub:   document.getElementById('f-feature-sub').value.trim()   || null,
+    sort_order:    parseInt(document.getElementById('f-sort').value) || 0,
+  };
+
+  const { error } = editCode
+    ? await sb.from('countries').update(payload).eq('code', editCode)
+    : await sb.from('countries').insert(payload);
+
+  if (error) { toast('儲存失敗：' + error.message, 'error'); return; }
+  toast('已儲存');
+  document.getElementById('panel-overlay').style.display = 'none';
+  await loadRows();
+}
+
+async function doDelete() {
+  if (!confirm2(`確定刪除「${editCode}」？相關城市與分類也會一併刪除。`)) return;
+  const { error } = await sb.from('countries').delete().eq('code', editCode);
+  if (error) { toast('刪除失敗：' + error.message, 'error'); return; }
+  toast('已刪除');
+  document.getElementById('panel-overlay').style.display = 'none';
+  await loadRows();
+}
+</script>
+</body>
+</html>

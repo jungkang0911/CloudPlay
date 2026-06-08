@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>匯率管理 — 雲遊後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="_admin.js"></script>
+</head>
+<body>
+<main class="admin-main">
+  <h1 class="page-title">匯率管理</h1>
+  <div class="toolbar">
+    <button class="btn-primary toolbar-right" onclick="openPanel()">＋ 新增幣別</button>
+  </div>
+  <table class="adm-table">
+    <thead><tr><th>代碼</th><th>符號</th><th>名稱</th><th>匯率（對 NTD）</th><th>進位</th><th></th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</main>
+
+<div id="panel-overlay" class="panel-overlay" style="display:none;" onclick="closePanel(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-title">
+      <span id="panel-heading">新增幣別</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">代碼 *</label>
+        <input id="f-code" class="adm-input" placeholder="e.g. VND">
+      </div>
+      <div class="form-group">
+        <label class="form-label">符號</label>
+        <input id="f-symbol" class="adm-input" placeholder="e.g. ₫">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">名稱</label>
+      <input id="f-label" class="adm-input" placeholder="e.g. 越南盾">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">匯率（1 NTD = ? 外幣）</label>
+        <input id="f-rate" class="adm-input" type="number" step="0.0001">
+      </div>
+      <div class="form-group">
+        <label class="form-label">進位單位</label>
+        <input id="f-round" class="adm-input" type="number" value="1" placeholder="e.g. 1000">
+      </div>
+    </div>
+    <div class="panel-actions">
+      <button class="btn-danger" id="btn-delete" onclick="doDelete()" style="margin-right:auto;display:none;">刪除</button>
+      <button class="btn-ghost" onclick="closePanel()">取消</button>
+      <button class="btn-primary" onclick="doSave()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let rows=[], editCode=null;
+(async()=>{ const s=await requireAuth(); if(!s)return; injectSidebar(s); await load(); })();
+
+async function load(){ const{data}=await sb.from('currencies').select('*').order('code'); rows=data||[]; render(); }
+
+function render(){
+  const tbody=document.getElementById('tbody'); tbody.innerHTML='';
+  rows.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td><span class="badge badge-muted">${r.code}</span></td><td style="font-size:18px;">${r.symbol||'—'}</td><td style="font-weight:500;">${r.label||'—'}</td><td style="color:var(--gold);">${r.rate}</td><td style="color:var(--muted);">${r.round_to}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel('${r.code}')">編輯</button></td>`; tbody.appendChild(tr); });
+}
+
+function openPanel(code){ editCode=code||null; const r=code?rows.find(x=>x.code===code):null; document.getElementById('panel-heading').textContent=r?'編輯幣別':'新增幣別'; document.getElementById('f-code').value=r?.code||''; document.getElementById('f-code').disabled=!!r; document.getElementById('f-symbol').value=r?.symbol||''; document.getElementById('f-label').value=r?.label||''; document.getElementById('f-rate').value=r?.rate??''; document.getElementById('f-round').value=r?.round_to??1; document.getElementById('btn-delete').style.display=r?'inline-block':'none'; document.getElementById('panel-overlay').style.display='flex'; }
+function closePanel(e){ if(e&&e.target!==document.getElementById('panel-overlay'))return; document.getElementById('panel-overlay').style.display='none'; }
+
+async function doSave(){ const code=document.getElementById('f-code').value.trim().toUpperCase(); if(!code){toast('代碼為必填','error');return;} const payload={code,symbol:document.getElementById('f-symbol').value.trim()||null,label:document.getElementById('f-label').value.trim()||null,rate:parseFloat(document.getElementById('f-rate').value)||0,round_to:parseInt(document.getElementById('f-round').value)||1}; const{error}=editCode?await sb.from('currencies').update(payload).eq('code',editCode):await sb.from('currencies').insert(payload); if(error){toast('儲存失敗：'+error.message,'error');return;} toast('已儲存'); document.getElementById('panel-overlay').style.display='none'; await load(); }
+async function doDelete(){ if(!confirm2('確定刪除？'))return; const{error}=await sb.from('currencies').delete().eq('code',editCode); if(error){toast('刪除失敗','error');return;} toast('已刪除'); document.getElementById('panel-overlay').style.display='none'; await load(); }
+</script>
+</body>
+</html>

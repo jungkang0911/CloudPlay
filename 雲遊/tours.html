@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>店家總覽 · 雲遊國際</title>
+<meta name="description" content="雲遊國際嚴選在地店家：景點、餐廳、咖啡、按摩、桑拿、酒吧、KTV、夜店，依城市與分類快速尋找。" />
+<template id="__bundler_thumbnail" data-bg-color="#0a0906">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#0a0906"/>
+    <g stroke="#c8a96e" stroke-width="3" fill="none">
+      <rect x="300" y="240" width="600" height="320" />
+      <line x1="300" y1="340" x2="900" y2="340" />
+      <line x1="500" y1="240" x2="500" y2="560" />
+      <line x1="700" y1="240" x2="700" y2="560" />
+    </g>
+    <text x="600" y="180" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="68" fill="#c8a96e" font-weight="300">雲遊國際</text>
+    <text x="600" y="660" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#9a9080" letter-spacing="8">LOCAL DIRECTORY</text>
+  </svg>
+</template>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c8a96e;
+  --gold-light: #e2c98a;
+  --gold-dim: #a08040;
+  --black: #0a0906;
+  --black2: #13110d;
+  --black3: #1c1914;
+  --black4: #252219;
+  --white: #f5f0e8;
+  --white2: #ede5d5;
+  --text-muted: #9a9080;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Noto Sans TC', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--black); color: var(--white); font-family: var(--font-sans); font-weight: 300; overflow-x: hidden; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black2); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+button { font-family: inherit; }
+a { color: inherit; }
+
+/* ── Navbar ── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10,9,6,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200,169,110,0.15);
+  height: 60px;
+  display: flex; align-items: center;
+  padding: 0 40px; gap: 20px;
+}
+.nav-logo {
+  font-family: var(--font-serif);
+  font-size: 22px; font-weight: 300; font-style: italic;
+  color: var(--gold); cursor: pointer; text-decoration: none;
+  letter-spacing: 0.08em; flex-shrink: 0;
+  display: flex; align-items: center;
+}
+.nav-logo img { height: 30px; width: auto; margin-right: 8px; }
+.nav-logo span { font-style: normal; font-weight: 400; letter-spacing: 0.12em; font-size: 16px; }
+.nav-divider { color: rgba(200,169,110,0.3); font-size: 14px; }
+.nav-page-title {
+  font-size: 12px; letter-spacing: 0.1em;
+  color: var(--text-muted); text-transform: uppercase;
+}
+.nav-spacer { flex: 1; }
+.nav-back {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; letter-spacing: 0.1em; color: var(--gold);
+  text-transform: uppercase; cursor: pointer;
+  background: none; font-family: inherit;
+  padding: 6px 14px; border: 1px solid rgba(200,169,110,0.3);
+  transition: all 0.2s; text-decoration: none;
+  white-space: nowrap; flex-shrink: 0;
+}
+.nav-back:hover { background: rgba(200,169,110,0.06); border-color: var(--gold); }
+
+/* ── Hero (compact) ── */
+.page-hero {
+  margin-top: 60px;
+  position: relative; overflow: hidden;
+  padding: 56px 0 28px;
+}
+.page-hero-bg {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10,9,6,0.55) 0%, rgba(10,9,6,0.95) 100%),
+    url('uploads/banner-vietnam.png');
+  background-size: cover; background-position: center;
+  filter: saturate(0.55);
+}
+.page-hero-content {
+  position: relative; z-index: 1;
+  padding: 0 60px;
+  max-width: 1400px; width: 100%; margin: 0 auto;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; letter-spacing: 0.12em;
+  color: var(--text-muted); text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--gold); }
+.breadcrumb-sep { color: var(--gold-dim); }
+.breadcrumb .current { color: var(--gold); }
+.page-hero-tag {
+  font-size: 10px; letter-spacing: 0.25em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.page-hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 4vw, 46px);
+  font-weight: 300; color: var(--white); line-height: 1.1;
+  margin-bottom: 10px;
+}
+.page-hero-title em { color: var(--gold); font-style: italic; }
+.page-hero-sub {
+  font-size: 13px; color: var(--white2); line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ── Filter Bar ── */
+.filter-wrap {
+  position: sticky; top: 60px; z-index: 50;
+  background: rgba(19,17,13,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200,169,110,0.12);
+}
+.filter-row {
+  max-width: 1400px; margin: 0 auto;
+  padding: 14px 60px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+}
+.filter-row + .filter-row {
+  border-top: 1px dashed rgba(200,169,110,0.08);
+}
+.filter-label {
+  font-size: 10px; letter-spacing: 0.25em; color: var(--gold);
+  text-transform: uppercase; margin-right: 8px; flex-shrink: 0;
+  min-width: 56px;
+}
+.filter-chip {
+  font-size: 12px; letter-spacing: 0.06em;
+  padding: 6px 14px;
+  border: 1px solid rgba(200,169,110,0.22);
+  color: var(--text-muted); background: transparent;
+  cursor: pointer; transition: all 0.18s;
+  font-family: inherit;
+  white-space: nowrap; flex-shrink: 0;
+}
+.filter-chip:hover { color: var(--gold); border-color: rgba(200,169,110,0.55); }
+.filter-chip.active { background: var(--gold); color: var(--black); border-color: var(--gold); font-weight: 500; }
+.filter-count { font-size: 11px; color: var(--text-muted); margin-left: auto; letter-spacing: 0.04em; flex-shrink: 0; white-space: nowrap; }
+.filter-count strong { color: var(--gold); font-weight: 400; font-family: var(--font-serif); font-size: 16px; }
+
+/* ── Catalog ── */
+.catalog {
+  max-width: 1400px; margin: 0 auto;
+  padding: 36px 60px 40px;
+}
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.venue-card {
+  background: var(--black2);
+  border: 1px solid rgba(200,169,110,0.12);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  text-decoration: none; color: inherit;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.venue-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(200,169,110,0.5);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.5);
+}
+
+.venue-img {
+  width: 100%; aspect-ratio: 4/3;
+  background-size: cover; background-position: center;
+  position: relative; overflow: hidden;
+}
+.venue-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(10,9,6,0) 55%, rgba(10,9,6,0.85) 100%);
+  pointer-events: none;
+}
+.venue-img.placeholder {
+  background:
+    linear-gradient(135deg, var(--bg-from, #1a0f06) 0%, var(--bg-to, #2d1e0a) 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.venue-img.placeholder .ph-glyph {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: 48px; color: rgba(200,169,110,0.22);
+  line-height: 1; position: relative; z-index: 1;
+}
+.venue-img.placeholder::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(200,169,110,0.04) 8px, rgba(200,169,110,0.04) 16px);
+}
+
+.venue-cat {
+  position: absolute; top: 12px; left: 12px;
+  font-size: 10px; letter-spacing: 0.18em;
+  color: var(--gold);
+  background: rgba(10,9,6,0.82);
+  border: 1px solid rgba(200,169,110,0.4);
+  padding: 4px 10px;
+  text-transform: uppercase;
+  backdrop-filter: blur(4px);
+  z-index: 1;
+}
+.venue-flag {
+  position: absolute; top: 12px; right: 12px;
+  font-size: 9px; letter-spacing: 0.12em;
+  color: var(--black);
+  background: var(--gold);
+  padding: 4px 9px;
+  font-weight: 600; text-transform: uppercase;
+  z-index: 1;
+}
+.venue-flag.muted {
+  background: var(--black3);
+  color: var(--gold-light);
+  border: 1px solid rgba(200,169,110,0.35);
+}
+
+.venue-body {
+  padding: 18px 20px 20px;
+  display: flex; flex-direction: column; flex: 1;
+}
+.venue-loc {
+  font-size: 10px; letter-spacing: 0.18em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 5px;
+}
+.venue-loc svg { width: 9px; height: 9px; }
+.venue-title {
+  font-family: var(--font-serif);
+  font-size: 22px; font-weight: 400;
+  color: var(--white); line-height: 1.25;
+  margin-bottom: 8px;
+}
+.venue-title em { color: var(--gold); font-style: italic; }
+.venue-desc {
+  font-size: 12px; color: var(--text-muted);
+  line-height: 1.7;
+  text-wrap: pretty;
+  margin-bottom: 14px;
+  flex: 1;
+}
+.venue-foot {
+  margin-top: auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid rgba(200,169,110,0.1);
+  gap: 12px;
+}
+.venue-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.venue-tag-chip {
+  font-size: 10px; letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: rgba(200,169,110,0.06);
+  padding: 3px 8px;
+}
+.venue-arrow {
+  font-size: 11px; letter-spacing: 0.15em;
+  color: var(--gold); text-transform: uppercase;
+  display: flex; align-items: center; gap: 5px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.venue-card:hover .venue-arrow-glyph { transform: translateX(3px); }
+.venue-arrow-glyph { transition: transform 0.25s; }
+
+/* Section heading */
+.section-heading {
+  display: flex; align-items: baseline; gap: 16px;
+  margin-bottom: 24px;
+}
+.section-heading-tag {
+  font-size: 10px; letter-spacing: 0.25em; color: var(--gold);
+  text-transform: uppercase;
+}
+.section-heading-title {
+  font-family: var(--font-serif);
+  font-size: 22px; font-weight: 300; color: var(--white);
+}
+.section-heading-title em { color: var(--gold); font-style: italic; }
+.section-heading-spacer { flex: 1; height: 1px; background: rgba(200,169,110,0.1); }
+
+/* Empty state */
+.empty-state {
+  padding: 80px 20px; text-align: center; color: var(--text-muted);
+  font-size: 14px; grid-column: 1 / -1;
+  border: 1px dashed rgba(200,169,110,0.18);
+}
+.empty-state-glyph {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: 56px; color: var(--gold-dim); margin-bottom: 12px;
+  display: block; line-height: 1;
+}
+
+/* Custom CTA bar */
+.cta-bar {
+  background: linear-gradient(135deg, var(--black3), var(--black4));
+  border: 1px solid rgba(200,169,110,0.2);
+  padding: 30px 36px;
+  display: flex; align-items: center; gap: 28px;
+  margin: 48px auto 0;
+  max-width: 1280px;
+}
+.cta-bar-text { flex: 1; }
+.cta-bar-tag {
+  font-size: 10px; letter-spacing: 0.25em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.cta-bar-title {
+  font-family: var(--font-serif); font-size: 24px; font-weight: 300;
+  color: var(--white); margin-bottom: 4px; line-height: 1.25;
+}
+.cta-bar-title em { color: var(--gold); font-style: italic; }
+.cta-bar-sub { font-size: 12px; color: var(--text-muted); line-height: 1.7; max-width: 540px; }
+.cta-bar-btns { display: flex; gap: 10px; flex-shrink: 0; }
+.cta-btn-primary {
+  padding: 11px 24px; background: var(--gold); border: none;
+  color: var(--black); font-size: 11px; letter-spacing: 0.15em;
+  text-transform: uppercase; cursor: pointer; font-family: inherit;
+  font-weight: 600; transition: background 0.2s; text-decoration: none;
+  display: inline-block;
+}
+.cta-btn-primary:hover { background: var(--gold-light); }
+.cta-btn-outline {
+  padding: 11px 24px; background: transparent;
+  border: 1px solid rgba(200,169,110,0.4);
+  color: var(--gold); font-size: 11px; letter-spacing: 0.15em;
+  text-transform: uppercase; cursor: pointer; font-family: inherit;
+  transition: all 0.2s; text-decoration: none; display: inline-block;
+}
+.cta-btn-outline:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
+
+/* Footer note */
+.foot-note {
+  text-align: center; padding: 32px 24px 56px;
+  font-size: 11px; color: var(--text-muted);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+
+/* Mobile */
+@media (max-width: 1200px) {
+  .catalog-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+  .filter-row { padding: 12px 24px; }
+  .catalog { padding: 28px 24px; }
+  .page-hero-content { padding: 0 24px; }
+}
+@media (max-width: 640px) {
+  .navbar { padding: 0 20px; }
+  .catalog-grid { grid-template-columns: 1fr; }
+  .cta-bar { flex-direction: column; padding: 24px 22px; gap: 16px; align-items: flex-start; }
+  .cta-bar-btns { width: 100%; }
+  .cta-btn-primary, .cta-btn-outline { flex: 1; text-align: center; }
+  .filter-label { min-width: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="uploads/logo-mark.png" alt="雲遊國際" />
+    <span>雲遊國際</span>
+  </a>
+  <span class="nav-divider">/</span>
+  <span class="nav-page-title">店家總覽</span>
+  <div class="nav-spacer"></div>
+  <a href="index.html" class="nav-back">← 返回首頁</a>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-content">
+    <div class="breadcrumb">
+      <a href="index.html">首頁</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="current">店家總覽</span>
+    </div>
+    <div class="page-hero-tag">Curated Local Venues</div>
+    <h1 class="page-hero-title">在地<em>嚴選店家</em></h1>
+    <p class="page-hero-sub">
+      雲遊國際團隊親自踩線，篩出每座城市最值得走一趟的店。挑城市、選分類，剩下交給我們。
+    </p>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-wrap">
+  <div class="filter-row">
+    <span class="filter-label">城市</span>
+    <button class="filter-chip active" data-city="all">全部</button>
+    <button class="filter-chip" data-city="hcm">胡志明</button>
+    <button class="filter-chip" data-city="han">河內</button>
+    <button class="filter-chip" data-city="dng">峴港</button>
+    <button class="filter-chip" data-city="nht">芽莊</button>
+    <button class="filter-chip" data-city="pqu">富國島</button>
+    <button class="filter-chip" data-city="hlb">下龍灣</button>
+    <button class="filter-chip" data-city="bkk">曼谷</button>
+    <button class="filter-chip" data-city="tpe">台北</button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">分類</span>
+    <button class="filter-chip active" data-cat="all">全部</button>
+    <button class="filter-chip" data-cat="sight">景點介紹</button>
+    <button class="filter-chip" data-cat="dine">餐廳飯店</button>
+    <button class="filter-chip" data-cat="cafe">咖啡廳</button>
+    <button class="filter-chip" data-cat="spa">按摩 SPA</button>
+    <button class="filter-chip" data-cat="sauna">桑拿</button>
+    <button class="filter-chip" data-cat="bar">酒吧</button>
+    <button class="filter-chip" data-cat="ktv">KTV</button>
+    <button class="filter-chip" data-cat="club">夜店</button>
+    <span class="filter-count">共 <strong id="venueCount">0</strong> 家店</span>
+  </div>
+</div>
+
+<!-- Catalog -->
+<main class="catalog">
+
+  <div class="section-heading">
+    <span class="section-heading-tag">Discover</span>
+    <h2 class="section-heading-title">所有<em>店家</em></h2>
+    <span class="section-heading-spacer"></span>
+  </div>
+
+  <div class="catalog-grid" id="venueGrid">
+
+    <!-- ── 胡志明 Ho Chi Minh ── -->
+
+    <a href="content-page.html#v-hcm-ktv-royal" class="venue-card" data-city="hcm" data-cat="ktv">
+      <div class="venue-img placeholder" style="--bg-from:#1a0a06; --bg-to:#2d1408;">
+        <span class="ph-glyph">Royal</span>
+        <span class="venue-cat">KTV</span>
+        <span class="venue-flag">人氣</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 胡志明 · 第一郡</div>
+        <h3 class="venue-title">皇家殿堂 <em>Royal Palace</em></h3>
+        <p class="venue-desc">第一郡指標性的高端 KTV，挑高包廂、現場樂團駐唱，是接待商務貴賓的首選。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">高端</span>
+            <span class="venue-tag-chip">中文服務</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-hcm-spa-jade" class="venue-card" data-city="hcm" data-cat="spa">
+      <div class="venue-img placeholder" style="--bg-from:#0e1814; --bg-to:#15281f;">
+        <span class="ph-glyph">Jade Spa</span>
+        <span class="venue-cat">SPA</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 胡志明 · 第三郡</div>
+        <h3 class="venue-title">翡翠 <em>Jade Spa</em></h3>
+        <p class="venue-desc">越式古法精油按摩，獨立 VIP 房型，全程提供中文流程說明。在地老司機常客名單。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">精油</span>
+            <span class="venue-tag-chip">VIP 房</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-hcm-sauna-lotus" class="venue-card" data-city="hcm" data-cat="sauna">
+      <div class="venue-img placeholder" style="--bg-from:#180c0c; --bg-to:#2a1818;">
+        <span class="ph-glyph">Lotus</span>
+        <span class="venue-cat">桑拿</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 胡志明 · 第五郡</div>
+        <h3 class="venue-title">白蓮宮 <em>White Lotus</em></h3>
+        <p class="venue-desc">老字號桑拿會館，乾濕分區、香薰蒸氣房一應俱全。週末記得提早預約。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">老字號</span>
+            <span class="venue-tag-chip">會員制</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-hcm-bar-lush" class="venue-card" data-city="hcm" data-cat="bar">
+      <div class="venue-img placeholder" style="--bg-from:#0a0a18; --bg-to:#14142a;">
+        <span class="ph-glyph">Lush</span>
+        <span class="venue-cat">酒吧</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 胡志明 · 第一郡</div>
+        <h3 class="venue-title">Lush <em>Saigon</em></h3>
+        <p class="venue-desc">十年老牌 Lounge Bar，DJ 派對與經典調酒並重，外國旅人聚會熱點。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">DJ</span>
+            <span class="venue-tag-chip">輕食</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-hcm-cafe-den" class="venue-card" data-city="hcm" data-cat="cafe">
+      <div class="venue-img placeholder" style="--bg-from:#1a1408; --bg-to:#2d220e;">
+        <span class="ph-glyph">Cafe Đèn</span>
+        <span class="venue-cat">咖啡廳</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 胡志明 · 第二郡</div>
+        <h3 class="venue-title">Cafe <em>Đèn Vàng</em></h3>
+        <p class="venue-desc">藏在老法式公寓裡的越式咖啡館。煉乳咖啡、椰子冰沙與西貢河景。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">河景</span>
+            <span class="venue-tag-chip">越式咖啡</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-hcm-dine-hongvan" class="venue-card" data-city="hcm" data-cat="dine">
+      <div class="venue-img placeholder" style="--bg-from:#180a00; --bg-to:#2a1408;">
+        <span class="ph-glyph">鴻運</span>
+        <span class="venue-cat">餐廳</span>
+        <span class="venue-flag">主廚推薦</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 胡志明 · 第一郡</div>
+        <h3 class="venue-title">鴻運海鮮 <em>Hồng Vân</em></h3>
+        <p class="venue-desc">當地公認最強海鮮酒樓，活體龍蝦、清蒸大魚、椰汁河粉。包廂可容十人以上。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">海鮮</span>
+            <span class="venue-tag-chip">適合宴客</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-hcm-club-envy" class="venue-card" data-city="hcm" data-cat="club">
+      <div class="venue-img placeholder" style="--bg-from:#160818; --bg-to:#241028;">
+        <span class="ph-glyph">Envy</span>
+        <span class="venue-cat">夜店</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 胡志明 · 第一郡</div>
+        <h3 class="venue-title">Envy <em>Club</em></h3>
+        <p class="venue-desc">西貢夜生活地標。國際 DJ 駐場，預訂卡座建議至少提前一週。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">EDM</span>
+            <span class="venue-tag-chip">卡座預訂</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-hcm-sight-bui" class="venue-card" data-city="hcm" data-cat="sight">
+      <div class="venue-img" style="background-image: linear-gradient(180deg, rgba(10,9,6,0) 50%, rgba(10,9,6,0.7) 100%), url('uploads/banner-vietnam.png');">
+        <span class="venue-cat">景點</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 胡志明 · 第一郡</div>
+        <h3 class="venue-title">范五老街 <em>Bùi Viện</em></h3>
+        <p class="venue-desc">西貢最熱鬧的夜街，整條街是露天酒吧、街頭小吃與燈火霓虹。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">夜遊</span>
+            <span class="venue-tag-chip">徒步</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ── 河內 Hanoi ── -->
+
+    <a href="content-page.html#v-han-sight-hk" class="venue-card" data-city="han" data-cat="sight">
+      <div class="venue-img placeholder" style="--bg-from:#0a1614; --bg-to:#10261e;">
+        <span class="ph-glyph">Hồ Gươm</span>
+        <span class="venue-cat">景點</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 河內 · 還劍郡</div>
+        <h3 class="venue-title">還劍湖 <em>Hoàn Kiếm</em></h3>
+        <p class="venue-desc">河內城市核心，清晨打太極、傍晚漫步紅橋與龜塔。周邊三十六古街值得花一整天。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">市中心</span>
+            <span class="venue-tag-chip">免費</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-han-dine-pho" class="venue-card" data-city="han" data-cat="dine">
+      <div class="venue-img placeholder" style="--bg-from:#1a0e06; --bg-to:#2a1a10;">
+        <span class="ph-glyph">Phở Gia</span>
+        <span class="venue-cat">餐廳</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 河內 · 還劍郡</div>
+        <h3 class="venue-title">Phở Gia <em>Truyền</em></h3>
+        <p class="venue-desc">在地人公認最強河粉。每天只開幾小時，去晚了就完售。湯頭清澈、牛肉現切。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">河粉</span>
+            <span class="venue-tag-chip">在地</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-han-cafe-giang" class="venue-card" data-city="han" data-cat="cafe">
+      <div class="venue-img placeholder" style="--bg-from:#1c1408; --bg-to:#2e220e;">
+        <span class="ph-glyph">Giảng</span>
+        <span class="venue-cat">咖啡廳</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 河內 · 還劍郡</div>
+        <h3 class="venue-title">Cafe <em>Giảng</em></h3>
+        <p class="venue-desc">蛋咖啡創始店，1946 年至今。順著窄樓梯爬上去，就是河內最濃郁的一杯。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">蛋咖啡</span>
+            <span class="venue-tag-chip">老店</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ── 峴港 Da Nang ── -->
+
+    <a href="content-page.html#v-dng-sight-myk" class="venue-card" data-city="dng" data-cat="sight">
+      <div class="venue-img placeholder" style="--bg-from:#0a1a1c; --bg-to:#102a30;">
+        <span class="ph-glyph">Mỹ Khê</span>
+        <span class="venue-cat">景點</span>
+        <span class="venue-flag">熱門</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 峴港 · 山茶半島</div>
+        <h3 class="venue-title">美溪 <em>海灘</em></h3>
+        <p class="venue-desc">世界最美海灘之一，細白沙、藍綠海。日出最佳觀賞點，傍晚海風與椰子水。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">海灘</span>
+            <span class="venue-tag-chip">日出</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-dng-dine-lan" class="venue-card" data-city="dng" data-cat="dine">
+      <div class="venue-img placeholder" style="--bg-from:#1a0e0a; --bg-to:#2a1e14;">
+        <span class="ph-glyph">Madame Lân</span>
+        <span class="venue-cat">餐廳</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 峴港 · 海洲郡</div>
+        <h3 class="venue-title">Madame <em>Lân</em></h3>
+        <p class="venue-desc">江景殖民風老別墅，越南三大料理 200 道菜一次點齊。第一次到峴港必訪。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">江景</span>
+            <span class="venue-tag-chip">經典菜</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ── 芽莊 Nha Trang ── -->
+
+    <a href="content-page.html#v-nht-sight-vp" class="venue-card" data-city="nht" data-cat="sight">
+      <div class="venue-img placeholder" style="--bg-from:#0c121e; --bg-to:#162236;">
+        <span class="ph-glyph">VinWonders</span>
+        <span class="venue-cat">景點</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 芽莊 · 珍珠島</div>
+        <h3 class="venue-title">珍珠島 <em>VinWonders</em></h3>
+        <p class="venue-desc">越南最大主題樂園，跨海纜車直達，水上樂園、水族館、表演秀一日玩不完。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">親子</span>
+            <span class="venue-tag-chip">主題樂園</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ── 富國島 Phu Quoc ── -->
+
+    <a href="content-page.html#v-pqu-sight-sun" class="venue-card" data-city="pqu" data-cat="sight">
+      <div class="venue-img placeholder" style="--bg-from:#1c1408; --bg-to:#2e220e;">
+        <span class="ph-glyph">Sun World</span>
+        <span class="venue-cat">景點</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 富國島 · 香島</div>
+        <h3 class="venue-title">陽光世界 <em>Sun World</em></h3>
+        <p class="venue-desc">世界最長跨海纜車起點，登上香島看富國最美的日落與星辰大海。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">纜車</span>
+            <span class="venue-tag-chip">夕陽</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ── 下龍灣 Ha Long ── -->
+
+    <a href="content-page.html#v-hlb-sight-cave" class="venue-card" data-city="hlb" data-cat="sight">
+      <div class="venue-img placeholder" style="--bg-from:#08161a; --bg-to:#10242c;">
+        <span class="ph-glyph">Hạ Long</span>
+        <span class="venue-cat">景點</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 下龍灣 · 廣寧省</div>
+        <h3 class="venue-title">天宮洞 <em>Thiên Cung</em></h3>
+        <p class="venue-desc">世遺下龍灣最壯麗的鐘乳石洞，搭乘遊船進入，內部燈光雕琢宛如龍宮。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">世遺</span>
+            <span class="venue-tag-chip">遊船</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ── 曼谷 Bangkok ── -->
+
+    <a href="content-page.html#v-bkk-spa-health" class="venue-card" data-city="bkk" data-cat="spa">
+      <div class="venue-img placeholder" style="--bg-from:#0e1614; --bg-to:#1a2620;">
+        <span class="ph-glyph">Health Land</span>
+        <span class="venue-cat">SPA</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 曼谷 · 阿索</div>
+        <h3 class="venue-title">Health <em>Land Spa</em></h3>
+        <p class="venue-desc">曼谷連鎖五星按摩會館。古法泰式、芳療精油、足部護理，價格友善、品質穩定。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">泰式</span>
+            <span class="venue-tag-chip">CP 高</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <a href="content-page.html#v-bkk-bar-octave" class="venue-card" data-city="bkk" data-cat="bar">
+      <div class="venue-img placeholder" style="--bg-from:#100a18; --bg-to:#1c1428;">
+        <span class="ph-glyph">Octave</span>
+        <span class="venue-cat">酒吧</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 曼谷 · 通羅</div>
+        <h3 class="venue-title">Octave <em>Rooftop</em></h3>
+        <p class="venue-desc">通羅頂樓 360 度夜景酒吧。日落微醺、夜晚 DJ，全曼谷最佳觀景台之一。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">頂樓</span>
+            <span class="venue-tag-chip">夜景</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- ── 台北 Taipei ── -->
+
+    <a href="content-page.html#v-tpe-dine-din" class="venue-card" data-city="tpe" data-cat="dine">
+      <div class="venue-img placeholder" style="--bg-from:#1a0e08; --bg-to:#2e1c10;">
+        <span class="ph-glyph">鼎泰豐</span>
+        <span class="venue-cat">餐廳</span>
+        <span class="venue-flag muted">米其林</span>
+      </div>
+      <div class="venue-body">
+        <div class="venue-loc"><svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="4" r="1.5"/><path d="M5 9c0-3-3-3.5-3-5.5C2 1.6 3.3.5 5 .5s3 1.1 3 3c0 2-3 2.5-3 5.5z" fill="none" stroke="currentColor" stroke-width="0.8"/></svg> 台北 · 信義區</div>
+        <h3 class="venue-title">鼎泰豐 <em>信義店</em></h3>
+        <p class="venue-desc">台灣小籠包代名詞，米其林一星。十八摺薄皮、清雞湯、蝦仁炒飯，外國朋友指定。</p>
+        <div class="venue-foot">
+          <div class="venue-tags">
+            <span class="venue-tag-chip">小籠包</span>
+            <span class="venue-tag-chip">代客排隊</span>
+          </div>
+          <span class="venue-arrow">詳情 <span class="venue-arrow-glyph">→</span></span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-bar">
+    <div class="cta-bar-text">
+      <div class="cta-bar-tag">Custom Recommendation</div>
+      <div class="cta-bar-title">沒找到合適的？<em>讓專員幫你挑</em></div>
+      <div class="cta-bar-sub">告訴我們想去的城市與喜好，禮賓專員 24 小時內回覆推薦清單。</div>
+    </div>
+    <div class="cta-bar-btns">
+      <a href="content-page.html#pricing" class="cta-btn-primary">立即諮詢</a>
+      <a href="about-page.html" class="cta-btn-outline">關於我們</a>
+    </div>
+  </div>
+
+  <div class="foot-note">© 雲遊國際 2026 · Curated with care</div>
+
+</main>
+
+<script>
+const cityChips = document.querySelectorAll('.filter-chip[data-city]');
+const catChips = document.querySelectorAll('.filter-chip[data-cat]');
+const cards = document.querySelectorAll('.venue-card');
+const grid = document.getElementById('venueGrid');
+const countEl = document.getElementById('venueCount');
+
+let curCity = 'all';
+let curCat = 'all';
+
+function applyFilter() {
+  let visible = 0;
+  cards.forEach(card => {
+    const ok = (curCity === 'all' || card.dataset.city === curCity) &&
+               (curCat === 'all' || card.dataset.cat === curCat);
+    card.style.display = ok ? '' : 'none';
+    if (ok) visible++;
+  });
+  countEl.textContent = visible;
+
+  // Empty state
+  let empty = grid.querySelector('.empty-state');
+  if (visible === 0) {
+    if (!empty) {
+      empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.innerHTML = '<span class="empty-state-glyph">∅</span>此組合目前沒有店家。試試其他城市或分類，或讓專員為你客製推薦。';
+      grid.appendChild(empty);
+    }
+  } else if (empty) {
+    empty.remove();
+  }
+}
+
+cityChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    cityChips.forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    curCity = chip.dataset.city;
+    applyFilter();
+  });
+});
+
+catChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    catChips.forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    curCat = chip.dataset.cat;
+    applyFilter();
+  });
+});
+
+applyFilter();
+</script>
+
+</body>
+</html>

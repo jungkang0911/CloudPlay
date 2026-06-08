@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>常見問題 · 雲遊國際</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500;600&family=Be+Vietnam+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/_shell.css">
+<style>
+  /* 類別切換 */
+  .faq-cat-tabs {
+    max-width: 900px;
+    margin: 0 auto 24px;
+    padding: 0 28px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(200,169,110,0.15);
+  }
+  .faq-cat-tab {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    padding: 12px 22px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.2s;
+  }
+  .faq-cat-tab:hover { color: var(--white); }
+  .faq-cat-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* FAQ 文章列表 */
+  .faq-list {
+    max-width: 900px;
+    margin: 0 auto 60px;
+    padding: 0 28px;
+  }
+  .faq-item {
+    border-bottom: 1px solid rgba(200,169,110,0.12);
+  }
+  .faq-q {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: padding 0.2s;
+  }
+  .faq-q:hover { padding-left: 8px; }
+  .faq-q-num {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    color: var(--gold);
+    font-style: italic;
+    margin-right: 16px;
+    min-width: 32px;
+    flex-shrink: 0;
+  }
+  .faq-q-text {
+    flex: 1;
+    font-size: 15px;
+    color: var(--white);
+    font-weight: 400;
+    line-height: 1.5;
+    padding-right: 20px;
+  }
+  .faq-q-icon {
+    color: var(--gold);
+    font-size: 22px;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+    width: 28px;
+    text-align: center;
+  }
+  .faq-item.open .faq-q-icon { transform: rotate(45deg); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.95;
+    padding: 0 4px 0 48px;
+  }
+  .faq-item.open .faq-a {
+    max-height: 800px;
+    padding: 0 4px 24px 48px;
+  }
+  .faq-a p { margin-bottom: 12px; }
+  .faq-a p:last-child { margin-bottom: 0; }
+  .faq-a strong { color: var(--gold-light); font-weight: 500; }
+  .faq-a ul { margin: 8px 0 8px 18px; padding: 0; }
+  .faq-a ul li { margin-bottom: 6px; }
+
+  .faq-no-result {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* CTA */
+  .ask-cta {
+    margin: 30px auto 80px;
+    max-width: 900px;
+    text-align: center;
+    padding: 40px 24px;
+    border: 1px solid rgba(200,169,110,0.2);
+    background: linear-gradient(135deg, var(--black2), var(--black3));
+  }
+  .ask-cta-title {
+    font-family: var(--font-serif); font-size: 26px; font-weight: 300;
+    color: var(--white); margin-bottom: 8px;
+  }
+  .ask-cta-title em { color: var(--gold); font-style: italic; }
+  .ask-cta-desc {
+    font-size: 13px; color: var(--text-muted); line-height: 1.7;
+    margin-bottom: 22px;
+  }
+  .ask-cta-btns { display: inline-flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .btn-primary {
+    background: var(--gold); color: var(--black); border: none;
+    padding: 12px 28px; font-size: 12px; letter-spacing: 0.18em;
+    text-transform: uppercase; cursor: pointer; font-weight: 600;
+    font-family: inherit; text-decoration: none; display: inline-block;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+  .btn-outline {
+    background: transparent; border: 1px solid rgba(200,169,110,0.4);
+    color: var(--gold); padding: 11px 26px; font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
+    font-family: inherit; text-decoration: none; display: inline-block;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
+
+  @media (max-width: 720px) {
+    .faq-cat-tabs { padding: 0 16px; }
+    .faq-cat-tab { padding: 10px 14px; font-size: 12px; }
+    .faq-list { padding: 0 16px; }
+    .faq-q-num { font-size: 14px; min-width: 24px; margin-right: 10px; }
+    .faq-q-text { font-size: 14px; }
+    .faq-a { padding-left: 36px; }
+    .faq-item.open .faq-a { padding: 0 0 20px 36px; }
+    .ask-cta { margin: 24px 16px 60px; padding: 32px 18px; }
+    .ask-cta-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div data-shell-top data-shell-active="faq"></div>
+
+<section class="page-hero">
+  <div class="page-eyebrow">Frequently Asked</div>
+  <h1 class="page-title">常見 <em>問題</em></h1>
+  <p class="page-subtitle">整理旅客最常詢問的問題，幫您快速找到答案。<br>如有其他疑問，歡迎隨時聯絡客服。</p>
+  <div class="page-rule"></div>
+</section>
+
+<!-- 類別切換 -->
+<div class="faq-cat-tabs" id="faq-tabs">
+  <button class="faq-cat-tab active" data-cat="all">全部</button>
+  <button class="faq-cat-tab" data-cat="trip">行程</button>
+  <button class="faq-cat-tab" data-cat="money">費用</button>
+  <button class="faq-cat-tab" data-cat="visa">證件</button>
+  <button class="faq-cat-tab" data-cat="local">當地</button>
+  <button class="faq-cat-tab" data-cat="safety">安全</button>
+</div>
+
+<!-- FAQ 列表 -->
+<div class="faq-list" id="faq-list">
+
+  <div class="faq-item" data-cat="trip">
+    <button class="faq-q">
+      <span class="faq-q-num">01</span>
+      <span class="faq-q-text">一個人可以參加嗎？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>當然可以！我們會為您媒合想要一同出遊的旅伴，確定成團後建立 <strong>專屬 LINE 群組</strong>，出發前就能和其他成員互動認識。</p>
+      <p>如果您偏好獨自旅行，我們也提供「<strong>1 人成行</strong>」的客製方案，全程由專屬導遊陪同，費用會略高於團體價，但可享完全彈性的行程安排。</p>
+    </div>
+  </div>
+
+  <div class="faq-item" data-cat="money">
+    <button class="faq-q">
+      <span class="faq-q-num">02</span>
+      <span class="faq-q-text">需要帶什麼幣別？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>建議攜帶 <strong>新台幣</strong>，抵達當地後導遊會帶您至銀樓換匯，匯率通常比機場好 3–5%。</p>
+      <p>最低預算建議每天 <strong>NT$10,000 起</strong>，可涵蓋三餐、交通、購物與娛樂。信用卡也可在大部分飯店與餐廳使用，但夜市、小吃店仍需現金。</p>
+    </div>
+  </div>
+
+  <div class="faq-item" data-cat="money">
+    <button class="faq-q">
+      <span class="faq-q-num">03</span>
+      <span class="faq-q-text">團費大概多少？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>最低滿 3 人成團，<strong>五天四夜每人約 NT$15,000 起</strong>，含：</p>
+      <ul>
+        <li>來回機票（經濟艙）</li>
+        <li>四晚四星級飯店住宿</li>
+        <li>機場接送 + 全程包車</li>
+        <li>24H 中文專人服務</li>
+        <li>每日早餐</li>
+      </ul>
+      <p>除團費外，當地消費均由商家出帳單後自行結帳，<strong>絕不灌水、無強迫購物</strong>。</p>
+    </div>
+  </div>
+
+  <div class="faq-item" data-cat="visa">
+    <button class="faq-q">
+      <span class="faq-q-num">04</span>
+      <span class="faq-q-text">可以代辦簽證嗎？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>可以。我們配合 <strong>正規簽證代辦公司</strong>，免手續費，只需提供護照照片即可開始申辦。</p>
+      <ul>
+        <li>越南電子簽證：3–5 個工作天</li>
+        <li>日本免簽（90 天內）</li>
+        <li>急件最快 24 小時取件（加收急件費）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="faq-item" data-cat="trip">
+    <button class="faq-q">
+      <span class="faq-q-num">05</span>
+      <span class="faq-q-text">如何開始預訂？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>選定出團日期後聯絡客服，確認成團後填寫報名表單即可。</p>
+      <p>只需要帶 <strong>護照、簽證、新台幣、手機充電線</strong>，其餘我們都安排好了！</p>
+    </div>
+  </div>
+
+  <div class="faq-item" data-cat="local">
+    <button class="faq-q">
+      <span class="faq-q-num">06</span>
+      <span class="faq-q-text">當地語言不通怎麼辦？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>全程由 <strong>中文導遊陪同</strong>，從機場接機到飯店 check-in，再到每日的景點、餐廳、夜生活，導遊都會在身邊溝通協助。</p>
+      <p>若需自由行時間，我們也會提供：</p>
+      <ul>
+        <li>當地網卡一張（可隨時聯絡導遊）</li>
+        <li>常用詞彙小卡（餐廳、計程車、緊急聯絡）</li>
+        <li>24H 客服 LINE 群組支援</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="faq-item" data-cat="safety">
+    <button class="faq-q">
+      <span class="faq-q-num">07</span>
+      <span class="faq-q-text">當地治安如何？需要注意什麼？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>東南亞與日本的觀光區治安整體良好，但仍建議：</p>
+      <ul>
+        <li>貴重物品鎖入飯店保險箱</li>
+        <li>夜間外出由導遊或司機陪同</li>
+        <li>避免在不熟悉的小巷使用手機外露</li>
+        <li>大筆現金分開存放，不放同一個錢包</li>
+      </ul>
+      <p>我們的行程僅安排合作多年、信譽良好的合作店家，<strong>不會有任何強迫消費</strong>。</p>
+    </div>
+  </div>
+
+  <div class="faq-item" data-cat="trip">
+    <button class="faq-q">
+      <span class="faq-q-num">08</span>
+      <span class="faq-q-text">行程可以客製嗎？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>當然可以！我們提供 <strong>100% 客製化服務</strong>，您只需要告訴客服：</p>
+      <ul>
+        <li>出發日期、人數</li>
+        <li>預算範圍</li>
+        <li>偏好的城市與類型（美食、購物、夜生活、放鬆等）</li>
+      </ul>
+      <p>客服會在 <strong>24 小時內</strong>提供完整提案，包含每日行程表、飯店、餐廳、預估總費用。</p>
+    </div>
+  </div>
+
+  <div class="faq-item" data-cat="money">
+    <button class="faq-q">
+      <span class="faq-q-num">09</span>
+      <span class="faq-q-text">付款方式有哪些？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>我們接受：</p>
+      <ul>
+        <li>信用卡（VISA / Master / JCB）</li>
+        <li>銀行轉帳（國泰世華 / 玉山）</li>
+        <li>LINE Pay / 街口支付</li>
+      </ul>
+      <p>預訂時收 <strong>30% 訂金</strong>，出發前 7 日收齊尾款。如因不可抗力因素取消，訂金可全額退還。</p>
+    </div>
+  </div>
+
+  <div class="faq-item" data-cat="trip">
+    <button class="faq-q">
+      <span class="faq-q-num">10</span>
+      <span class="faq-q-text">出發前需要做哪些準備？</span>
+      <span class="faq-q-icon">+</span>
+    </button>
+    <div class="faq-a">
+      <p>出發前 7 天，我們會發送 <strong>「出行包」</strong>給您，內含：</p>
+      <ul>
+        <li>機票電子檔</li>
+        <li>飯店訂房證明</li>
+        <li>每日行程表 PDF</li>
+        <li>當地導遊與司機聯絡方式</li>
+        <li>緊急聯絡卡（中越/中日對照）</li>
+      </ul>
+      <p>您只需要打包換洗衣物、護照、台幣、手機充電線即可。</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- 找不到答案？聯絡客服 -->
+<div class="ask-cta">
+  <h2 class="ask-cta-title">沒找到 <em>您的問題</em>？</h2>
+  <p class="ask-cta-desc">每位旅客的需求都不同，歡迎直接聯絡客服詢問。</p>
+  <div class="ask-cta-btns">
+    <a class="btn-primary" href="https://line.me/" target="_blank" rel="noopener noreferrer">LINE 諮詢</a>
+    <a class="btn-outline" href="tel:0800123456">撥打 0800-123-456</a>
+  </div>
+</div>
+
+<div data-shell-bottom></div>
+
+<script src="js/_shell.js"></script>
+<script>
+  // 開合
+  document.getElementById('faq-list').addEventListener('click', (e) => {
+    const q = e.target.closest('.faq-q');
+    if (!q) return;
+    q.parentElement.classList.toggle('open');
+  });
+
+  // 類別篩選
+  document.getElementById('faq-tabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.faq-cat-tab');
+    if (!btn) return;
+    document.querySelectorAll('.faq-cat-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>

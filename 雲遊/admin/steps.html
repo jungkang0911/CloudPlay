@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出行流程 — 雲遊後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="_admin.js"></script>
+</head>
+<body>
+<main class="admin-main">
+  <h1 class="page-title">出行流程管理</h1>
+  <div class="toolbar">
+    <button class="btn-primary toolbar-right" onclick="openPanel()">＋ 新增步驟</button>
+  </div>
+  <table class="adm-table">
+    <thead><tr><th>編號</th><th>標題</th><th>副標</th><th>排序</th><th></th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</main>
+
+<div id="panel-overlay" class="panel-overlay" style="display:none;" onclick="closePanel(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-title">
+      <span id="panel-heading">新增步驟</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">顯示編號</label>
+        <input id="f-num" class="adm-input" placeholder="e.g. 01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">排序</label>
+        <input id="f-sort" class="adm-input" type="number" value="0">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">步驟標題 *</label>
+      <input id="f-label" class="adm-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">副標</label>
+      <input id="f-sub" class="adm-input">
+    </div>
+    <div class="panel-actions">
+      <button class="btn-danger" id="btn-delete" onclick="doDelete()" style="margin-right:auto;display:none;">刪除</button>
+      <button class="btn-ghost" onclick="closePanel()">取消</button>
+      <button class="btn-primary" onclick="doSave()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let rows=[], editId=null;
+(async()=>{ const s=await requireAuth(); if(!s)return; injectSidebar(s); await load(); })();
+
+async function load(){ const{data}=await sb.from('steps').select('*').order('sort_order'); rows=data||[]; render(); }
+
+function render(){
+  const tbody=document.getElementById('tbody'); tbody.innerHTML='';
+  rows.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td><span class="badge badge-gold">${r.num||'—'}</span></td><td style="font-weight:500;">${r.label}</td><td style="color:var(--muted);">${r.sub||'—'}</td><td style="color:var(--muted);">${r.sort_order}</td><td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel(${r.id})">編輯</button></td>`; tbody.appendChild(tr); });
+}
+
+function openPanel(id){ editId=id||null; const r=id?rows.find(x=>x.id===id):null; document.getElementById('panel-heading').textContent=r?'編輯步驟':'新增步驟'; document.getElementById('f-num').value=r?.num||''; document.getElementById('f-label').value=r?.label||''; document.getElementById('f-sub').value=r?.sub||''; document.getElementById('f-sort').value=r?.sort_order??0; document.getElementById('btn-delete').style.display=r?'inline-block':'none'; document.getElementById('panel-overlay').style.display='flex'; }
+function closePanel(e){ if(e&&e.target!==document.getElementById('panel-overlay'))return; document.getElementById('panel-overlay').style.display='none'; }
+
+async function doSave(){ const label=document.getElementById('f-label').value.trim(); if(!label){toast('標題為必填','error');return;} const payload={num:document.getElementById('f-num').value.trim()||null,label,sub:document.getElementById('f-sub').value.trim()||null,sort_order:parseInt(document.getElementById('f-sort').value)||0}; const{error}=editId?await sb.from('steps').update(payload).eq('id',editId):await sb.from('steps').insert(payload); if(error){toast('儲存失敗：'+error.message,'error');return;} toast('已儲存'); document.getElementById('panel-overlay').style.display='none'; await load(); }
+async function doDelete(){ if(!confirm2('確定刪除？'))return; const{error}=await sb.from('steps').delete().eq('id',editId); if(error){toast('刪除失敗','error');return;} toast('已刪除'); document.getElementById('panel-overlay').style.display='none'; await load(); }
+</script>
+</body>
+</html>

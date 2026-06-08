@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>行程明細 · 雲遊國際</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c8a96e;
+  --gold-light: #e2c98a;
+  --gold-dim: #a08040;
+  --black: #0a0906;
+  --black2: #13110d;
+  --black3: #1c1914;
+  --black4: #252219;
+  --white: #f5f0e8;
+  --white2: #ede5d5;
+  --text-muted: #9a9080;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Noto Sans TC', sans-serif;
+  --sidebar-w: 260px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black2); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+/* ── Navbar ── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10,9,6,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200,169,110,0.15);
+  height: 60px;
+  display: flex; align-items: center;
+  padding: 0 40px; gap: 20px;
+}
+.nav-logo {
+  font-family: var(--font-serif);
+  font-size: 22px; font-weight: 300; font-style: italic;
+  color: var(--gold); cursor: pointer; text-decoration: none;
+  letter-spacing: 0.08em; flex-shrink: 0;
+}
+.nav-logo span { font-style: normal; font-weight: 600; }
+.nav-divider { color: rgba(200,169,110,0.3); font-size: 14px; }
+.nav-page-title {
+  font-size: 12px; letter-spacing: 0.1em;
+  color: var(--text-muted); text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.nav-spacer { flex: 1; }
+.nav-back {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; letter-spacing: 0.1em; color: var(--gold);
+  text-transform: uppercase; cursor: pointer;
+  background: none; border: none; font-family: inherit;
+  padding: 6px 14px; border: 1px solid rgba(200,169,110,0.3);
+  transition: all 0.2s; text-decoration: none;
+}
+.nav-back:hover { background: rgba(200,169,110,0.06); border-color: var(--gold); }
+
+/* ── Hero ── */
+.page-hero {
+  margin-top: 60px;
+  height: 45vh; min-height: 300px;
+  position: relative; overflow: hidden;
+  display: flex; align-items: flex-end;
+}
+.page-hero-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #1a0f06, #2d1e0a);
+  background-size: cover; background-position: center;
+}
+.page-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(10,9,6,0.2) 0%, rgba(10,9,6,0.85) 100%);
+}
+.page-hero-content {
+  position: relative; z-index: 1;
+  padding: 0 60px 48px;
+}
+.page-hero-breadcrumb {
+  font-size: 10px; letter-spacing: 0.2em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 12px; opacity: 0.8;
+}
+.page-hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 5vw, 60px);
+  font-weight: 300; color: var(--white); line-height: 1.1;
+  margin-bottom: 12px;
+}
+.page-hero-title em { color: var(--gold); font-style: italic; }
+.page-hero-meta {
+  display: flex; gap: 24px; flex-wrap: wrap;
+}
+.page-hero-meta-item {
+  font-size: 12px; color: var(--text-muted);
+  display: flex; align-items: center; gap: 6px;
+}
+.page-hero-meta-item span { color: var(--gold); }
+
+/* ── Layout ── */
+.page-layout {
+  display: flex; min-height: 80vh;
+  max-width: 1400px; margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  padding: 40px 0 60px;
+  position: sticky; top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  border-right: 1px solid rgba(200,169,110,0.1);
+  padding-right: 32px;
+}
+.sidebar-section-title {
+  font-size: 9px; letter-spacing: 0.2em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 16px; margin-top: 32px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(200,169,110,0.1);
+}
+.sidebar-section-title:first-child { margin-top: 0; }
+.sidebar-link {
+  display: block; font-size: 13px; color: var(--text-muted);
+  padding: 7px 0; cursor: pointer; transition: color 0.2s;
+  border: none; background: none; font-family: inherit;
+  text-align: left; width: 100%;
+  border-left: 2px solid transparent;
+  padding-left: 12px; margin-left: -12px;
+  line-height: 1.4;
+}
+.sidebar-link:hover { color: var(--white); }
+.sidebar-link.active { color: var(--gold); border-left-color: var(--gold); }
+.sidebar-cta {
+  margin-top: 40px; padding: 20px;
+  background: var(--black2);
+  border: 1px solid rgba(200,169,110,0.2);
+}
+.sidebar-cta-title {
+  font-size: 11px; letter-spacing: 0.1em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.sidebar-cta-desc { font-size: 12px; color: var(--text-muted); line-height: 1.7; margin-bottom: 14px; }
+.sidebar-cta-btn {
+  display: block; width: 100%; padding: 10px;
+  background: var(--gold); border: none; color: var(--black);
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; font-family: inherit; font-weight: 600;
+  transition: background 0.2s; text-align: center; text-decoration: none;
+}
+.sidebar-cta-btn:hover { background: var(--gold-light); }
+
+/* ── Main Content ── */
+.main-content {
+  flex: 1; padding: 48px 0 80px 60px;
+  min-width: 0;
+}
+
+/* Content blocks */
+.content-section { margin-bottom: 64px; scroll-margin-top: 80px; }
+.content-section:last-child { margin-bottom: 0; }
+.content-section-tag {
+  font-size: 10px; letter-spacing: 0.2em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 12px;
+}
+.content-section-tag::after {
+  content: ''; flex: 1; height: 1px;
+  background: rgba(200,169,110,0.15);
+}
+.content-h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 300; color: var(--white);
+  margin-bottom: 24px; line-height: 1.2;
+}
+.content-h2 em { color: var(--gold); font-style: italic; }
+.content-h3 {
+  font-family: var(--font-serif);
+  font-size: 22px; font-weight: 300;
+  color: var(--white); margin-bottom: 14px; margin-top: 32px;
+}
+.content-p {
+  font-size: 15px; color: var(--text-muted);
+  line-height: 1.9; margin-bottom: 20px;
+  text-wrap: pretty;
+}
+.content-p a { color: var(--gold); text-decoration: none; }
+.content-p a:hover { text-decoration: underline; }
+
+/* Highlight box */
+.highlight-box {
+  background: var(--black2);
+  border: 1px solid rgba(200,169,110,0.2);
+  border-left: 3px solid var(--gold);
+  padding: 20px 24px; margin: 24px 0;
+  font-size: 14px; color: var(--white2); line-height: 1.8;
+}
+.highlight-box strong { color: var(--gold); }
+
+/* Info grid */
+.info-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 2px; margin: 24px 0;
+}
+.info-cell {
+  background: var(--black2);
+  border: 1px solid rgba(200,169,110,0.1);
+  padding: 20px 24px;
+}
+.info-cell-label {
+  font-size: 10px; letter-spacing: 0.15em; color: var(--gold);
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.info-cell-value { font-size: 15px; color: var(--white); font-weight: 400; }
+.info-cell-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* Day timeline */
+.day-timeline { margin: 24px 0; display: flex; flex-direction: column; gap: 16px; }
+
+.day-card {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 180px;
+  border: 1px solid rgba(200,169,110,0.15);
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.3s;
+}
+.day-card:hover { border-color: rgba(200,169,110,0.4); }
+
+/* Left panel — coloured bg + icon */
+.day-card-left {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px; padding: 32px 24px;
+  overflow: hidden;
+}
+.day-card-left::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 100%);
+  pointer-events: none;
+}
+/* Each day gets its own bg colour */
+.day-card:nth-child(1) .day-card-left { background: linear-gradient(135deg, #1a2a1a 0%, #2a3a18 100%); }
+.day-card:nth-child(2) .day-card-left { background: linear-gradient(135deg, #1a1a2e 0%, #2a1a3a 100%); }
+.day-card:nth-child(3) .day-card-left { background: linear-gradient(135deg, #2a1a0a 0%, #3a2a10 100%); }
+.day-card:nth-child(4) .day-card-left { background: linear-gradient(135deg, #0a1a2a 0%, #102a3a 100%); }
+.day-card:nth-child(5) .day-card-left { background: linear-gradient(135deg, #1a0a1a 0%, #2a1020 100%); }
+
+.day-card-icon {
+  position: relative; z-index: 1;
+  width: 64px; height: 64px;
+  opacity: 0.9;
+}
+.day-card-daynum {
+  position: relative; z-index: 1;
+  text-align: center;
+}
+.day-card-daynum-label {
+  font-size: 9px; letter-spacing: 0.25em; color: var(--gold);
+  text-transform: uppercase; display: block; margin-bottom: 2px;
+}
+.day-card-daynum-val {
+  font-family: var(--font-serif);
+  font-size: 48px; font-weight: 300; color: var(--white);
+  line-height: 1; display: block;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+
+/* Decorative corner lines */
+.day-card-left::before {
+  content: '';
+  position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px;
+  border: 1px solid rgba(200,169,110,0.15);
+  pointer-events: none; z-index: 1;
+}
+
+/* Right panel — text */
+.day-card-right {
+  background: var(--black2);
+  padding: 28px 32px;
+  display: flex; flex-direction: column; justify-content: center;
+  border-left: 1px solid rgba(200,169,110,0.1);
+}
+.day-card-title {
+  font-family: var(--font-serif);
+  font-size: 22px; font-weight: 300;
+  color: var(--white); margin-bottom: 10px; line-height: 1.3;
+}
+.day-card-desc {
+  font-size: 13px; color: var(--text-muted);
+  line-height: 1.85; margin-bottom: 16px; text-wrap: pretty;
+}
+.day-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.day-tag {
+  font-size: 10px; letter-spacing: 0.1em; color: var(--gold);
+  border: 1px solid rgba(200,169,110,0.25); padding: 4px 12px;
+  text-transform: uppercase; display: flex; align-items: center; gap: 5px;
+}
+.day-tag svg { width: 10px; height: 10px; }
+
+/* Connector line between cards */
+.day-connector {
+  width: 1px; height: 16px;
+  background: linear-gradient(to bottom, rgba(200,169,110,0.3), rgba(200,169,110,0.05));
+  margin-left: 110px;
+}
+
+@media (max-width: 900px) {
+  .day-card { grid-template-columns: 1fr; }
+  .day-card-left { flex-direction: row; justify-content: flex-start; padding: 20px; gap: 20px; min-height: auto; }
+  .day-card-left::before { display: none; }
+  .day-card-daynum-val { font-size: 36px; }
+  .day-card-icon { width: 48px; height: 48px; }
+  .day-card-right { padding: 20px; }
+  .day-connector { margin-left: 20px; }
+}
+
+/* Plan cards */
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px; margin: 24px 0;
+}
+.plan-card {
+  display: flex; flex-direction: column;
+  border: 1px solid rgba(200,169,110,0.15);
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+  position: relative;
+}
+.plan-card:hover {
+  border-color: rgba(200,169,110,0.5);
+  transform: translateY(-4px);
+  z-index: 1;
+}
+.plan-header {
+  background: linear-gradient(135deg, #2a1a08, #3a2510);
+  padding: 24px 20px 20px;
+  position: relative;
+  overflow: hidden;
+  min-height: 90px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.plan-card-custom .plan-header {
+  background: linear-gradient(135deg, #1a1205, #2a1e08);
+}
+.plan-name {
+  font-family: var(--font-serif);
+  font-size: 18px; font-weight: 300;
+  color: var(--white); line-height: 1.2; margin-bottom: 4px;
+}
+.plan-sub {
+  font-size: 10px; letter-spacing: 0.12em;
+  color: rgba(200,169,110,0.7); text-transform: uppercase;
+}
+.plan-badge {
+  position: absolute; top: 0; right: 0;
+  background: var(--gold); color: var(--black);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+}
+.plan-body {
+  background: var(--black2);
+  padding: 24px 20px;
+  flex: 1; display: flex; flex-direction: column;
+}
+.plan-price {
+  display: flex; align-items: baseline; gap: 2px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(200,169,110,0.1);
+}
+.plan-currency {
+  font-family: var(--font-serif);
+  font-size: 16px; color: var(--gold); font-weight: 300;
+}
+.plan-amount {
+  font-family: var(--font-serif);
+  font-size: 36px; font-weight: 300;
+  color: var(--white); line-height: 1;
+}
+.plan-price-custom .plan-amount {
+  font-size: 22px; color: var(--gold-light);
+}
+.plan-unit {
+  font-size: 11px; color: var(--text-muted); margin-left: 2px;
+}
+.plan-features {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 10px;
+  flex: 1; margin-bottom: 20px;
+}
+.plan-features li {
+  font-size: 13px; color: var(--text-muted);
+  display: flex; align-items: center; gap: 10px;
+  line-height: 1.4;
+}
+.plan-features li::before {
+  content: '';
+  width: 14px; height: 14px; flex-shrink: 0;
+  border: 1px solid rgba(200,169,110,0.4);
+  background: rgba(200,169,110,0.08);
+  display: inline-flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.plan-features li::before {
+  content: '✓';
+  font-size: 9px; color: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+}
+.plan-custom-desc {
+  font-size: 13px; color: var(--text-muted);
+  line-height: 1.8; flex: 1; margin-bottom: 20px;
+}
+.plan-cta {
+  display: block; width: 100%;
+  padding: 12px;
+  background: var(--gold); border: none;
+  color: var(--black);
+  font-size: 11px; letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer; font-family: inherit; font-weight: 600;
+  transition: background 0.2s;
+  margin-bottom: 12px;
+}
+.plan-cta:hover { background: var(--gold-light); }
+.plan-card-custom .plan-cta {
+  background: transparent;
+  border: 1px solid rgba(200,169,110,0.5);
+  color: var(--gold);
+}
+.plan-card-custom .plan-cta:hover {
+  background: rgba(200,169,110,0.08);
+  border-color: var(--gold);
+}
+.plan-note {
+  font-size: 10px; color: var(--text-muted);
+  text-align: center; letter-spacing: 0.05em;
+}
+@media (max-width: 900px) {
+  .plan-grid { grid-template-columns: 1fr 1fr; }
+  .plan-card:hover { transform: none; }
+}
+
+/* Include/Exclude list */
+.include-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin: 24px 0; }
+.include-col { background: var(--black2); border: 1px solid rgba(200,169,110,0.1); padding: 24px; }
+.include-col-title {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  margin-bottom: 16px; padding-bottom: 10px;
+  border-bottom: 1px solid rgba(200,169,110,0.12);
+}
+.include-col-title.yes { color: #4ade80; }
+.include-col-title.no { color: #f87171; }
+.include-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.include-list li { font-size: 13px; color: var(--text-muted); display: flex; gap: 8px; line-height: 1.5; }
+.include-list li::before { font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+.include-list.yes li::before { content: '✓'; color: #4ade80; }
+.include-list.no li::before { content: '✗'; color: #f87171; }
+
+/* Image block */
+.content-img {
+  width: 100%; aspect-ratio: 16/9; object-fit: cover;
+  margin: 24px 0; display: block;
+}
+.img-placeholder-block {
+  width: 100%; aspect-ratio: 16/9;
+  background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(200,169,110,0.03) 8px, rgba(200,169,110,0.03) 16px);
+  border: 1px solid rgba(200,169,110,0.1);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; color: rgba(200,169,110,0.25); font-size: 11px;
+  letter-spacing: 0.1em; margin: 24px 0;
+}
+
+/* CTA Bar */
+.cta-bar {
+  background: linear-gradient(135deg, var(--black3), var(--black4));
+  border: 1px solid rgba(200,169,110,0.2);
+  padding: 36px 40px;
+  display: flex; align-items: center; gap: 40px;
+  margin-top: 48px;
+}
+.cta-bar-text { flex: 1; }
+.cta-bar-title { font-family: var(--font-serif); font-size: 26px; font-weight: 300; color: var(--white); margin-bottom: 6px; }
+.cta-bar-sub { font-size: 13px; color: var(--text-muted); }
+.cta-bar-btns { display: flex; gap: 12px; flex-shrink: 0; }
+.cta-btn-primary {
+  padding: 12px 28px; background: var(--gold); border: none;
+  color: var(--black); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; cursor: pointer; font-family: inherit;
+  font-weight: 600; transition: background 0.2s; text-decoration: none;
+  display: inline-block;
+}
+.cta-btn-primary:hover { background: var(--gold-light); }
+.cta-btn-outline {
+  padding: 12px 28px; background: transparent;
+  border: 1px solid rgba(200,169,110,0.4);
+  color: var(--gold); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; cursor: pointer; font-family: inherit;
+  transition: all 0.2s; text-decoration: none; display: inline-block;
+}
+.cta-btn-outline:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
+
+/* Divider */
+.content-divider { height: 1px; background: rgba(200,169,110,0.1); margin: 40px 0; }
+
+/* Mobile */
+@media (max-width: 900px) {
+  .navbar { padding: 0 20px; }
+  .page-hero-content { padding: 0 24px 40px; }
+  .page-layout { flex-direction: column; padding: 0 24px; }
+  .sidebar { width: 100%; position: static; height: auto; padding: 24px 0; border-right: none; border-bottom: 1px solid rgba(200,169,110,0.1); display: flex; gap: 8px; flex-wrap: wrap; overflow-y: visible; }
+  .sidebar-section-title { display: none; }
+  .sidebar-link { padding: 6px 12px; border: 1px solid rgba(200,169,110,0.2); border-left: 2px solid transparent; margin: 0; width: auto; white-space: nowrap; }
+  .sidebar-link.active { border-color: var(--gold); }
+  .sidebar-cta { display: none; }
+  .main-content { padding: 32px 0 60px; }
+  .info-grid { grid-template-columns: 1fr; }
+  .include-grid { grid-template-columns: 1fr; }
+  .cta-bar { flex-direction: column; padding: 28px 24px; gap: 20px; }
+  .cta-bar-btns { width: 100%; }
+  .cta-btn-primary, .cta-btn-outline { flex: 1; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo"><img src="uploads/logo-mark.png" alt="雲遊國際" style="height:30px;width:auto;vertical-align:middle;margin-right:8px;" /><span style="font-style:normal;font-weight:400;letter-spacing:0.12em;font-size:16px;">雲遊國際</span></a>
+  <span class="nav-divider">/</span>
+  <span class="nav-page-title" id="navPageTitle">行程明細</span>
+  <div class="nav-spacer"></div>
+  <a href="index.html" class="nav-back">← 返回首頁</a>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero" id="pageHero">
+  <div class="page-hero-bg" id="heroBg" style="background-image: url('uploads/banner-vietnam.png');"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-breadcrumb" id="heroBreadcrumb">雲遊國際 · 服務項目</div>
+    <h1 class="page-hero-title" id="heroTitle">
+      越南胡志明市<br/><em>5天4夜深度遊</em>
+    </h1>
+    <div class="page-hero-meta">
+      <div class="page-hero-meta-item"><span>✈</span> 5天4夜</div>
+      <div class="page-hero-meta-item"><span>👥</span> 3人起成團</div>
+      <div class="page-hero-meta-item"><span>💰</span> NT$15,800/人起</div>
+      <div class="page-hero-meta-item"><span>🗓</span> 每月固定出發</div>
+    </div>
+  </div>
+</div>
+
+<!-- Layout -->
+<div class="page-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section-title">本頁目錄</div>
+    <button class="sidebar-link active" onclick="scrollTo('overview')">行程概覽</button>
+    <button class="sidebar-link" onclick="scrollTo('itinerary')">每日行程</button>
+    <button class="sidebar-link" onclick="scrollTo('pricing')">費用說明</button>
+    <button class="sidebar-link" onclick="scrollTo('includes')">費用包含</button>
+    <button class="sidebar-link" onclick="scrollTo('notes')">注意事項</button>
+    <button class="sidebar-link" onclick="scrollTo('faq')">常見問題</button>
+
+    <div class="sidebar-section-title">其他行程</div>
+    <button class="sidebar-link" onclick="">泰國曼谷 5天4夜</button>
+    <button class="sidebar-link" onclick="">日本京都 5天4夜</button>
+    <button class="sidebar-link" onclick="">台灣深度遊</button>
+
+    <div class="sidebar-cta">
+      <div class="sidebar-cta-title">立即諮詢</div>
+      <div class="sidebar-cta-desc">有任何疑問？Sophia 禮賓專員全天候為您服務。</div>
+      <button onclick="document.getElementById('csPanel').style.display='block'" class="sidebar-cta-btn">👩‍✈️ 聯繫客服</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- 行程概覽 -->
+    <section class="content-section" id="overview">
+      <div class="content-section-tag">Overview</div>
+      <h2 class="content-h2">行程<em>概覽</em></h2>
+      <p class="content-p">
+        越南胡志明市，這座南方大城融合了法式殖民風情與現代都市活力。雲想帶您以最舒適的方式探索這座城市的每個面向——從文青咖啡館到在地市場，從頂級餐廳到深夜美食，24小時專人陪同，讓您全程放鬆。
+      </p>
+      <div class="highlight-box">
+        <strong>✦ 雲想保證：</strong> 全程24小時專屬導遊陪同，當地消費由商家出帳單後自行結帳，<strong>絕不收取隱藏費用</strong>。
+      </div>
+      <div class="info-grid">
+        <div class="info-cell">
+          <div class="info-cell-label">出發日期</div>
+          <div class="info-cell-value">每月1日、15日固定出發</div>
+          <div class="info-cell-sub">可客製化指定日期</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-label">成團人數</div>
+          <div class="info-cell-value">最低 3 人成團</div>
+          <div class="info-cell-sub">可單人報名等候併團</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-label">行程天數</div>
+          <div class="info-cell-value">5 天 4 夜</div>
+          <div class="info-cell-sub">可彈性調整 3天2夜起</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-label">出發城市</div>
+          <div class="info-cell-value">台北桃園機場</div>
+          <div class="info-cell-sub">可從台中/高雄出發</div>
+        </div>
+      </div>
+      <div class="img-placeholder-block">
+        [ 行程封面照 · 越南胡志明市 ]<br/>
+        <span style="font-size:9px; opacity:0.6">Prompt: 越南胡志明市全景，黃昏城市天際線，暖色電影色調 · 建議 1920×1080px</span>
+      </div>
+    </section>
+
+    <div class="content-divider"></div>
+
+    <!-- 每日行程 -->
+    <section class="content-section" id="itinerary">
+      <div class="content-section-tag">Itinerary</div>
+      <h2 class="content-h2">每日<em>行程</em></h2>
+      <p class="content-p">以下為參考行程，實際安排可依團友需求靈活調整。</p>
+
+      <div class="day-timeline">
+
+        <!-- Day 1 -->
+        <div class="day-card">
+          <div class="day-card-left">
+            <svg class="day-card-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Plane landing icon -->
+              <path d="M8 48h48" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M12 36l6-2 16 8 14-4a4 4 0 000-8l-4-1-8-10-5 1 4 10-8 2-4-5-4 1 2 8z" stroke="#c8a96e" stroke-width="1.5" stroke-linejoin="round" fill="rgba(200,169,110,0.08)"/>
+            </svg>
+            <div class="day-card-daynum">
+              <span class="day-card-daynum-label">Day</span>
+              <span class="day-card-daynum-val">1</span>
+            </div>
+          </div>
+          <div class="day-card-right">
+            <div class="day-card-title">抵達胡志明市 · 接機安頓</div>
+            <div class="day-card-desc">抵達新山一國際機場，專人舉牌接機並贈送越南網卡。前往酒店辦理入住後，帶您至當地銀樓換匯（匯率優於機場）。晚間前往第一郡美食街初嚐在地風味，老司機帶路吃遍最道地的越南料理。</div>
+            <div class="day-tags">
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M2 7l2-2 4-4M8 3v4H4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>接機
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="3.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 3v2l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>換匯
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M2 8V5l3-3 3 3v3H6V6H4v2H2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>入住
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M2 7c1-2 5-2 6 0M5 2a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" stroke="currentColor" stroke-width="1.2"/></svg>晚餐
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="day-connector"></div>
+
+        <!-- Day 2 -->
+        <div class="day-card">
+          <div class="day-card-left">
+            <svg class="day-card-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Landmark / temple icon -->
+              <rect x="14" y="28" width="36" height="20" rx="0" stroke="#c8a96e" stroke-width="1.5" fill="rgba(200,169,110,0.06)"/>
+              <path d="M10 28h44M22 28V18M32 28V14M42 28V18" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M20 14h24l-12-8-12 8z" stroke="#c8a96e" stroke-width="1.5" stroke-linejoin="round" fill="rgba(200,169,110,0.08)"/>
+              <rect x="28" y="36" width="8" height="12" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,0.06)"/>
+              <rect x="18" y="34" width="7" height="7" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,0.06)"/>
+              <rect x="39" y="34" width="7" height="7" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,0.06)"/>
+            </svg>
+            <div class="day-card-daynum">
+              <span class="day-card-daynum-label">Day</span>
+              <span class="day-card-daynum-val">2</span>
+            </div>
+          </div>
+          <div class="day-card-right">
+            <div class="day-card-title">陽光行程 · 文化探索</div>
+            <div class="day-card-desc">上午參觀統一宮、戰爭遺蹟博物館，深入了解越南歷史。午餐享用法式越菜 fusion。下午前往濱城市場採購手信，體驗在地生活氣息。晚間由老司機帶路，探索胡志明市最精彩的夜生活。</div>
+            <div class="day-tags">
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><rect x="1.5" y="3" width="7" height="6" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 3L5 1l3.5 2" stroke="currentColor" stroke-width="1.2"/></svg>文化景點
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M1 8l2-4 2 2 2-4 2 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>市場
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M5 1l.6 1.8H8L6.5 4l.6 1.8L5 5l-2.1 1L3.5 4 2 2.8h2.4z" stroke="currentColor" stroke-width="1.1"/></svg>夜生活
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="day-connector"></div>
+
+        <!-- Day 3 -->
+        <div class="day-card">
+          <div class="day-card-left">
+            <svg class="day-card-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Spa / lotus icon -->
+              <circle cx="32" cy="38" r="10" stroke="#c8a96e" stroke-width="1.5" fill="rgba(200,169,110,0.06)"/>
+              <path d="M32 28C32 20 24 14 24 14C24 14 20 22 26 28" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round" fill="rgba(200,169,110,0.06)"/>
+              <path d="M32 28C32 20 40 14 40 14C40 14 44 22 38 28" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round" fill="rgba(200,169,110,0.06)"/>
+              <path d="M22 34C14 30 10 22 10 22C10 22 18 18 24 26" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round" fill="rgba(200,169,110,0.06)"/>
+              <path d="M42 34C50 30 54 22 54 22C54 22 46 18 40 26" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round" fill="rgba(200,169,110,0.06)"/>
+              <circle cx="32" cy="38" r="3" stroke="#c8a96e" stroke-width="1.2" fill="rgba(200,169,110,0.15)"/>
+            </svg>
+            <div class="day-card-daynum">
+              <span class="day-card-daynum-label">Day</span>
+              <span class="day-card-daynum-val">3</span>
+            </div>
+          </div>
+          <div class="day-card-right">
+            <div class="day-card-title">特色服務 · 深度體驗</div>
+            <div class="day-card-desc">上午享受頂級 Spa 護理或辣妹洗頭服務（自費）。下午可選擇包車前往美托水鄉或古芝隧道一日遊。晚間入住薄紗 KTV，盡情享受越南夜色。</div>
+            <div class="day-tags">
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M5 2C3.3 2 2 3.3 2 5s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z" stroke="currentColor" stroke-width="1.2"/><path d="M5 4v1.5l1 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Spa
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><rect x="1" y="5" width="8" height="4" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M3 5V3.5A2 2 0 017 3.5V5" stroke="currentColor" stroke-width="1.2"/></svg>包車遠遊
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M2 8V4l3-3 3 3v4" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M4 8V6h2v2" stroke="currentColor" stroke-width="1.2"/></svg>KTV
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="day-connector"></div>
+
+        <!-- Day 4 -->
+        <div class="day-card">
+          <div class="day-card-left">
+            <svg class="day-card-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Coffee / free time icon -->
+              <path d="M16 22h28l-4 24H20L16 22z" stroke="#c8a96e" stroke-width="1.5" stroke-linejoin="round" fill="rgba(200,169,110,0.06)"/>
+              <path d="M44 26h4a4 4 0 010 8h-4" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M24 16c0 0 0-4 4-4s4 4 4 4" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M34 14c0 0 0-3 3-3s3 3 3 3" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M20 46h24" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="day-card-daynum">
+              <span class="day-card-daynum-label">Day</span>
+              <span class="day-card-daynum-val">4</span>
+            </div>
+          </div>
+          <div class="day-card-right">
+            <div class="day-card-title">自由活動 · 隨心探索</div>
+            <div class="day-card-desc">全天自由活動，可選擇逛文青咖啡館聚集的第 3 郡，或前往高島屋百貨採購。老司機視需求隨時待命安排包車。晚間聚餐慶祝行程圓滿，最後的越南風情夜。</div>
+            <div class="day-tags">
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="3.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 5h3M5 3.5v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>自由活動
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M2 3h6v5a1 1 0 01-1 1H3a1 1 0 01-1-1V3z" stroke="currentColor" stroke-width="1.2"/><path d="M1 3h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M4 3V2h2v1" stroke="currentColor" stroke-width="1.2"/></svg>購物
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M5 1l.9 2.8H8.5L6.3 5.5l.9 2.8L5 6.6l-2.2 1.7.9-2.8L1.5 3.8H4.1z" stroke="currentColor" stroke-width="1"/></svg>告別晚宴
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="day-connector"></div>
+
+        <!-- Day 5 -->
+        <div class="day-card">
+          <div class="day-card-left">
+            <svg class="day-card-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Plane takeoff icon -->
+              <path d="M8 48h48" stroke="#c8a96e" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M10 34l8 2 12-12 5 1-6 12 8 2 16-10a4 4 0 00-2-7l-4-1-10 6-8-2 2-5-4-1-7 10z" stroke="#c8a96e" stroke-width="1.5" stroke-linejoin="round" fill="rgba(200,169,110,0.08)"/>
+              <!-- Arrow up right -->
+              <path d="M50 16l-8 0M50 16l0 8" stroke="#c8a96e" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M50 16L42 24" stroke="#c8a96e" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            <div class="day-card-daynum">
+              <span class="day-card-daynum-label">Day</span>
+              <span class="day-card-daynum-val">5</span>
+            </div>
+          </div>
+          <div class="day-card-right">
+            <div class="day-card-title">返程 · 依依不捨</div>
+            <div class="day-card-desc">依航班時間辦理退房，專人接送前往機場。帶著滿滿的回憶與胡志明市說再見，期待下次相聚。</div>
+            <div class="day-tags">
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M2 7V4l3-3 3 3v3H6V5H4v2H2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>退房
+              </span>
+              <span class="day-tag">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M2 7l2-2 4-4M8 3v4H4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>送機
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="content-divider"></div>
+
+    <!-- 費用說明 -->
+    <section class="content-section" id="pricing">
+      <div class="content-section-tag">Pricing</div>
+      <h2 class="content-h2">費用<em>說明</em></h2>
+
+      <div class="plan-grid">
+
+        <!-- 基本團 -->
+        <div class="plan-card">
+          <div class="plan-header">
+            <div class="plan-name">經典五天四夜</div>
+            <div class="plan-sub">最熱銷行程</div>
+            <div class="plan-badge">熱門</div>
+          </div>
+          <div class="plan-body">
+            <div class="plan-price">
+              <span class="plan-currency">NT$</span>
+              <span class="plan-amount">15,000</span>
+              <span class="plan-unit">/人</span>
+            </div>
+            <ul class="plan-features">
+              <li>酒店住宿（4晚）</li>
+              <li>全程專車接送</li>
+              <li>在地中文導遊</li>
+              <li>越南上網SIM卡</li>
+              <li>主要景點入場費</li>
+              <li>換匯帶路服務</li>
+            </ul>
+            <button class="plan-cta" onclick="document.getElementById('csPanel').style.display='block'">立即報名</button>
+            <div class="plan-note">以上不含娛樂、餐飲</div>
+          </div>
+        </div>
+
+        <!-- 精緻團 -->
+        <div class="plan-card">
+          <div class="plan-header">
+            <div class="plan-name">精緻五天四夜</div>
+            <div class="plan-sub">升級住宿體驗</div>
+          </div>
+          <div class="plan-body">
+            <div class="plan-price">
+              <span class="plan-currency">NT$</span>
+              <span class="plan-amount">18,000</span>
+              <span class="plan-unit">/人</span>
+            </div>
+            <ul class="plan-features">
+              <li>精選四星酒店（4晚）</li>
+              <li>全程專車接送</li>
+              <li>在地中文導遊</li>
+              <li>越南上網SIM卡</li>
+              <li>主要景點入場費</li>
+              <li>精選餐廳體驗一次</li>
+            </ul>
+            <button class="plan-cta" onclick="document.getElementById('csPanel').style.display='block'">立即報名</button>
+            <div class="plan-note">以上不含娛樂、餐飲</div>
+          </div>
+        </div>
+
+        <!-- 快閃團 -->
+        <div class="plan-card">
+          <div class="plan-header">
+            <div class="plan-name">快閃三天兩夜</div>
+            <div class="plan-sub">精簡版行程</div>
+          </div>
+          <div class="plan-body">
+            <div class="plan-price">
+              <span class="plan-currency">NT$</span>
+              <span class="plan-amount">9,800</span>
+              <span class="plan-unit">/人</span>
+            </div>
+            <ul class="plan-features">
+              <li>酒店住宿（2晚）</li>
+              <li>全程專車接送</li>
+              <li>在地中文導遊</li>
+              <li>越南上網SIM卡</li>
+              <li>主要景點入場費</li>
+            </ul>
+            <button class="plan-cta" onclick="document.getElementById('csPanel').style.display='block'">立即報名</button>
+            <div class="plan-note">以上不含娛樂、餐飲</div>
+          </div>
+        </div>
+
+        <!-- 客製團 -->
+        <div class="plan-card plan-card-custom">
+          <div class="plan-header">
+            <div class="plan-name">豪華客製行程</div>
+            <div class="plan-sub">專屬一對一服務</div>
+          </div>
+          <div class="plan-body">
+            <div class="plan-price plan-price-custom">
+              <span class="plan-currency">NT$</span>
+              <span class="plan-amount">價格另計</span>
+            </div>
+            <div class="plan-custom-desc">想享受獨一無二的專屬行程？我們可依您的出團人數、興趣愛好、飲食、住宿等專業客製化行程安排，100% 讓您盡興而歸。</div>
+            <button class="plan-cta" onclick="document.getElementById('csPanel').style.display='block'">聯繫客服諮詢</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="highlight-box" style="margin-top:24px;">
+        <strong>💡 費用說明：</strong> 以上費用為團費，不含機票。當地消費（餐飲、娛樂、購物）均由商家直接出帳單，<strong>雲想不收取任何附加費用</strong>。
+      </div>
+    </section>
+
+    <div class="content-divider"></div>
+
+    <!-- 費用包含/不包含 -->
+    <section class="content-section" id="includes">
+      <div class="content-section-tag">Inclusions</div>
+      <h2 class="content-h2">費用<em>包含</em></h2>
+      <div class="include-grid">
+        <div class="include-col">
+          <div class="include-col-title yes">✓ 費用包含</div>
+          <ul class="include-list yes">
+            <li>全程24小時專業導遊服務</li>
+            <li>機場接送（來回）</li>
+            <li>越南上網SIM卡一張</li>
+            <li>4晚標準酒店住宿（雙人房）</li>
+            <li>當地主要景點入場費</li>
+            <li>換匯帶路服務</li>
+            <li>行程諮詢及規劃費用</li>
+          </ul>
+        </div>
+        <div class="include-col">
+          <div class="include-col-title no">✗ 費用不包含</div>
+          <ul class="include-list no">
+            <li>來回機票</li>
+            <li>越南簽證費（可代辦）</li>
+            <li>個人餐飲費用</li>
+            <li>Spa、KTV等娛樂消費</li>
+            <li>個人購物費用</li>
+            <li>旅遊平安保險</li>
+            <li>小費（建議每日NT$200）</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="content-divider"></div>
+
+    <!-- 注意事項 -->
+    <section class="content-section" id="notes">
+      <div class="content-section-tag">Important Notes</div>
+      <h2 class="content-h2">注意<em>事項</em></h2>
+      <h3 class="content-h3">行前準備</h3>
+      <p class="content-p">
+        出發前請確認護照效期距離回台日期至少 <strong style="color:var(--white)">6個月以上</strong>。越南電子簽證可由雲想代辦，費用另計，建議提前 <strong style="color:var(--white)">7個工作天</strong> 申請。
+      </p>
+      <p class="content-p">
+        行李建議輕便，換洗衣物3–5套即可。越南天氣全年偏熱，建議攜帶防曬乳、薄外套（冷氣房用）、舒適步行鞋。
+      </p>
+      <h3 class="content-h3">當地須知</h3>
+      <p class="content-p">
+        胡志明市交通繁忙，請勿自行過馬路，跟隨導遊行動最安全。當地貨幣為越南盾（VND），現金為主，建議保留部分台幣供換匯。
+      </p>
+      <div class="highlight-box">
+        <strong>⚠ 溫馨提醒：</strong> 如需購買菸酒、特殊商品，請告知導遊協助，切勿自行前往陌生地點，以確保人身安全。
+      </div>
+    </section>
+
+    <div class="content-divider"></div>
+
+    <!-- FAQ -->
+    <section class="content-section" id="faq">
+      <div class="content-section-tag">FAQ</div>
+      <h2 class="content-h2">常見<em>問題</em></h2>
+      <div id="faqList"></div>
+    </section>
+
+    <!-- CTA Bar -->
+    <div class="cta-bar">
+      <div class="cta-bar-text">
+        <div class="cta-bar-title">準備出發了嗎？</div>
+        <div class="cta-bar-sub">聯繫 Sophia 禮賓專員，確認出團日期，名額有限</div>
+      </div>
+      <div class="cta-bar-btns">
+        <button class="cta-btn-primary" onclick="document.getElementById('csPanel').style.display='block'">👩‍✈️ 聯繫客服</button>
+        <a href="index.html" class="cta-btn-outline">← 返回首頁</a>
+      </div>
+    </div>
+
+    <!-- CS Float Panel -->
+    <div id="csPanel" style="display:none;position:fixed;bottom:32px;right:32px;z-index:500;width:300px;background:#13110d;border:1px solid rgba(200,169,110,0.25);box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+      <div style="background:linear-gradient(135deg,#1c1914,#252219);border-bottom:1px solid rgba(200,169,110,0.2);padding:16px 20px;display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;border-radius:50%;overflow:hidden;border:2px solid #c8a96e;flex-shrink:0;">
+          <img src="uploads/ChatGPT Image 2026年5月1日 下午08_00_14.png" alt="Sophia" style="width:100%;height:100%;object-fit:cover;object-position:center top;" onerror="this.parentNode.innerHTML='👩&#x202F;✈️'">
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:500;color:#f5f0e8">Sophia · 禮賓專員</div>
+          <div style="font-size:10px;letter-spacing:0.1em;color:#c8a96e;text-transform:uppercase">🟢 線上服務中</div>
+        </div>
+        <button onclick="document.getElementById('csPanel').style.display='none'" style="background:none;border:none;color:#9a9080;cursor:pointer;font-size:18px;line-height:1;">×</button>
+      </div>
+      <div style="padding:12px;">
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(200,169,110,0.1);background:#1c1914;text-decoration:none;margin-bottom:6px;">
+          <span style="font-size:14px;width:22px;text-align:center">💬</span>
+          <div><div style="font-size:12px;color:#f5f0e8">LINE 即時諮詢</div><div style="font-size:10px;color:#9a9080">@yunxiang_travel</div></div>
+        </a>
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(200,169,110,0.1);background:#1c1914;text-decoration:none;margin-bottom:6px;">
+          <span style="font-size:14px;width:22px;text-align:center">📱</span>
+          <div><div style="font-size:12px;color:#f5f0e8">WhatsApp</div><div style="font-size:10px;color:#9a9080">+886 2 1234 5678</div></div>
+        </a>
+        <a href="#" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(200,169,110,0.1);background:#1c1914;text-decoration:none;margin-bottom:6px;">
+          <span style="font-size:14px;width:22px;text-align:center">✈️</span>
+          <div><div style="font-size:12px;color:#f5f0e8">Telegram</div><div style="font-size:10px;color:#9a9080">@yunxiang_cs</div></div>
+        </a>
+        <a href="tel:0800123456" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(200,169,110,0.1);background:#1c1914;text-decoration:none;">
+          <span style="font-size:14px;width:22px;text-align:center">📞</span>
+          <div><div style="font-size:12px;color:#f5f0e8">客服電話</div><div style="font-size:10px;color:#9a9080">0800-123-456（免費）</div></div>
+        </a>
+      </div>
+      <div style="padding:10px 12px;border-top:1px solid rgba(200,169,110,0.1);text-align:center;font-size:10px;color:#9a9080">服務時間 09:00–22:00 (GMT+8)</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── FAQ 資料 ──
+const faqs = [
+  { q:'一個人可以參加嗎？', a:'當然可以！我們會為您媒合旅伴，確定成團後建立專屬群組，出發前就能和其他成員互動認識，抵達後一起同樂。' },
+  { q:'需要帶什麼幣別？', a:'攜帶新台幣即可，抵達當地導遊會帶大家至銀樓換匯，匯率比在機場換匯更好。最低預算一天NT$10,000起。' },
+  { q:'行程可以自行調整嗎？', a:'完全可以！我們提供的行程表僅供參考，您可以隨時和老司機導遊討論，非常彈性，都能調整成您想要的內容。' },
+  { q:'如何確認是否成團？', a:'選定出發日期後聯繫客服，我們會為您確認當期團的狀況。確認成團後，您會收到通知並填寫報名表單。' },
+  { q:'可以只去3天2夜嗎？', a:'可以的！只要您去的日期和現有團有重疊，我們就能幫您加入。3天2夜費用依方案計算，詳情請諮詢客服。' },
+];
+
+const faqList = document.getElementById('faqList');
+faqs.forEach((faq, i) => {
+  const item = document.createElement('div');
+  item.style.cssText = 'border-bottom: 1px solid rgba(200,169,110,0.15);';
+  item.innerHTML = `
+    <button onclick="toggleFaq(${i})" id="faqBtn${i}" style="width:100%; display:flex; justify-content:space-between; align-items:center; padding:20px 0; background:none; border:none; cursor:pointer; font-family:inherit; text-align:left;">
+      <span style="font-size:15px; color:var(--white); font-weight:300; line-height:1.5; padding-right:20px;">${faq.q}</span>
+      <span id="faqIcon${i}" style="color:var(--gold); font-size:20px; flex-shrink:0; transition:transform 0.3s;">+</span>
+    </button>
+    <div id="faqAns${i}" style="display:none; padding:0 0 20px; font-size:14px; color:var(--text-muted); line-height:1.9;">${faq.a}</div>
+  `;
+  faqList.appendChild(item);
+});
+
+function toggleFaq(i) {
+  const ans = document.getElementById('faqAns' + i);
+  const icon = document.getElementById('faqIcon' + i);
+  const open = ans.style.display !== 'none';
+  ans.style.display = open ? 'none' : 'block';
+  icon.style.transform = open ? 'rotate(0)' : 'rotate(45deg)';
+}
+
+// ── Sidebar scroll spy ──
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+const sections = ['overview','itinerary','pricing','includes','notes','faq'];
+const links = document.querySelectorAll('.sidebar-link');
+
+window.addEventListener('scroll', () => {
+  let current = sections[0];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 100) current = id;
+  });
+  links.forEach(l => {
+    l.classList.remove('active');
+    if (l.getAttribute('onclick')?.includes(current)) l.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

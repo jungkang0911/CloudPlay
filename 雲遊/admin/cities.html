@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>城市管理 — 雲遊後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="_admin.js"></script>
+</head>
+<body>
+<main class="admin-main">
+  <h1 class="page-title">城市管理</h1>
+  <div class="toolbar">
+    <select id="filter-country" class="adm-select" style="width:160px;" onchange="filterChanged()">
+      <option value="">全部國家</option>
+    </select>
+    <button class="btn-primary toolbar-right" onclick="openPanel()">＋ 新增城市</button>
+  </div>
+  <table class="adm-table">
+    <thead>
+      <tr><th>代碼</th><th>國家</th><th>城市</th><th>英文</th><th>地區數</th><th>排序</th><th></th></tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</main>
+
+<div id="panel-overlay" class="panel-overlay" style="display:none;" onclick="closePanel(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-title">
+      <span id="panel-heading">新增城市</span>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">城市代碼 *</label>
+        <input id="f-code" class="adm-input" placeholder="e.g. hcm">
+      </div>
+      <div class="form-group">
+        <label class="form-label">所屬國家 *</label>
+        <select id="f-country" class="adm-select"></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">城市名稱 *</label>
+        <input id="f-name" class="adm-input" placeholder="e.g. 胡志明">
+      </div>
+      <div class="form-group">
+        <label class="form-label">英文名稱</label>
+        <input id="f-name-en" class="adm-input" placeholder="e.g. Ho Chi Minh">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Banner 圖片 URL</label>
+      <input id="f-banner" class="adm-input" placeholder="https://...">
+      <div id="f-banner-preview" style="margin-top:8px;"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">地區列表</label>
+      <div id="regions-container"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">排序</label>
+      <input id="f-sort" class="adm-input" type="number" value="0">
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn-danger" id="btn-delete" onclick="doDelete()" style="margin-right:auto;display:none;">刪除</button>
+      <button class="btn-ghost" onclick="closePanel()">取消</button>
+      <button class="btn-primary" onclick="doSave()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let allCities = [];
+let countries = [];
+let editCode = null;
+let regionList = null;
+
+(async () => {
+  const session = await requireAuth();
+  if (!session) return;
+  injectSidebar(session);
+
+  const { data: c } = await sb.from('countries').select('code,name,flag').order('sort_order');
+  countries = c || [];
+
+  const sel = document.getElementById('filter-country');
+  countries.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.code; o.textContent = `${c.flag || ''} ${c.name}`;
+    sel.appendChild(o);
+  });
+
+  await loadRows();
+})();
+
+async function loadRows() {
+  const { data } = await sb.from('cities').select('*').order('sort_order').order('name');
+  allCities = data || [];
+  filterChanged();
+}
+
+function filterChanged() {
+  const fc = document.getElementById('filter-country').value;
+  const rows = fc ? allCities.filter(r => r.country_code === fc) : allCities;
+  renderTable(rows);
+}
+
+function renderTable(rows) {
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const c = countries.find(x => x.code === r.country_code);
+    const regions = Array.isArray(r.regions) ? r.regions : [];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="badge badge-muted">${r.code}</span></td>
+      <td>${c ? `${c.flag || ''} ${c.name}` : r.country_code}</td>
+      <td style="font-weight:500;">${r.name}</td>
+      <td style="color:var(--muted);">${r.name_en || '—'}</td>
+      <td style="color:var(--muted);">${regions.length}</td>
+      <td style="color:var(--muted);">${r.sort_order}</td>
+      <td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openPanel('${r.code}')">編輯</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function openPanel(code) {
+  editCode = code || null;
+  const r = code ? allCities.find(x => x.code === code) : null;
+  document.getElementById('panel-heading').textContent = r ? '編輯城市' : '新增城市';
+  document.getElementById('f-code').value    = r?.code    || '';
+  document.getElementById('f-code').disabled = !!r;
+  document.getElementById('f-name').value    = r?.name    || '';
+  document.getElementById('f-name-en').value = r?.name_en || '';
+  document.getElementById('f-banner').value  = r?.banner_img || '';
+  document.getElementById('f-sort').value    = r?.sort_order ?? 0;
+  document.getElementById('btn-delete').style.display = r ? 'inline-block' : 'none';
+
+  const sel = document.getElementById('f-country');
+  sel.innerHTML = '';
+  countries.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.code; o.textContent = `${c.flag || ''} ${c.name}`;
+    if (r && r.country_code === c.code) o.selected = true;
+    sel.appendChild(o);
+  });
+
+  const regions = Array.isArray(r?.regions) ? r.regions : [];
+  const container = document.getElementById('regions-container');
+  container.innerHTML = '';
+  regionList = stringList(regions);
+  container.appendChild(regionList.el);
+
+  previewBanner(r?.banner_img || '');
+  document.getElementById('panel-overlay').style.display = 'flex';
+}
+
+function closePanel(e) {
+  if (e && e.target !== document.getElementById('panel-overlay')) return;
+  document.getElementById('panel-overlay').style.display = 'none';
+}
+
+document.getElementById('f-banner').addEventListener('input', e => previewBanner(e.target.value));
+function previewBanner(url) {
+  const el = document.getElementById('f-banner-preview');
+  el.innerHTML = url ? `<img src="${url}" style="max-width:100%;max-height:120px;border-radius:4px;border:1px solid var(--border);" onerror="this.style.display='none'">` : '';
+}
+
+async function doSave() {
+  const code    = document.getElementById('f-code').value.trim().toLowerCase();
+  const name    = document.getElementById('f-name').value.trim();
+  const country = document.getElementById('f-country').value;
+  if (!code || !name || !country) { toast('代碼、名稱、國家為必填', 'error'); return; }
+
+  const payload = {
+    code,
+    country_code: country,
+    name,
+    name_en:    document.getElementById('f-name-en').value.trim() || null,
+    banner_img: document.getElementById('f-banner').value.trim() || null,
+    regions:    regionList.getValue(),
+    sort_order: parseInt(document.getElementById('f-sort').value) || 0,
+  };
+
+  const { error } = editCode
+    ? await sb.from('cities').update(payload).eq('code', editCode)
+    : await sb.from('cities').insert(payload);
+
+  if (error) { toast('儲存失敗：' + error.message, 'error'); return; }
+  toast('已儲存');
+  document.getElementById('panel-overlay').style.display = 'none';
+  await loadRows();
+}
+
+async function doDelete() {
+  if (!confirm2(`確定刪除「${editCode}」？`)) return;
+  const { error } = await sb.from('cities').delete().eq('code', editCode);
+  if (error) { toast('刪除失敗：' + error.message, 'error'); return; }
+  toast('已刪除');
+  document.getElementById('panel-overlay').style.display = 'none';
+  await loadRows();
+}
+</script>
+</body>
+</html>

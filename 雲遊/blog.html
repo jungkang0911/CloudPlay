@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心得分享 — 雲遊國際</title>
+<meta name="description" content="雲遊國際的旅人筆記與在地體驗：美食推薦、酒店評測、節慶活動、會員專欄與深度遊記。" />
+<meta name="keywords" content="旅遊心得, 美食推薦, 酒店評測, 節慶活動, 在地體驗, 雲遊國際" />
+<meta property="og:title" content="心得分享 — 雲遊國際" />
+<meta property="og:description" content="旅人筆記與在地體驗，深度遊記與優惠情報。" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c8a96e;--gold-light:#e2c98a;--gold-dim:#a08040;--black:#0a0906;--black2:#13110d;--black3:#1c1914;--black4:#252219;--white:#f5f0e8;--white2:#ede5d5;--text-muted:#9a9080;--font-serif:'Cormorant Garamond',Georgia,serif;--font-sans:'Noto Sans TC',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:var(--font-sans);font-weight:300;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--black2);}::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px;}
+button{font-family:inherit;}
+
+/* ───── Persistent Navbar ───── */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,9,6,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,169,110,0.15);height:64px;display:flex;align-items:center;padding:0 40px;gap:24px;transition:height 0.3s, background 0.3s;}
+.navbar.shrunk{height:54px;background:rgba(10,9,6,0.98);}
+.nav-logo{font-family:var(--font-serif);font-size:24px;font-weight:300;font-style:italic;color:var(--gold);text-decoration:none;letter-spacing:0.08em;flex-shrink:0;}
+.nav-logo span{font-style:normal;font-weight:600;}
+.nav-links{display:flex;gap:24px;align-items:center;}
+.nav-link{font-size:12px;letter-spacing:0.1em;color:var(--text-muted);text-decoration:none;text-transform:uppercase;border-bottom:1px solid transparent;padding:6px 2px;transition:all 0.2s;}
+.nav-link:hover,.nav-link.active{color:var(--gold);border-bottom-color:var(--gold);}
+.nav-spacer{flex:1;}
+.nav-actions{display:flex;gap:10px;align-items:center;}
+.nav-btn{padding:8px 16px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;background:transparent;border:1px solid rgba(200,169,110,0.4);color:var(--gold);transition:all 0.2s;text-decoration:none;}
+.nav-btn:hover{border-color:var(--gold);background:rgba(200,169,110,0.05);}
+.nav-btn-fill{background:var(--gold);border-color:var(--gold);color:var(--black);font-weight:500;}
+.nav-btn-fill:hover{background:var(--gold-light);}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--gold);cursor:pointer;flex-direction:column;gap:4px;padding:8px;}
+.mobile-menu-btn span{display:block;width:22px;height:1px;background:var(--gold);}
+
+/* ───── Page Hero ───── */
+.page-hero{margin-top:64px;padding:72px 40px 48px;text-align:center;border-bottom:1px solid rgba(200,169,110,0.12);background:linear-gradient(180deg,rgba(28,25,20,0.4) 0%,transparent 100%);}
+.breadcrumb{display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.12em;color:var(--text-muted);text-transform:uppercase;margin-bottom:24px;}
+.breadcrumb a{color:var(--text-muted);text-decoration:none;transition:color 0.15s;}
+.breadcrumb a:hover{color:var(--gold);}
+.breadcrumb-sep{color:var(--gold-dim);}
+.breadcrumb .current{color:var(--gold);}
+.page-eyebrow{font-size:11px;letter-spacing:0.4em;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
+.page-title{font-family:var(--font-serif);font-size:clamp(48px,7vw,84px);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:18px;}
+.page-title em{color:var(--gold);font-style:italic;}
+.page-sub{font-size:14px;color:var(--text-muted);line-height:1.8;max-width:600px;margin:0 auto;}
+
+/* ───── Layout switcher (Tweaks-style) ───── */
+.layout-switch{display:flex;justify-content:center;gap:0;margin-top:36px;border:1px solid rgba(200,169,110,0.2);width:fit-content;margin-left:auto;margin-right:auto;}
+.layout-switch button{background:transparent;color:var(--text-muted);border:none;padding:9px 18px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.layout-switch button.active{background:var(--gold);color:var(--black);font-weight:500;}
+.layout-switch button:hover:not(.active){color:var(--gold);}
+
+/* ───── Category bar (sticky) ───── */
+.cat-bar{position:sticky;top:64px;z-index:50;background:rgba(19,17,13,0.96);backdrop-filter:blur(8px);border-bottom:1px solid rgba(200,169,110,0.15);padding:14px 40px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;}
+.cat-chip{font-size:11px;letter-spacing:0.1em;padding:7px 16px;border:1px solid rgba(200,169,110,0.22);color:var(--text-muted);background:transparent;cursor:pointer;transition:all 0.18s;font-family:inherit;}
+.cat-chip:hover{color:var(--gold);border-color:rgba(200,169,110,0.5);}
+.cat-chip.active{background:var(--gold);color:var(--black);border-color:var(--gold);font-weight:500;}
+
+/* ───── Common card styles ───── */
+.article-card{background:var(--black2);border:1px solid rgba(200,169,110,0.12);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:transform 0.3s, border-color 0.3s, box-shadow 0.3s;text-decoration:none;color:inherit;}
+.article-card:hover{transform:translateY(-3px);border-color:rgba(200,169,110,0.45);box-shadow:0 8px 24px rgba(0,0,0,0.5);}
+.ac-img{aspect-ratio:16/10;background:repeating-linear-gradient(45deg,#1c1914,#1c1914 8px,#161310 8px,#161310 16px);position:relative;display:flex;align-items:center;justify-content:center;color:rgba(200,169,110,0.3);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;}
+.ac-cat{position:absolute;top:14px;left:14px;font-size:9px;letter-spacing:0.2em;color:var(--gold);background:rgba(10,9,6,0.85);border:1px solid rgba(200,169,110,0.4);padding:4px 10px;text-transform:uppercase;backdrop-filter:blur(4px);}
+.ac-body{padding:22px 22px 24px;flex:1;display:flex;flex-direction:column;}
+.ac-meta-top{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px;}
+.ac-meta-top .dot{width:3px;height:3px;border-radius:50%;background:var(--gold-dim);}
+.ac-title{font-family:var(--font-serif);font-size:24px;font-weight:300;color:var(--white);line-height:1.3;margin-bottom:12px;letter-spacing:0.01em;}
+.ac-excerpt{font-size:13px;color:var(--text-muted);line-height:1.75;margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.ac-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(200,169,110,0.08);font-size:11px;color:var(--text-muted);}
+.ac-author{display:flex;align-items:center;gap:8px;}
+.ac-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;color:var(--black);font-size:10px;font-weight:600;}
+.ac-views{display:flex;align-items:center;gap:5px;}
+
+/* ═══════════════════════════════════════════════════════
+   LAYOUT A — 雜誌式 (Magazine)
+   Big featured + asymmetric grid
+   ═══════════════════════════════════════════════════════ */
+.layout-magazine{padding:48px 40px 80px;max-width:1280px;margin:0 auto;}
+.featured-row{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;margin-bottom:40px;}
+.featured-main{position:relative;min-height:480px;background:repeating-linear-gradient(45deg,#1c1914,#1c1914 8px,#161310 8px,#161310 16px);overflow:hidden;cursor:pointer;display:flex;align-items:flex-end;text-decoration:none;color:inherit;}
+.featured-main::before{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(10,9,6,0.95) 0%,rgba(10,9,6,0.4) 50%,transparent 100%);}
+.featured-main-content{position:relative;padding:40px 36px 36px;z-index:1;width:100%;}
+.featured-main .ac-cat{position:absolute;top:24px;left:24px;}
+.featured-meta-top{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.12em;color:var(--white2);text-transform:uppercase;margin-bottom:14px;}
+.featured-title{font-family:var(--font-serif);font-size:clamp(28px,3.5vw,42px);font-weight:300;color:var(--white);line-height:1.15;margin-bottom:14px;}
+.featured-title em{color:var(--gold);font-style:italic;}
+.featured-excerpt{font-size:14px;color:var(--white2);line-height:1.7;max-width:560px;margin-bottom:18px;}
+.featured-foot{display:flex;align-items:center;gap:14px;font-size:11px;color:var(--white2);}
+.featured-side{display:flex;flex-direction:column;gap:24px;}
+.side-card{display:flex;gap:16px;cursor:pointer;text-decoration:none;color:inherit;flex:1;border:1px solid rgba(200,169,110,0.12);padding:16px;background:var(--black2);transition:border-color 0.2s, transform 0.2s;}
+.side-card:hover{border-color:rgba(200,169,110,0.4);transform:translateX(2px);}
+.side-card-img{width:140px;flex-shrink:0;aspect-ratio:1/1;background:repeating-linear-gradient(45deg,#1c1914,#1c1914 8px,#161310 8px,#161310 16px);position:relative;}
+.side-card-cat{position:absolute;top:8px;left:8px;font-size:8px;letter-spacing:0.18em;color:var(--gold);background:rgba(10,9,6,0.8);padding:3px 7px;text-transform:uppercase;}
+.side-card-body{flex:1;display:flex;flex-direction:column;}
+.side-card-title{font-family:var(--font-serif);font-size:18px;font-weight:300;color:var(--white);line-height:1.3;margin-bottom:8px;}
+.side-card-meta{margin-top:auto;font-size:10px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;}
+
+.section-band{font-family:var(--font-serif);font-size:14px;font-style:italic;color:var(--gold);letter-spacing:0.15em;margin:36px 0 24px;display:flex;align-items:center;gap:14px;}
+.section-band::before,.section-band::after{content:'';flex:1;height:1px;background:rgba(200,169,110,0.2);}
+.section-band-text{font-style:italic;}
+
+.mag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+
+/* ═══════════════════════════════════════════════════════
+   LAYOUT B — 部落格式 (Sidebar Blog)
+   ═══════════════════════════════════════════════════════ */
+.layout-blog{display:none;max-width:1200px;margin:0 auto;padding:48px 40px 80px;gap:48px;grid-template-columns:1fr 280px;}
+.blog-main{min-width:0;}
+.blog-list{display:flex;flex-direction:column;gap:24px;}
+.blog-row{display:grid;grid-template-columns:300px 1fr;gap:24px;background:var(--black2);border:1px solid rgba(200,169,110,0.12);overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;transition:border-color 0.3s, transform 0.3s;}
+.blog-row:hover{border-color:rgba(200,169,110,0.45);transform:translateY(-2px);}
+.blog-row-img{aspect-ratio:auto;height:100%;min-height:200px;background:repeating-linear-gradient(45deg,#1c1914,#1c1914 8px,#161310 8px,#161310 16px);position:relative;}
+.blog-row-body{padding:24px 28px 24px 0;display:flex;flex-direction:column;}
+.blog-row .ac-cat{position:absolute;top:14px;left:14px;}
+.blog-row .ac-title{font-size:26px;}
+.blog-row .ac-excerpt{-webkit-line-clamp:3;}
+
+.blog-sidebar{display:flex;flex-direction:column;gap:32px;}
+.sb-widget{}
+.sb-title{font-size:10px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;padding-bottom:10px;border-bottom:1px solid rgba(200,169,110,0.15);margin-bottom:14px;}
+.sb-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.sb-cat-item{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);cursor:pointer;padding:6px 0;border-bottom:1px dashed rgba(200,169,110,0.06);transition:color 0.2s;}
+.sb-cat-item:hover{color:var(--gold);}
+.sb-cat-count{color:var(--gold-dim);font-size:11px;}
+.sb-popular-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed rgba(200,169,110,0.08);cursor:pointer;text-decoration:none;color:inherit;}
+.sb-popular-item:last-child{border-bottom:none;}
+.sb-popular-num{font-family:var(--font-serif);font-size:28px;font-style:italic;color:var(--gold-dim);line-height:1;flex-shrink:0;}
+.sb-popular-title{font-size:13px;color:var(--white2);line-height:1.4;}
+.sb-popular-meta{font-size:10px;color:var(--text-muted);margin-top:4px;letter-spacing:0.06em;}
+.sb-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.sb-tag{font-size:10px;letter-spacing:0.06em;padding:5px 10px;border:1px solid rgba(200,169,110,0.18);color:var(--text-muted);cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.sb-tag:hover{color:var(--gold);border-color:var(--gold);}
+
+/* ═══════════════════════════════════════════════════════
+   LAYOUT C — 極簡型錄 (Minimal Grid)
+   ═══════════════════════════════════════════════════════ */
+.layout-minimal{display:none;max-width:1280px;margin:0 auto;padding:48px 40px 80px;}
+.min-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px 24px;}
+.min-card{cursor:pointer;text-decoration:none;color:inherit;display:flex;flex-direction:column;}
+.min-card:hover .min-img{border-color:rgba(200,169,110,0.45);}
+.min-card:hover .min-title{color:var(--gold);}
+.min-img{aspect-ratio:4/3;background:repeating-linear-gradient(45deg,#1c1914,#1c1914 8px,#161310 8px,#161310 16px);border:1px solid rgba(200,169,110,0.12);position:relative;margin-bottom:18px;transition:border-color 0.3s;}
+.min-cat{position:absolute;bottom:14px;left:14px;font-size:9px;letter-spacing:0.2em;color:var(--gold);background:rgba(10,9,6,0.85);padding:4px 10px;text-transform:uppercase;backdrop-filter:blur(4px);}
+.min-meta{font-size:10px;letter-spacing:0.12em;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;}
+.min-title{font-family:var(--font-serif);font-size:22px;font-weight:300;color:var(--white);line-height:1.3;margin-bottom:8px;transition:color 0.2s;}
+.min-excerpt{font-size:12.5px;color:var(--text-muted);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.min-foot{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:10px;color:var(--text-muted);letter-spacing:0.05em;}
+
+/* ───── Empty state ───── */
+.empty-state{padding:80px 20px;text-align:center;color:var(--text-muted);font-size:14px;grid-column:1/-1;}
+.empty-state-icon{font-size:36px;color:var(--gold-dim);margin-bottom:12px;}
+
+/* ───── Backend hint ───── */
+.backend-hint{max-width:1100px;margin:0 auto 24px;padding:14px 28px;background:rgba(200,169,110,0.05);border:1px dashed rgba(200,169,110,0.25);font-size:11px;color:var(--text-muted);letter-spacing:0.05em;display:flex;align-items:center;gap:10px;}
+.backend-hint strong{color:var(--gold);font-weight:400;}
+
+/* ───── Footer ───── */
+.footer{margin-top:60px;padding:48px 40px 24px;background:var(--black2);border-top:1px solid rgba(200,169,110,0.1);}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.footer-logo{font-family:var(--font-serif);font-size:22px;font-style:italic;color:var(--gold);}
+.footer-copy{font-size:11px;color:var(--text-muted);letter-spacing:0.04em;}
+
+/* ───── Mobile ───── */
+@media(max-width:1100px){
+  .featured-row{grid-template-columns:1fr;}
+  .featured-main{min-height:400px;}
+  .featured-side{flex-direction:row;}
+  .layout-blog{grid-template-columns:1fr;}
+  .blog-sidebar{display:none;}
+}
+@media(max-width:900px){
+  .navbar{padding:0 20px;gap:14px;}
+  .nav-links{display:none;}
+  .mobile-menu-btn{display:flex;}
+  .page-hero{padding:48px 24px 32px;}
+  .cat-bar{padding:12px 20px;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;}
+  .cat-bar::-webkit-scrollbar{display:none;}
+  .cat-chip{flex-shrink:0;font-size:10.5px;padding:6px 12px;}
+  .layout-magazine,.layout-blog,.layout-minimal{padding:32px 16px 60px;}
+  .featured-side{flex-direction:column;}
+  .mag-grid,.min-grid{grid-template-columns:1fr;gap:20px;}
+  .blog-row{grid-template-columns:1fr;}
+  .blog-row-img{min-height:180px;aspect-ratio:16/10;}
+  .blog-row-body{padding:20px 22px 22px;}
+  .blog-row .ac-title{font-size:22px;}
+  .footer{padding:32px 20px 18px;}
+}
+@media(max-width:520px){
+  .side-card{flex-direction:column;}
+  .side-card-img{width:100%;aspect-ratio:16/10;}
+  .featured-main-content{padding:24px 20px 20px;}
+  .layout-switch{width:100%;}
+  .layout-switch button{flex:1;padding:9px 8px;font-size:10px;}
+}
+
+/* ───── Mobile Drawer ───── */
+.mobile-nav{position:fixed;inset:0;background:rgba(10,9,6,0.98);z-index:200;display:flex;flex-direction:column;padding:80px 32px 32px;transform:translateX(100%);transition:transform 0.3s;}
+.mobile-nav.open{transform:translateX(0);}
+.mobile-nav-close{position:absolute;top:18px;right:24px;background:none;border:none;color:var(--gold);font-size:32px;cursor:pointer;}
+.mobile-nav-link{font-family:var(--font-serif);font-size:24px;color:var(--white);text-decoration:none;padding:16px 0;border-bottom:1px solid rgba(200,169,110,0.1);}
+.mobile-nav-link:hover{color:var(--gold);}
+</style>
+
+<!-- JSON-LD: Blog schema -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Blog",
+  "name":"心得分享",
+  "description":"雲遊國際的旅人筆記與在地體驗，包含美食推薦、酒店評測、節慶活動、會員專欄與深度遊記。",
+  "publisher":{"@type":"Organization","name":"雲遊國際"}
+}
+</script>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo"><img src="uploads/logo-mark.png" alt="雲遊國際" style="height:30px;width:auto;vertical-align:middle;margin-right:8px;" /><span style="font-style:normal;font-weight:400;letter-spacing:0.12em;font-size:16px;">雲遊國際</span></a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">目的地</a>
+    <a href="content-page.html" class="nav-link">旅遊行程</a>
+    <a href="blog.html" class="nav-link active">心得分享</a>
+    <a href="about-page.html" class="nav-link">會員</a>
+    <a href="about-page.html" class="nav-link">關於我們</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions">
+    <a href="index.html" class="nav-btn">登入</a>
+    <a href="index.html" class="nav-btn nav-btn-fill">免費加入</a>
+    <button class="mobile-menu-btn" onclick="document.getElementById('mobileNav').classList.add('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" onclick="document.getElementById('mobileNav').classList.remove('open')">×</button>
+  <a href="index.html" class="mobile-nav-link">目的地</a>
+  <a href="content-page.html" class="mobile-nav-link">旅遊行程</a>
+  <a href="blog.html" class="mobile-nav-link">心得分享</a>
+  <a href="about-page.html" class="mobile-nav-link">會員</a>
+  <a href="about-page.html" class="mobile-nav-link">關於我們</a>
+</div>
+
+<!-- Hero -->
+<section class="page-hero">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="index.html">首頁</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="current">心得分享</span>
+  </nav>
+  <div class="page-eyebrow">Travel Notes · Stories · Reviews</div>
+  <h1 class="page-title">心得 <em>分享</em></h1>
+  <p class="page-sub">旅人筆記、在地體驗與深度遊記。每一篇都來自雲想團隊或會員的真實旅途，獻給每一位準備出發的你。</p>
+  <div class="layout-switch" role="tablist" aria-label="版面切換">
+    <button data-layout="magazine" class="active">雜誌式</button>
+    <button data-layout="blog">部落格式</button>
+    <button data-layout="minimal">極簡型錄</button>
+  </div>
+</section>
+
+<!-- Category bar -->
+<div class="cat-bar" id="catBar">
+  <button class="cat-chip active" data-cat="all">全部</button>
+  <button class="cat-chip" data-cat="food">美食推薦</button>
+  <button class="cat-chip" data-cat="hotel">酒店評測</button>
+  <button class="cat-chip" data-cat="local">在地體驗</button>
+  <button class="cat-chip" data-cat="festival">節慶活動</button>
+  <button class="cat-chip" data-cat="member">會員專欄</button>
+</div>
+
+<div class="backend-hint" style="margin-top:24px;">
+  <span style="color:var(--gold);font-size:13px;">⚙</span>
+  <span><strong>後台可上架：</strong>分類、文章、標籤、SEO meta、發布時間、瀏覽數，皆可由後台設定。版面（雜誌／部落格／極簡）也可在後台切換。</span>
+</div>
+
+<!-- ════════════ LAYOUT A: Magazine ════════════ -->
+<main class="layout-magazine" id="layoutMagazine">
+  <!-- Featured row (1 hero + 2 side) -->
+  <div class="featured-row" id="featuredRow"></div>
+  <div class="section-band"><span class="section-band-text">最新文章 · Latest Posts</span></div>
+  <div class="mag-grid" id="magGrid"></div>
+</main>
+
+<!-- ════════════ LAYOUT B: Blog with sidebar ════════════ -->
+<main class="layout-blog" id="layoutBlog">
+  <div class="blog-main">
+    <div class="blog-list" id="blogList"></div>
+  </div>
+  <aside class="blog-sidebar">
+    <div class="sb-widget">
+      <div class="sb-title">分類</div>
+      <ul class="sb-list" id="sbCats"></ul>
+    </div>
+    <div class="sb-widget">
+      <div class="sb-title">熱門文章</div>
+      <div id="sbPopular"></div>
+    </div>
+    <div class="sb-widget">
+      <div class="sb-title">熱門標籤</div>
+      <div class="sb-tags" id="sbTags"></div>
+    </div>
+  </aside>
+</main>
+
+<!-- ════════════ LAYOUT C: Minimal ════════════ -->
+<main class="layout-minimal" id="layoutMinimal">
+  <div class="min-grid" id="minGrid"></div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">雲遊國際</div>
+    <div class="footer-copy">© 2026 雲遊國際 · All rights reserved</div>
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// Backend-shaped article data (would come from CMS API)
+// Each post has: id, slug, cat, title, excerpt, author, date, views, readMin, tags, meta(SEO), height
+// ═══════════════════════════════════════════════════════
+const POSTS = [
+  {id:'p1', slug:'bangkok-night-life-guide', cat:'local', title:'曼谷不眠夜：當地人的私房深夜行程', excerpt:'從 Sukhumvit 的隱藏酒吧到河岸夜市，這份深夜指南帶你避開觀光陷阱，走進真正的曼谷。', author:'M. Chen', date:'2026-04-28', views:12480, readMin:8, tags:['曼谷','夜生活','酒吧'], featured:true},
+  {id:'p2', slug:'kyoto-cherry-blossom-2026', cat:'festival', title:'2026 京都櫻花季完整攻略', excerpt:'三月底到四月初，從哲學之道到嵐山賞櫻時刻表，私房景點與最佳拍攝時間一次告訴你。', author:'Y. Tanaka', date:'2026-04-25', views:18234, readMin:12, tags:['京都','櫻花','日本']},
+  {id:'p3', slug:'siam-heritage-hotel-review', cat:'hotel', title:'The Siam Heritage 入住評測：曼谷精品酒店首選', excerpt:'坐擁無邊際泳池與曼谷天際線，這家精品五星酒店是否值得它的高價？實住三晚的真實心得。', author:'L. Wu', date:'2026-04-22', views:8945, readMin:10, tags:['酒店評測','曼谷','五星級']},
+  {id:'p4', slug:'jay-fai-michelin', cat:'food', title:'戴泳鏡的米其林：Jay Fai 蟹肉蛋包飯朝聖', excerpt:'排了 5 小時的隊只為一顆蛋包飯。傳奇阿嬤的米其林一星，到底特別在哪裡？', author:'M. Chen', date:'2026-04-20', views:15672, readMin:6, tags:['美食','米其林','曼谷']},
+  {id:'p5', slug:'da-nang-beach-secrets', cat:'local', title:'峴港海灘秘境：在地人才知道的五個地方', excerpt:'My Khe 已經太擁擠了。這篇推薦 5 個遊客不會去、卻擁有最美海岸線的私房秘境。', author:'T. Nguyen', date:'2026-04-18', views:9823, readMin:7, tags:['峴港','海灘','越南']},
+  {id:'p6', slug:'taipei-night-market-deep-tour', cat:'food', title:'台北夜市深度遊：在地人的小吃地圖', excerpt:'士林夜市以外，這 8 個在地人愛去的夜市，才是台北真正的滋味所在。', author:'C. Lin', date:'2026-04-15', views:11234, readMin:9, tags:['台北','夜市','美食']},
+  {id:'p7', slug:'member-exclusive-companion-tour', cat:'member', title:'會員專屬：一日伴遊體驗實錄', excerpt:'第一次預約一日伴遊服務，全程的真實感受與建議。會員等級的差異讓你直接看見。', author:'雲想編輯部', date:'2026-04-12', views:6534, readMin:11, tags:['會員專屬','一日伴遊','雲想體驗'], featured:true},
+  {id:'p8', slug:'songkran-2026-guide', cat:'festival', title:'2026 潑水節完全攻略：怎麼玩才不會被痛宰', excerpt:'四月中旬的曼谷潑水節，這篇告訴你哪裡最熱鬧、怎麼準備、怎麼避開遊客陷阱。', author:'M. Chen', date:'2026-04-08', views:14782, readMin:8, tags:['泰國','節慶','潑水節']},
+  {id:'p9', slug:'kyoto-ryokan-review', cat:'hotel', title:'京都老舖旅館：俵屋的百年待客之道', excerpt:'創業三百年的京都老舖旅館，一晚要價多少？又值不值得？深度體驗與評測。', author:'Y. Tanaka', date:'2026-04-05', views:7234, readMin:13, tags:['京都','旅館','日本']},
+  {id:'p10', slug:'spa-thailand-best5', cat:'local', title:'泰國 SPA 體驗排行：高端 vs 庶民的選擇', excerpt:'從 5000 銖的奢華 Spa 到 200 銖的傳統按摩，五家精選比較給你最完整參考。', author:'L. Wu', date:'2026-04-02', views:10523, readMin:9, tags:['泰國','Spa','按摩']},
+  {id:'p11', slug:'da-nang-coffee-culture', cat:'food', title:'峴港咖啡文化：滴漏咖啡的 7 種喝法', excerpt:'越南咖啡不只有煉乳冰咖啡。在峴港，咖啡是一種生活儀式。', author:'T. Nguyen', date:'2026-03-30', views:8932, readMin:7, tags:['咖啡','峴港','文化']},
+  {id:'p12', slug:'member-vip-perks', cat:'member', title:'雲想會員專欄：你不知道的 7 種隱藏福利', excerpt:'升級會員後才發現的隱藏福利，這篇整理給你看。從 VIP 訂房到專屬機場接送，全部公開。', author:'雲想編輯部', date:'2026-03-28', views:5234, readMin:6, tags:['會員專屬','福利']},
+];
+
+const CATS = [
+  {id:'all', name:'全部'},
+  {id:'food', name:'美食推薦'},
+  {id:'hotel', name:'酒店評測'},
+  {id:'local', name:'在地體驗'},
+  {id:'festival', name:'節慶活動'},
+  {id:'member', name:'會員專欄'},
+];
+const CAT_LABEL = Object.fromEntries(CATS.map(c => [c.id, c.name]));
+
+// ───── State ─────
+let currentLayout = 'magazine';
+let activeCat = 'all';
+
+const fmtViews = n => n >= 1000 ? (n/1000).toFixed(1) + 'k' : n;
+const fmtDate = d => {
+  const dt = new Date(d);
+  return `${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}.${String(dt.getDate()).padStart(2,'0')}`;
+};
+
+function filtered(){
+  return POSTS.filter(p => activeCat === 'all' || p.cat === activeCat);
+}
+
+// ═══════════════════════════════════════════════════════
+// Layout A: Magazine
+// ═══════════════════════════════════════════════════════
+function renderMagazine(){
+  const list = filtered();
+  const featured = list.filter(p => p.featured).slice(0,1);
+  const sideFeatured = list.filter(p => !featured.includes(p)).slice(0,2);
+  const rest = list.filter(p => !featured.includes(p) && !sideFeatured.includes(p));
+
+  const fr = document.getElementById('featuredRow');
+  if(featured.length === 0){
+    fr.innerHTML = '';
+  } else {
+    const f = featured[0];
+    fr.innerHTML = `
+      <a href="article-page.html" class="featured-main">
+        <span class="ac-cat">${CAT_LABEL[f.cat]}</span>
+        <div class="featured-main-content">
+          <div class="featured-meta-top">
+            <span>${fmtDate(f.date)}</span>
+            <span class="dot" style="display:inline-block;width:3px;height:3px;border-radius:50%;background:var(--gold-dim);"></span>
+            <span>${f.readMin} min read</span>
+            <span class="dot" style="display:inline-block;width:3px;height:3px;border-radius:50%;background:var(--gold-dim);"></span>
+            <span>${fmtViews(f.views)} views</span>
+          </div>
+          <h2 class="featured-title">${f.title}</h2>
+          <p class="featured-excerpt">${f.excerpt}</p>
+          <div class="featured-foot">
+            <div class="ac-author">
+              <div class="ac-avatar">${f.author[0]}</div>
+              <span>${f.author}</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      <div class="featured-side">
+        ${sideFeatured.map(p => `
+          <a href="article-page.html" class="side-card">
+            <div class="side-card-img">
+              <span class="side-card-cat">${CAT_LABEL[p.cat]}</span>
+            </div>
+            <div class="side-card-body">
+              <h3 class="side-card-title">${p.title}</h3>
+              <div class="side-card-meta">${fmtDate(p.date)} · ${p.readMin} min</div>
+            </div>
+          </a>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  const grid = document.getElementById('magGrid');
+  if(rest.length === 0 && featured.length === 0){
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⌒</div><div>沒有此分類的文章</div></div>';
+    return;
+  }
+  grid.innerHTML = rest.map(p => articleCardHtml(p)).join('');
+}
+
+function articleCardHtml(p){
+  return `
+    <a href="article-page.html" class="article-card">
+      <div class="ac-img">
+        <span class="ac-cat">${CAT_LABEL[p.cat]}</span>
+        <span>POST IMAGE · ${p.id.toUpperCase()}</span>
+      </div>
+      <div class="ac-body">
+        <div class="ac-meta-top">
+          <span>${fmtDate(p.date)}</span>
+          <span class="dot"></span>
+          <span>${p.readMin} min read</span>
+        </div>
+        <h3 class="ac-title">${p.title}</h3>
+        <p class="ac-excerpt">${p.excerpt}</p>
+        <div class="ac-foot">
+          <div class="ac-author">
+            <div class="ac-avatar">${p.author[0]}</div>
+            <span>${p.author}</span>
+          </div>
+          <div class="ac-views">◊ ${fmtViews(p.views)}</div>
+        </div>
+      </div>
+    </a>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════
+// Layout B: Blog with sidebar
+// ═══════════════════════════════════════════════════════
+function renderBlog(){
+  const list = filtered();
+  const main = document.getElementById('blogList');
+  if(list.length === 0){
+    main.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⌒</div><div>沒有此分類的文章</div></div>';
+  } else {
+    main.innerHTML = list.map(p => `
+      <a href="article-page.html" class="article-card blog-row">
+        <div class="ac-img blog-row-img">
+          <span class="ac-cat">${CAT_LABEL[p.cat]}</span>
+        </div>
+        <div class="ac-body blog-row-body">
+          <div class="ac-meta-top">
+            <span>${fmtDate(p.date)}</span>
+            <span class="dot" style="display:inline-block;width:3px;height:3px;border-radius:50%;background:var(--gold-dim);"></span>
+            <span>${p.author}</span>
+            <span class="dot" style="display:inline-block;width:3px;height:3px;border-radius:50%;background:var(--gold-dim);"></span>
+            <span>${p.readMin} min read</span>
+          </div>
+          <h3 class="ac-title">${p.title}</h3>
+          <p class="ac-excerpt">${p.excerpt}</p>
+          <div class="ac-foot">
+            <div class="ac-author">${p.tags.map(t => `<span style="margin-right:8px;color:var(--gold-dim);">#${t}</span>`).join('')}</div>
+            <div class="ac-views">◊ ${fmtViews(p.views)}</div>
+          </div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  // sidebar
+  const cats = document.getElementById('sbCats');
+  cats.innerHTML = CATS.map(c => {
+    const count = c.id === 'all' ? POSTS.length : POSTS.filter(p => p.cat === c.id).length;
+    return `<li class="sb-cat-item" data-cat="${c.id}">
+      <span>${c.name}</span><span class="sb-cat-count">${count}</span>
+    </li>`;
+  }).join('');
+  cats.querySelectorAll('.sb-cat-item').forEach(li => {
+    li.addEventListener('click', () => setCategory(li.dataset.cat));
+  });
+
+  const popular = [...POSTS].sort((a,b) => b.views - a.views).slice(0,4);
+  document.getElementById('sbPopular').innerHTML = popular.map((p,i) => `
+    <a href="article-page.html" class="sb-popular-item">
+      <span class="sb-popular-num">${String(i+1).padStart(2,'0')}</span>
+      <div>
+        <div class="sb-popular-title">${p.title}</div>
+        <div class="sb-popular-meta">${fmtViews(p.views)} views · ${fmtDate(p.date)}</div>
+      </div>
+    </a>
+  `).join('');
+
+  const allTags = [...new Set(POSTS.flatMap(p => p.tags))];
+  document.getElementById('sbTags').innerHTML = allTags.map(t => `<a href="#" class="sb-tag">#${t}</a>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// Layout C: Minimal grid
+// ═══════════════════════════════════════════════════════
+function renderMinimal(){
+  const list = filtered();
+  const grid = document.getElementById('minGrid');
+  if(list.length === 0){
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⌒</div><div>沒有此分類的文章</div></div>';
+    return;
+  }
+  grid.innerHTML = list.map(p => `
+    <a href="article-page.html" class="min-card">
+      <div class="min-img">
+        <span class="min-cat">${CAT_LABEL[p.cat]}</span>
+      </div>
+      <div class="min-meta">${fmtDate(p.date)} · ${p.readMin} min read</div>
+      <h3 class="min-title">${p.title}</h3>
+      <p class="min-excerpt">${p.excerpt}</p>
+      <div class="min-foot">
+        <span>${p.author}</span>
+        <span style="color:var(--gold-dim);">·</span>
+        <span>◊ ${fmtViews(p.views)}</span>
+      </div>
+    </a>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// Controls
+// ═══════════════════════════════════════════════════════
+function setLayout(layout){
+  currentLayout = layout;
+  document.querySelectorAll('.layout-switch button').forEach(b => {
+    b.classList.toggle('active', b.dataset.layout === layout);
+  });
+  document.getElementById('layoutMagazine').style.display = layout === 'magazine' ? 'block' : 'none';
+  document.getElementById('layoutBlog').style.display = layout === 'blog' ? 'grid' : 'none';
+  document.getElementById('layoutMinimal').style.display = layout === 'minimal' ? 'block' : 'none';
+  if(layout === 'magazine') renderMagazine();
+  if(layout === 'blog') renderBlog();
+  if(layout === 'minimal') renderMinimal();
+  // remember choice
+  try { localStorage.setItem('blogLayout', layout); } catch(e){}
+}
+
+function setCategory(cat){
+  activeCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('active', c.dataset.cat === cat));
+  if(currentLayout === 'magazine') renderMagazine();
+  if(currentLayout === 'blog') renderBlog();
+  if(currentLayout === 'minimal') renderMinimal();
+}
+
+document.querySelectorAll('.layout-switch button').forEach(btn => {
+  btn.addEventListener('click', () => setLayout(btn.dataset.layout));
+});
+document.querySelectorAll('.cat-chip').forEach(c => {
+  c.addEventListener('click', () => setCategory(c.dataset.cat));
+});
+
+// shrink nav
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if(window.scrollY > 80) nav.classList.add('shrunk');
+  else nav.classList.remove('shrunk');
+});
+
+// Restore preferred layout
+let savedLayout = 'magazine';
+try { savedLayout = localStorage.getItem('blogLayout') || 'magazine'; } catch(e){}
+setLayout(savedLayout);
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>總覽 — 雲遊後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="_admin.js"></script>
+</head>
+<body>
+<main class="admin-main">
+  <h1 class="page-title">總覽</h1>
+  <div id="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;margin-bottom:36px;"></div>
+  <div style="color:var(--muted);font-size:13px;">快速入口：從左側側欄選擇要管理的項目。</div>
+</main>
+
+<script>
+const TABLES = [
+  { key: 'countries',     label: '國家',    href: 'countries.html',  icon: '🌏' },
+  { key: 'cities',        label: '城市',    href: 'cities.html',     icon: '🏙️' },
+  { key: 'categories',    label: '分類',    href: 'categories.html', icon: '📂' },
+  { key: 'vendors',       label: '商家',    href: 'categories.html', icon: '🏪' },
+  { key: 'services',      label: '服務卡',  href: 'services.html',   icon: '🛎️' },
+  { key: 'faqs',          label: '常見問題', href: 'faqs.html',      icon: '❓' },
+  { key: 'steps',         label: '出行步驟', href: 'steps.html',     icon: '👣' },
+  { key: 'currencies',    label: '匯率',    href: 'currencies.html', icon: '💱' },
+  { key: 'marquee_items', label: '跑馬燈',  href: 'marquee.html',   icon: '📢' },
+];
+
+(async () => {
+  const session = await requireAuth();
+  if (!session) return;
+  injectSidebar(session);
+
+  const grid = document.getElementById('stats-grid');
+
+  await Promise.all(TABLES.map(async t => {
+    const { count } = await sb.from(t.key).select('*', { count: 'exact', head: true });
+    const card = document.createElement('a');
+    card.href = t.href;
+    card.style.cssText = 'background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;transition:border-color 0.15s;display:block;';
+    card.onmouseover = () => card.style.borderColor = 'var(--gold)';
+    card.onmouseout  = () => card.style.borderColor = 'var(--border)';
+    card.innerHTML = `
+      <div style="font-size:22px;margin-bottom:10px;">${t.icon}</div>
+      <div style="font-size:28px;font-weight:300;color:var(--gold);margin-bottom:4px;">${count ?? '—'}</div>
+      <div style="font-size:12px;color:var(--muted);">${t.label}</div>`;
+    grid.appendChild(card);
+  }));
+})();
+</script>
+</body>
+</html>

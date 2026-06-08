@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雲遊後台 — 登入</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0b08; --bg2: #161410; --border: rgba(200,169,110,0.18);
+    --gold: #c8a96e; --gold2: #e8c98e; --text: #e8e4dc; --muted: #8a8070;
+    --red: #e05a5a; --font: 'Noto Sans TC', sans-serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .login-wrap { width: 360px; }
+  .login-logo { text-align: center; margin-bottom: 36px; }
+  .login-logo h1 { font-size: 26px; font-weight: 300; color: var(--gold); letter-spacing: 0.12em; }
+  .login-logo p { font-size: 12px; color: var(--muted); margin-top: 6px; letter-spacing: 0.08em; }
+  .login-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 32px 28px; }
+  .form-group { margin-bottom: 18px; }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.04em; }
+  input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 4px; font-size: 14px; outline: none; transition: border-color 0.15s; font-family: inherit; }
+  input:focus { border-color: var(--gold); }
+  .btn-login { width: 100%; background: var(--gold); color: #1a1200; border: none; padding: 11px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; letter-spacing: 0.04em; transition: background 0.15s; margin-top: 8px; font-family: inherit; }
+  .btn-login:hover { background: var(--gold2); }
+  .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+  .error-msg { color: var(--red); font-size: 12px; margin-top: 12px; text-align: center; min-height: 18px; }
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-logo">
+    <h1>雲遊國際</h1>
+    <p>ADMIN PANEL</p>
+  </div>
+  <div class="login-card">
+    <div class="form-group">
+      <label>電子郵件</label>
+      <input type="email" id="email" placeholder="admin@example.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>密碼</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-login" id="btn-login">登入</button>
+    <div class="error-msg" id="error-msg"></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ayadandlvszhnvnciofv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_b6-9r7xQHwYADms1ZU4WuQ_uFe1q3-g';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// 已登入則直接跳轉
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) location.href = 'dashboard.html';
+});
+
+const emailEl = document.getElementById('email');
+const pwEl    = document.getElementById('password');
+const btnEl   = document.getElementById('btn-login');
+const errEl   = document.getElementById('error-msg');
+
+async function doLogin() {
+  const email    = emailEl.value.trim();
+  const password = pwEl.value;
+  if (!email || !password) { errEl.textContent = '請輸入帳號與密碼'; return; }
+
+  btnEl.disabled = true;
+  btnEl.textContent = '登入中…';
+  errEl.textContent = '';
+
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) {
+    errEl.textContent = '帳號或密碼錯誤';
+    btnEl.disabled = false;
+    btnEl.textContent = '登入';
+  } else {
+    location.href = 'dashboard.html';
+  }
+}
+
+btnEl.addEventListener('click', doLogin);
+pwEl.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>

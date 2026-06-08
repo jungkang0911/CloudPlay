@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雲遊國際 · 分類</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500;600&family=Be+Vietnam+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --gold: #c8a96e;
+    --gold-light: #e2c98a;
+    --gold-dim: #a08040;
+    --black: #0a0906;
+    --black2: #13110d;
+    --black3: #1c1914;
+    --black4: #252219;
+    --white: #f5f0e8;
+    --white2: #ede5d5;
+    --text-muted: #9a9080;
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Noto Sans TC', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--white); font-family: var(--font-sans); font-weight: 300; overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black2); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+  /* ── Navbar：與 index.html 一致 ── */
+  .marquee-bar {
+    background: var(--black);
+    border-bottom: 1px solid rgba(200,169,110,0.2);
+    overflow: hidden;
+    height: 32px;
+    display: flex;
+    align-items: center;
+  }
+  .marquee-track { display: flex; animation: marquee 38s linear infinite; white-space: nowrap; }
+  .marquee-item { padding: 0 48px; font-size: 11px; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; flex-shrink: 0; }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  .navbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,9,6,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,169,110,0.15);
+    height: 72px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 28px;
+    gap: 16px;
+  }
+  .nav-left { display: flex; align-items: center; gap: 14px; }
+  .nav-right { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+
+  .hamburger {
+    background: none; border: 1px solid rgba(200,169,110,0.25);
+    cursor: pointer; width: 38px; height: 38px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    transition: all 0.2s;
+  }
+  .hamburger:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
+  .hamburger span { display: block; width: 18px; height: 1.5px; background: var(--gold); }
+
+  .city-trigger {
+    background: none; border: 1px solid rgba(200,169,110,0.25);
+    color: var(--white); font-family: inherit; font-size: 13px; letter-spacing: 0.06em;
+    padding: 8px 14px; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s; min-width: 120px; justify-content: space-between;
+  }
+  .city-trigger:hover { border-color: var(--gold); background: rgba(200,169,110,0.04); }
+  .city-trigger-arrow { font-size: 8px; color: var(--gold); opacity: 0.7; transition: transform 0.2s; }
+  .city-trigger.open .city-trigger-arrow { transform: rotate(180deg); }
+
+  .city-menu {
+    position: absolute; top: calc(100% + 6px); left: 0;
+    background: var(--black2); border: 1px solid rgba(200,169,110,0.25);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7); z-index: 200;
+    min-width: 240px; padding: 4px 0 8px;
+  }
+  .city-menu-country {
+    padding: 12px 18px 6px;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase;
+    border-top: 1px solid rgba(200,169,110,0.08);
+  }
+  .city-menu-country:first-child { border-top: none; }
+  .city-menu-item {
+    display: flex; align-items: center; width: 100%;
+    padding: 10px 18px; background: none; border: none;
+    color: var(--white2); font-family: inherit; font-size: 13px;
+    cursor: pointer; text-align: left; transition: all 0.15s;
+  }
+  .city-menu-item:hover { background: rgba(200,169,110,0.07); color: var(--gold); }
+  .city-menu-item.active { background: rgba(200,169,110,0.1); color: var(--gold); }
+  .city-menu-item.active::after { content: '✓'; margin-left: auto; font-size: 12px; }
+
+  .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; }
+  .nav-logo-img { height: 38px; display: block; }
+  .nav-logo-text { font-family: var(--font-serif); font-size: 22px; font-weight: 400; color: var(--gold); letter-spacing: 0.18em; }
+
+  .lang-mini {
+    background: none; border: 1px solid rgba(200,169,110,0.25);
+    color: var(--gold); font-family: inherit; font-size: 11px; letter-spacing: 0.08em;
+    padding: 8px 12px; cursor: pointer; height: 38px; transition: all 0.2s;
+  }
+  .icon-btn {
+    width: 38px; height: 38px; border: 1px solid rgba(200,169,110,0.25);
+    background: none; color: var(--gold); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .icon-btn:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
+  .icon-btn svg { width: 16px; height: 16px; stroke: var(--gold); fill: none; }
+
+  /* ── 漢堡抽屜 ── */
+  .drawer-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(10,9,6,0.7); backdrop-filter: blur(4px);
+    z-index: 199; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100vh; width: 320px; max-width: 88vw;
+    background: var(--black2); border-left: 1px solid rgba(200,169,110,0.2);
+    z-index: 200; transform: translateX(100%); transition: transform 0.35s ease;
+    display: flex; flex-direction: column; overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { padding: 24px 24px 20px; border-bottom: 1px solid rgba(200,169,110,0.1); display: flex; align-items: center; justify-content: space-between; }
+  .drawer-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; padding: 4px 8px; }
+  .drawer-close:hover { color: var(--gold); }
+  .drawer-section {
+    padding: 18px 24px 14px;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--gold-dim); text-transform: uppercase;
+    border-bottom: 1px solid rgba(200,169,110,0.05);
+  }
+  .drawer-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 24px; background: none; border: none; width: 100%; text-align: left;
+    color: var(--white2); font-family: inherit; font-size: 14px; cursor: pointer;
+    transition: all 0.2s; text-decoration: none; border-left: 2px solid transparent;
+  }
+  .drawer-link:hover { background: rgba(200,169,110,0.06); color: var(--gold); border-left-color: var(--gold); }
+  .drawer-link-icon { width: 18px; opacity: 0.7; }
+
+  /* ── 分類頁主視覺 ── */
+  .cat-hero {
+    padding: 20px 28px 0;
+  }
+  .cat-hero-img {
+    position: relative;
+    height: 240px;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid rgba(200,169,110,0.15);
+  }
+  .cat-hero-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(10,9,6,0.6) 100%);
+  }
+
+  /* ── 分類標題 ── */
+  .cat-head {
+    padding: 24px 28px 8px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .cat-head-title {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: 0.06em;
+  }
+  .cat-head-title em { color: var(--gold); font-style: italic; }
+  .cat-head-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+  .cat-breadcrumb {
+    padding: 12px 28px 0;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .cat-breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .cat-breadcrumb a:hover { color: var(--gold); }
+  .cat-breadcrumb .sep { color: var(--gold-dim); margin: 0 6px; }
+  .cat-breadcrumb .current { color: var(--gold); }
+
+  /* ── 篩選列 ── */
+  .filter-bar {
+    margin: 16px 28px 24px;
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    flex-wrap: wrap;
+    background: var(--black2);
+    border: 1px solid rgba(200,169,110,0.15);
+    padding: 12px;
+  }
+  .select-wrap {
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .filter-select {
+    background: var(--black3);
+    border: 1px solid rgba(200,169,110,0.15);
+    color: var(--white);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 10px 36px 10px 14px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 140px;
+    transition: border-color 0.2s;
+  }
+  .filter-select:focus { outline: none; border-color: var(--gold); }
+  .select-wrap::after {
+    content: '▼';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold);
+    font-size: 8px;
+    pointer-events: none;
+  }
+  .filter-search {
+    flex: 1;
+    min-width: 200px;
+    background: var(--black3);
+    border: 1px solid rgba(200,169,110,0.15);
+    color: var(--white);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 10px 14px;
+    transition: border-color 0.2s;
+  }
+  .filter-search:focus { outline: none; border-color: var(--gold); }
+  .filter-search::placeholder { color: var(--gold-dim); }
+  .filter-btn {
+    background: var(--gold);
+    border: none;
+    color: var(--black);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .filter-btn:hover { background: var(--gold-light); }
+
+  /* ── 列表卡片 ── */
+  .list {
+    padding: 0 28px 80px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: 240px 1fr auto;
+    gap: 0;
+    background: var(--black2);
+    border: 1px solid rgba(200,169,110,0.12);
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+  }
+  .item:hover {
+    border-color: rgba(200,169,110,0.4);
+    transform: translateY(-2px);
+  }
+  .item-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--black3);
+  }
+  .item-body {
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .item-title {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--white);
+    letter-spacing: 0.03em;
+  }
+  .item-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .item-row-label {
+    color: var(--gold);
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 76px;
+  }
+  .item-row-val {
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .item-row-val ol {
+    margin: 4px 0 0 18px;
+    padding: 0;
+    color: var(--white2);
+  }
+  .item-row-val ol li {
+    margin-bottom: 4px;
+    font-size: 12.5px;
+  }
+
+  /* ── 星評徽章（取代「薦」） ── */
+  .item-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 22px;
+    gap: 6px;
+    border-left: 1px solid rgba(200,169,110,0.1);
+    min-width: 130px;
+  }
+  .rating-stars {
+    color: var(--gold);
+    font-size: 14px;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .rating-stars .dim { color: rgba(200,169,110,0.25); }
+  .rating-value {
+    font-family: var(--font-serif);
+    font-size: 34px;
+    font-weight: 400;
+    color: var(--gold-light);
+    line-height: 1;
+    font-style: italic;
+  }
+  .rating-count {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .rating-rec {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 2px 10px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* 空狀態 */
+  .empty {
+    grid-column: 1 / -1;
+    padding: 80px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  .empty-icon {
+    font-size: 36px;
+    color: var(--gold-dim);
+    margin-bottom: 12px;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    border-top: 1px solid rgba(200,169,110,0.15);
+    padding: 50px 28px 28px;
+    text-align: center;
+  }
+  .footer-logo { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .footer-logo img { height: 40px; }
+  .footer-logo-text { font-family: var(--font-serif); font-size: 22px; color: var(--gold); letter-spacing: 0.18em; }
+  .footer-tagline { font-size: 12px; color: var(--text-muted); line-height: 1.7; max-width: 480px; margin: 0 auto; }
+  .footer-bottom { padding: 20px 28px; border-top: 1px solid rgba(200,169,110,0.08); font-size: 11px; color: var(--text-muted); text-align: center; }
+
+  /* ── CS Trigger（簡化版） ── */
+  .cs-fab {
+    position: fixed; bottom: 0; right: 28px; z-index: 180;
+    border: none; background: none; padding: 0; cursor: pointer;
+  }
+  .cs-fab-inner {
+    width: 72px; height: 92px; border-radius: 36px 36px 0 0;
+    background: linear-gradient(135deg, var(--black3), var(--black4));
+    border: 2px solid var(--gold); border-bottom: none;
+    overflow: hidden; transition: transform 0.2s;
+    box-shadow: 0 -6px 30px rgba(200,169,110,0.25);
+  }
+  .cs-fab:hover .cs-fab-inner { transform: scale(1.06); }
+  .cs-fab-face { width: 100%; height: 100%; object-fit: cover; object-position: center 15%; border-radius: 36px 36px 0 0; }
+
+  /* ── Responsive ── */
+  @media (max-width: 720px) {
+    .navbar { padding: 0 16px; height: 64px; }
+    .nav-logo-text { font-size: 18px; letter-spacing: 0.14em; }
+    .nav-logo-img { height: 32px; }
+    .lang-mini { display: none; }
+    .city-trigger { min-width: 100px; padding: 7px 10px; font-size: 12px; }
+    .cat-hero { padding: 16px 16px 0; }
+    .cat-hero-img { height: 180px; }
+    .cat-head { padding: 20px 16px 6px; }
+    .cat-head-title { font-size: 24px; }
+    .cat-breadcrumb { padding: 10px 16px 0; }
+    .filter-bar { margin: 12px 16px 20px; padding: 10px; flex-direction: row; flex-wrap: wrap; }
+    .filter-search { min-width: 0; width: 100%; order: 3; }
+    .filter-select { min-width: 110px; padding: 9px 28px 9px 12px; font-size: 12px; }
+    .select-wrap { flex: 1; }
+    .filter-select { width: 100%; }
+    .filter-btn { padding: 9px 18px; font-size: 12px; }
+    .list { padding: 0 16px 60px; gap: 12px; }
+    .item { grid-template-columns: 1fr; }
+    .item-img { aspect-ratio: 16 / 9; }
+    .item-body { padding: 18px; }
+    .item-title { font-size: 19px; }
+    .item-rating {
+      flex-direction: row;
+      border-left: none;
+      border-top: 1px solid rgba(200,169,110,0.1);
+      padding: 14px 18px;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .rating-value { font-size: 26px; }
+    .item-row-label { min-width: 64px; font-size: 12px; }
+  }
+  @media (max-width: 440px) {
+    .nav-logo-text { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="js/_db.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useMemo, useRef } = React;
+
+function Stars({ value }) {
+  const full = Math.floor(value);
+  const half = value - full >= 0.5;
+  const empty = 5 - full - (half ? 1 : 0);
+  return (
+    <span className="rating-stars">
+      {'★'.repeat(full)}
+      {half ? '★' : ''}
+      <span className="dim">{'★'.repeat(empty)}</span>
+    </span>
+  );
+}
+
+function App() {
+  const params = new URLSearchParams(window.location.search);
+  const initCountry = params.get('country') || 'vn';
+  const initCity    = params.get('city')    || 'hcm';
+  const initCat     = params.get('cat')     || 'attractions';
+
+  // ─── State ────────────────────────────────────────────────────────
+  const [countries,          setCountries]          = useState(window.DB.countries);
+  const [currentCountryCode, setCurrentCountryCode] = useState(initCountry);
+  const [currentCityCode,    setCurrentCityCode]    = useState(initCity);
+  const [catId]                                     = useState(initCat);
+  const [catName,            setCatName]            = useState(window.DB.catNames[initCat] || '分類');
+  const [allItems,           setAllItems]           = useState([]);
+  const [loading,            setLoading]            = useState(true);
+  const [regionFilter,       setRegionFilter]       = useState('全部區域');
+  const [query,              setQuery]              = useState('');
+  const [searchValue,        setSearchValue]        = useState('');
+  const [drawerOpen,         setDrawerOpen]         = useState(false);
+  const [cityMenuOpen,       setCityMenuOpen]       = useState(false);
+  const LANG_LABELS = { tc:{flag:'🇹🇼',label:'繁中'}, vi:{flag:'🇻🇳',label:'VI'}, ja:{flag:'🇯🇵',label:'日本語'}, en:{flag:'🇬🇧',label:'EN'} };
+  const LANG_ORDER  = ['tc','vi','ja','en'];
+  const [lang, setLang] = useState(() => localStorage.getItem('yy_lang') || 'tc');
+  const cityRef = useRef(null);
+
+  // ─── Data loading ─────────────────────────────────────────────────
+  useEffect(() => {
+    window.DB.getCountries().then(setCountries);
+    window.DB.getCatName(catId).then(setCatName);
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    setRegionFilter('全部區域');
+    window.DB.getItems(currentCityCode, catId).then(items => {
+      setAllItems(items);
+      setLoading(false);
+    });
+  }, [currentCityCode, catId]);
+
+  // ─── Derived ──────────────────────────────────────────────────────
+  const country = countries.find(c => c.code === currentCountryCode) || countries[0] || { flag: '', name: '', cities: [] };
+  const city    = (country.cities || []).find(c => c.code === currentCityCode) || (country.cities || [])[0] || { name: '', regions: ['全部區域'], bannerImg: '' };
+
+  const items = useMemo(() => allItems.filter(it => {
+    if (regionFilter !== '全部區域' && it.region !== regionFilter) return false;
+    if (query) {
+      const q   = query.trim().toLowerCase();
+      const hay = (it.title + ' ' + it.region + ' ' + (it.desc || '') + ' ' + (it.list || []).join(' ')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }), [allItems, regionFilter, query]);
+
+  useEffect(() => {
+    function close(e) { if (cityRef.current && !cityRef.current.contains(e.target)) setCityMenuOpen(false); }
+    document.addEventListener('mousedown', close);
+    return () => document.removeEventListener('mousedown', close);
+  }, []);
+
+  useEffect(() => { document.body.style.overflow = drawerOpen ? 'hidden' : ''; }, [drawerOpen]);
+
+  function selectCity(countryCode, cityCode) {
+    setCurrentCountryCode(countryCode);
+    setCurrentCityCode(cityCode);
+    setCityMenuOpen(false);
+    setRegionFilter('全部區域');
+  }
+
+  function cycleLang() {
+    const next = LANG_ORDER[(LANG_ORDER.indexOf(lang) + 1) % LANG_ORDER.length];
+    localStorage.setItem('yy_lang', next);
+    setLang(next);
+  }
+
+  function doSearch() { setQuery(searchValue); }
+
+  function gotoCategory(newCat) {
+    window.location.href = `cat.html?country=${currentCountryCode}&city=${currentCityCode}&cat=${newCat}`;
+  }
+
+  return (
+    <div>
+      {/* 跑馬燈 */}
+      <div className="marquee-bar">
+        <div className="marquee-track">
+          {[0,1].map(n => (
+            <span key={n} className="marquee-item">
+              ✦ 一站式觀光，從機場到飯店全程無憂 · 24H 中文客服在線 · 客製行程量身打造 · 越南｜日本｜泰國｜台灣 ✦
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="nav-left">
+          <div ref={cityRef} style={{position:'relative'}}>
+            <button className={`city-trigger${cityMenuOpen ? ' open' : ''}`} onClick={() => setCityMenuOpen(o => !o)}>
+              <span>{country.flag}</span>
+              <span style={{flex:1, textAlign:'left'}}>{city.name}</span>
+              <span className="city-trigger-arrow">▼</span>
+            </button>
+            {cityMenuOpen && (
+              <div className="city-menu">
+                {countries.map(c => (
+                  <React.Fragment key={c.code}>
+                    <div className="city-menu-country">{c.flag} {c.name}</div>
+                    {c.cities.map(ci => (
+                      <button key={ci.code}
+                        className={`city-menu-item${ci.code === currentCityCode ? ' active' : ''}`}
+                        onClick={() => selectCity(c.code, ci.code)}>
+                        {ci.name}
+                        <span style={{marginLeft:'10px',fontSize:'10px',color:'var(--gold-dim)',letterSpacing:'0.1em'}}>{ci.en}</span>
+                      </button>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <a className="nav-logo" href="index.html">
+          <img className="nav-logo-img" src="uploads/logo-mark.png" alt="雲遊國際" />
+          <span className="nav-logo-text">雲遊國際</span>
+        </a>
+        <div className="nav-right">
+          <button className="lang-mini" onClick={cycleLang}>{LANG_LABELS[lang].flag} {LANG_LABELS[lang].label}</button>
+          <button className="hamburger" onClick={() => setDrawerOpen(true)} aria-label="選單">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+
+      {/* 漢堡抽屜 */}
+      <div className={`drawer-backdrop${drawerOpen ? ' open' : ''}`} onClick={() => setDrawerOpen(false)}></div>
+      <aside className={`drawer${drawerOpen ? ' open' : ''}`}>
+        <div className="drawer-head">
+          <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+            <img src="uploads/logo-mark.png" alt="雲遊國際" style={{height:'36px'}} />
+            <span style={{fontFamily:'var(--font-serif)',fontSize:'18px',color:'var(--gold)',letterSpacing:'0.16em'}}>雲遊國際</span>
+          </div>
+          <button className="drawer-close" onClick={() => setDrawerOpen(false)}>×</button>
+        </div>
+        <div className="drawer-section">瀏覽</div>
+        <a className="drawer-link" href="index.html"><span className="drawer-link-icon">⌂</span>首頁</a>
+        <button className="drawer-link" onClick={() => gotoCategory('attractions')}><span className="drawer-link-icon">⛰</span>景點介紹</button>
+        <button className="drawer-link" onClick={() => gotoCategory('restaurants')}><span className="drawer-link-icon">⌘</span>餐廳飯店</button>
+        <a className="drawer-link" href="tours.html"><span className="drawer-link-icon">✈</span>旅遊行程</a>
+        <a className="drawer-link" href="blog.html"><span className="drawer-link-icon">✎</span>心得分享</a>
+        <div className="drawer-section">關於</div>
+        <a className="drawer-link" href="service-page.html"><span className="drawer-link-icon">◇</span>服務項目</a>
+        <a className="drawer-link" href="index.html#how-it-works"><span className="drawer-link-icon">→</span>出行流程</a>
+        <a className="drawer-link" href="index.html#faq"><span className="drawer-link-icon">?</span>常見問題</a>
+        <a className="drawer-link" href="about-page.html"><span className="drawer-link-icon">i</span>關於我們</a>
+        <div className="drawer-section">客服聯絡</div>
+        <a className="drawer-link" href="https://line.me/" target="_blank" rel="noopener noreferrer"><span className="drawer-link-icon">💬</span>LINE：@yunyou_travel</a>
+        <a className="drawer-link" href="tel:0800123456"><span className="drawer-link-icon">☎</span>0800-123-456</a>
+        <div style={{padding:'24px',marginTop:'auto',fontSize:'11px',color:'var(--text-muted)',textAlign:'center',borderTop:'1px solid rgba(200,169,110,0.08)'}}>
+          © 2026 雲遊國際 · All rights reserved.
+        </div>
+      </aside>
+
+      {/* 大圖 banner */}
+      <section className="cat-hero">
+        <div className="cat-hero-img" style={{backgroundImage:`url(${city.bannerImg})`}}></div>
+      </section>
+
+      {/* 麵包屑 */}
+      <div className="cat-breadcrumb">
+        <a href="index.html">首頁</a>
+        <span className="sep">/</span>
+        <a href={`index.html?country=${country.code}&city=${city.code}`}>{country.name} · {city.name}</a>
+        <span className="sep">/</span>
+        <span className="current">{catName}</span>
+      </div>
+
+      {/* 標題列 */}
+      <div className="cat-head">
+        <h1 className="cat-head-title">{catName}</h1>
+        <div className="cat-head-meta">
+          {country.flag} {country.name} · {city.name} · {loading ? '載入中…' : `共 ${items.length} 個推薦`}
+        </div>
+      </div>
+
+      {/* 篩選列 */}
+      <div className="filter-bar">
+        <div className="select-wrap">
+          <select className="filter-select" value={regionFilter} onChange={e => setRegionFilter(e.target.value)}>
+            {(city.regions || ['全部區域']).map(r => <option key={r}>{r}</option>)}
+          </select>
+        </div>
+        <input
+          className="filter-search"
+          placeholder="搜尋名稱或關鍵字"
+          value={searchValue}
+          onChange={e => setSearchValue(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && doSearch()}
+        />
+        <button className="filter-btn" onClick={doSearch}>搜尋</button>
+      </div>
+
+      {/* 列表 */}
+      <div className="list">
+        {loading ? (
+          <div className="empty">
+            <div style={{fontSize:'32px',margin:'16px 0',opacity:0.4}}>◌</div>
+            載入中…
+          </div>
+        ) : items.length === 0 ? (
+          <div className="empty">
+            <div className="empty-icon">⌕</div>
+            找不到符合條件的項目<br/>
+            <span style={{fontSize:'12px',color:'var(--gold-dim)'}}>試試清除篩選或更換關鍵字</span>
+          </div>
+        ) : items.map((it, i) => (
+          <a key={i} className="item" href={`店家詳情.html?country=${currentCountryCode}&city=${currentCityCode}&cat=${catId}&item=${it.id || i}`}>
+            <div className="item-img" style={{backgroundImage:`url(${it.img})`}}></div>
+            <div className="item-body">
+              <h3 className="item-title">{it.title}</h3>
+              <div className="item-row">
+                <span className="item-row-label">營業時間</span>
+                <span className="item-row-val">{it.hours}　<span style={{color:'var(--gold-dim)',fontSize:'12px'}}>· {it.region}</span></span>
+              </div>
+              <div className="item-row">
+                <span className="item-row-label">服務與價錢</span>
+                <span className="item-row-val">
+                  {it.desc}
+                  {it.list && it.list.length > 0 && (
+                    <ol>{it.list.map((li, idx) => <li key={idx}>{li}</li>)}</ol>
+                  )}
+                </span>
+              </div>
+            </div>
+            <div className="item-rating">
+              <Stars value={it.rating} />
+              <div className="rating-value">{it.rating.toFixed(1)}</div>
+              <div className="rating-count">{it.count.toLocaleString()} 評</div>
+              {it.rec && <div className="rating-rec">推薦</div>}
+            </div>
+          </a>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-logo">
+          <img src="uploads/logo-mark.png" alt="雲遊國際" />
+          <span className="footer-logo-text">雲遊國際</span>
+        </div>
+        <p className="footer-tagline">以尊貴的眼光，探索世界每一個值得被記住的角落。</p>
+      </footer>
+      <div className="footer-bottom">© 2026 雲遊國際 · All rights reserved.</div>
+
+      {/* CS 按鈕 */}
+      <a className="cs-fab" href="https://line.me/" target="_blank" rel="noopener noreferrer">
+        <div className="cs-fab-inner">
+          <img className="cs-fab-face" src="uploads/ChatGPT Image 2026年5月1日 下午08_00_14.png" alt="客服" />
+        </div>
+      </a>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
+</body>
+</html>

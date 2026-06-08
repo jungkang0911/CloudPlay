@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>設定 — 雲遊後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="_admin.js"></script>
+<style>
+.settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:24px;}
+.settings-card h2{font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:0 0 20px;}
+.settings-row{display:flex;align-items:flex-start;gap:32px;margin-bottom:16px;}
+.settings-row:last-child{margin-bottom:0;}
+.settings-label{width:160px;flex-shrink:0;padding-top:10px;font-size:13px;color:var(--text);}
+.settings-label small{display:block;color:var(--muted);font-size:11px;margin-top:2px;}
+.settings-input-wrap{flex:1;}
+.save-bar{display:flex;align-items:center;gap:12px;margin-top:28px;}
+</style>
+</head>
+<body>
+<main class="admin-main">
+  <h1 class="page-title">系統設定</h1>
+
+  <div class="settings-card">
+    <h2>客服聯絡方式 (Sophia)</h2>
+    <div class="settings-row">
+      <div class="settings-label">LINE ID<small>e.g. @yunyu-tw</small></div>
+      <div class="settings-input-wrap"><input id="cs_line_id" class="adm-input" placeholder="LINE ID"></div>
+    </div>
+    <div class="settings-row">
+      <div class="settings-label">LINE URL<small>https://line.me/ti/p/…</small></div>
+      <div class="settings-input-wrap"><input id="cs_line_url" class="adm-input" placeholder="https://line.me/…"></div>
+    </div>
+    <div class="settings-row">
+      <div class="settings-label">WhatsApp URL<small>https://wa.me/886…</small></div>
+      <div class="settings-input-wrap"><input id="cs_whatsapp_url" class="adm-input" placeholder="https://wa.me/…"></div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <h2>SEO / 站台資訊</h2>
+    <div class="settings-row">
+      <div class="settings-label">網站名稱</div>
+      <div class="settings-input-wrap"><input id="site_name" class="adm-input" placeholder="雲遊國際"></div>
+    </div>
+    <div class="settings-row">
+      <div class="settings-label">網站描述</div>
+      <div class="settings-input-wrap"><textarea id="site_description" class="adm-textarea" style="min-height:72px;"></textarea></div>
+    </div>
+    <div class="settings-row">
+      <div class="settings-label">預設 OG 圖<small>URL 或路徑</small></div>
+      <div class="settings-input-wrap">
+        <input id="og_image" class="adm-input" placeholder="/uploads/og-default.jpg">
+        <div id="og-preview" style="margin-top:8px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="save-bar">
+    <button class="btn-primary" onclick="doSave()">儲存所有設定</button>
+    <span id="save-status" style="font-size:13px;color:var(--muted);"></span>
+  </div>
+</main>
+
+<script>
+const KEYS = ['cs_line_id','cs_line_url','cs_whatsapp_url','site_name','site_description','og_image'];
+
+(async()=>{
+  const s=await requireAuth(); if(!s)return;
+  injectSidebar(s);
+  await load();
+  document.getElementById('og_image').addEventListener('input',e=>previewOg(e.target.value));
+})();
+
+async function load(){
+  const{data}=await sb.from('site_config').select('key,value').in('key',KEYS);
+  (data||[]).forEach(({key,value})=>{
+    const el=document.getElementById(key);
+    if(el) el.value=value||'';
+  });
+  previewOg(document.getElementById('og_image').value);
+}
+
+function previewOg(url){
+  const el=document.getElementById('og-preview');
+  el.innerHTML=url?`<img src="${url}" style="max-width:180px;max-height:80px;border-radius:4px;border:1px solid var(--border);" onerror="this.style.display='none'">`:'';
+}
+
+async function doSave(){
+  const btn=document.querySelector('.save-bar .btn-primary');
+  btn.disabled=true; btn.textContent='儲存中…';
+
+  const upserts=KEYS.map(key=>({ key, value: document.getElementById(key).value.trim()||'' }));
+  const{error}=await sb.from('site_config').upsert(upserts,{onConflict:'key'});
+
+  btn.disabled=false; btn.textContent='儲存所有設定';
+  if(error){ toast('儲存失敗：'+error.message,'error'); return; }
+  toast('設定已儲存');
+  document.getElementById('save-status').textContent='上次儲存：'+new Date().toLocaleTimeString('zh-TW');
+}
+</script>
+</body>
+</html>

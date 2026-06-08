@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最新消息 · 雲遊國際</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c8a96e;--gold-light:#e2c98a;--gold-dim:#a08040;--black:#0a0906;--black2:#13110d;--black3:#1c1914;--black4:#252219;--white:#f5f0e8;--white2:#ede5d5;--text-muted:#9a9080;--font-serif:'Cormorant Garamond',Georgia,serif;--font-sans:'Noto Sans TC',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:var(--font-sans);font-weight:300;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--black2);}::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px;}
+
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,9,6,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,169,110,0.15);height:60px;display:flex;align-items:center;padding:0 40px;gap:20px;}
+.nav-logo{font-family:var(--font-serif);font-size:22px;font-weight:300;font-style:italic;color:var(--gold);text-decoration:none;letter-spacing:0.08em;flex-shrink:0;}
+.nav-logo span{font-style:normal;font-weight:600;}
+.nav-divider{color:rgba(200,169,110,0.3);font-size:14px;}
+.nav-page-title{font-size:12px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;}
+.nav-spacer{flex:1;}
+.nav-back{font-size:11px;letter-spacing:0.1em;color:var(--gold);background:none;font-family:inherit;padding:6px 14px;border:1px solid rgba(200,169,110,0.3);transition:all 0.2s;text-decoration:none;display:inline-block;}
+.nav-back:hover{background:rgba(200,169,110,0.06);border-color:var(--gold);}
+
+/* Article Hero */
+.page-hero{margin-top:60px;height:50vh;min-height:320px;position:relative;overflow:hidden;display:flex;align-items:flex-end;}
+.page-hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0a0d15,#101828);background-size:cover;background-position:center;}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,9,6,0.15) 0%,rgba(10,9,6,0.92) 100%);}
+.page-hero-content{position:relative;z-index:1;padding:0 80px 52px;max-width:900px;}
+.article-meta{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+.article-category{font-size:10px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;border:1px solid rgba(200,169,110,0.4);padding:4px 12px;}
+.article-date{font-size:11px;color:var(--text-muted);}
+.article-read{font-size:11px;color:var(--text-muted);}
+.page-hero-title{font-family:var(--font-serif);font-size:clamp(28px,5vw,54px);font-weight:300;color:var(--white);line-height:1.15;margin-bottom:16px;}
+.page-hero-title em{color:var(--gold);font-style:italic;}
+.article-excerpt{font-size:15px;color:var(--white2);line-height:1.7;max-width:640px;}
+
+/* Layout: article + sidebar */
+.page-layout{display:flex;max-width:1200px;margin:0 auto;padding:60px 40px 80px;}
+.article-body{flex:1;min-width:0;padding-right:60px;}
+.article-sidebar{width:280px;flex-shrink:0;}
+
+/* Article content */
+.article-content{font-size:15px;color:var(--text-muted);line-height:1.95;}
+.article-content h2{font-family:var(--font-serif);font-size:28px;font-weight:300;color:var(--white);margin:40px 0 16px;line-height:1.2;}
+.article-content h2 em{color:var(--gold);font-style:italic;}
+.article-content h3{font-family:var(--font-serif);font-size:20px;font-weight:300;color:var(--white);margin:28px 0 12px;}
+.article-content p{margin-bottom:20px;}
+.article-content strong{color:var(--white2);font-weight:500;}
+.article-content a{color:var(--gold);text-decoration:none;}
+.article-content a:hover{text-decoration:underline;}
+.article-img{width:100%;aspect-ratio:16/9;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(200,169,110,0.03) 8px,rgba(200,169,110,0.03) 16px);border:1px solid rgba(200,169,110,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(200,169,110,0.25);font-size:10px;letter-spacing:0.1em;margin:28px 0;}
+.highlight-box{background:var(--black2);border:1px solid rgba(200,169,110,0.2);border-left:3px solid var(--gold);padding:20px 24px;margin:24px 0;font-size:14px;color:var(--white2);line-height:1.8;}
+.highlight-box strong{color:var(--gold);}
+.article-divider{height:1px;background:rgba(200,169,110,0.1);margin:36px 0;}
+
+/* Tags */
+.article-tags{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0;}
+.article-tag{font-size:10px;letter-spacing:0.1em;color:var(--text-muted);border:1px solid rgba(200,169,110,0.2);padding:5px 12px;cursor:pointer;transition:all 0.2s;}
+.article-tag:hover{color:var(--gold);border-color:var(--gold);}
+
+/* Share */
+.article-share{display:flex;align-items:center;gap:12px;margin-top:32px;padding-top:24px;border-top:1px solid rgba(200,169,110,0.1);}
+.share-label{font-size:11px;letter-spacing:0.1em;color:var(--text-muted);text-transform:uppercase;}
+.share-btn{width:36px;height:36px;border:1px solid rgba(200,169,110,0.25);background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all 0.2s;}
+.share-btn:hover{border-color:var(--gold);background:rgba(200,169,110,0.06);}
+
+/* Sidebar */
+.sidebar-sticky{position:sticky;top:80px;}
+.sidebar-widget{margin-bottom:32px;}
+.sidebar-widget-title{font-size:10px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(200,169,110,0.1);}
+
+/* CS Widget in sidebar */
+.cs-sidebar-panel{background:var(--black2);border:1px solid rgba(200,169,110,0.2);padding:0;overflow:hidden;}
+.cs-sidebar-header{padding:16px 18px;background:linear-gradient(135deg,var(--black3),var(--black4));border-bottom:1px solid rgba(200,169,110,0.15);display:flex;align-items:center;gap:12px;}
+.cs-avatar{width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);background:var(--black3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cs-name{font-size:13px;font-weight:500;color:var(--white);margin-bottom:2px;}
+.cs-role{font-size:10px;letter-spacing:0.1em;color:var(--gold);text-transform:uppercase;}
+.cs-channels{padding:12px;}
+.cs-channel-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid rgba(200,169,110,0.1);background:var(--black3);cursor:pointer;transition:all 0.2s;font-family:inherit;color:var(--white);width:100%;margin-bottom:6px;text-decoration:none;}
+.cs-channel-btn:hover{border-color:rgba(200,169,110,0.4);background:rgba(200,169,110,0.05);}
+.cs-channel-btn:last-child{margin-bottom:0;}
+.cs-channel-icon{font-size:14px;width:22px;text-align:center;flex-shrink:0;}
+.cs-channel-name{font-size:12px;color:var(--white);}
+.cs-channel-detail{font-size:10px;color:var(--text-muted);}
+.cs-footer{padding:10px 12px;border-top:1px solid rgba(200,169,110,0.1);text-align:center;font-size:10px;color:var(--text-muted);}
+
+/* Related articles */
+.related-item{display:flex;gap:12px;margin-bottom:16px;cursor:pointer;padding-bottom:16px;border-bottom:1px solid rgba(200,169,110,0.08);}
+.related-item:last-child{border-bottom:none;margin-bottom:0;}
+.related-thumb{width:64px;height:64px;background:var(--black3);border:1px solid rgba(200,169,110,0.1);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(200,169,110,0.2);}
+.related-info{flex:1;}
+.related-title{font-size:13px;color:var(--white);line-height:1.4;margin-bottom:4px;font-weight:400;}
+.related-date{font-size:10px;color:var(--text-muted);}
+
+/* Next/Prev */
+.article-nav{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:48px;}
+.article-nav-item{background:var(--black2);border:1px solid rgba(200,169,110,0.1);padding:24px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;}
+.article-nav-item:hover{border-color:rgba(200,169,110,0.3);}
+.article-nav-label{font-size:10px;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.article-nav-title{font-size:14px;color:var(--white);line-height:1.4;}
+
+@media(max-width:900px){
+  .navbar{padding:0 20px;} .page-hero-content{padding:0 24px 40px;}
+  .page-layout{flex-direction:column;padding:40px 24px;} .article-body{padding-right:0;margin-bottom:40px;} .article-sidebar{width:100%;}
+  .article-nav{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-logo"><img src="uploads/logo-mark.png" alt="雲遊國際" style="height:30px;width:auto;vertical-align:middle;margin-right:8px;" /><span style="font-style:normal;font-weight:400;letter-spacing:0.12em;font-size:16px;">雲遊國際</span></a>
+  <span class="nav-divider">/</span>
+  <span class="nav-page-title">最新消息</span>
+  <div class="nav-spacer"></div>
+  <a href="index.html" class="nav-back">← 返回首頁</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="article-meta">
+      <span class="article-category">越南旅遊</span>
+      <span class="article-date">2026年5月1日</span>
+      <span class="article-read">閱讀約 5 分鐘</span>
+    </div>
+    <h1 class="page-hero-title">2026 越南胡志明市<br/><em>深度遊攻略</em></h1>
+    <p class="article-excerpt">從白天的文化探索到夜晚的精彩旅程，雲想帶你一次看懂胡志明市最值得玩的地方。</p>
+  </div>
+</div>
+
+<div class="page-layout">
+
+  <!-- Article Body -->
+  <article class="article-body">
+    <div class="article-content">
+
+      <p>胡志明市，舊稱西貢，是越南最大的城市，也是全東南亞最具活力的都市之一。這裡融合了法式殖民建築、現代摩天大樓、傳統市集與熱鬧夜市，每一個轉角都藏著讓人驚喜的發現。</p>
+
+      <div class="article-img">
+        [ 胡志明市城市風景 ]<br/>
+        <span style="font-size:9px;opacity:0.6">Prompt: 胡志明市黃昏城市天際線，濱城河畔，電影暖色調 · 1200×675px</span>
+      </div>
+
+      <h2>白天行程：<em>文化與美食</em></h2>
+
+      <p>白天的胡志明市適合深入探索歷史與文化。<strong>統一宮</strong>是必訪景點，這裡見證了越戰的終結；<strong>戰爭遺蹟博物館</strong>則是了解越南近代史的重要場所。</p>
+
+      <p>午餐可以前往第一郡的咖啡街，感受在地的咖啡文化。越南咖啡以滴漏式（Cà Phê Phin）聞名，加上煉乳的獨特甜味，是不可錯過的體驗。</p>
+
+      <div class="highlight-box">
+        <strong>💡 雲想小提示：</strong> 胡志明市物價相對台灣便宜許多，一頓在地午餐約 NT$80–150，但頂級餐廳也有 NT$600 以上的選擇，消費彈性很大。
+      </div>
+
+      <h3>必去景點清單</h3>
+      <p>以下是雲想推薦的白天景點，全程由老司機帶路，讓您省去排隊與語言溝通的麻煩：</p>
+      <p>・<strong>統一宮</strong>（Dinh Độc Lập）— 越戰歷史的見證<br/>
+         ・<strong>本堂敘拜</strong>（Chùa Bà Thiên Hậu）— 最美華人廟宇<br/>
+         ・<strong>濱城市場</strong>（Chợ Bến Thành）— 採購手信首選<br/>
+         ・<strong>第三郡咖啡街</strong>— 文青必到，百年咖啡香</p>
+
+      <div class="article-img">
+        [ 濱城市場 ]<br/>
+        <span style="font-size:9px;opacity:0.6">Prompt: 越南濱城市場入口，熱鬧市集，金黃色燈光，電影色調 · 1200×675px</span>
+      </div>
+
+      <div class="article-divider"></div>
+
+      <h2>夜間行程：<em>精彩夜生活</em></h2>
+
+      <p>胡志明市的夜晚是這座城市最迷人的時刻。當霓虹燈亮起，整個城市仿佛換了一張面孔。老司機帶您探索最精彩的夜生活場所，從頂層酒吧到在地夜市，應有盡有。</p>
+
+      <p><strong>Bùi Viện 街</strong>是著名的背包客街，夜晚充滿活力，各國旅客齊聚一堂。<strong>屋頂酒吧</strong>則提供胡志明市的絕佳夜景，配上雞尾酒，感受這座城市最浪漫的一面。</p>
+
+      <div class="highlight-box">
+        <strong>⚠ 安全提醒：</strong> 夜間活動請跟隨老司機行動，切勿單獨前往陌生地點。雲想的導遊全程陪同，讓您玩得盡興又安全。
+      </div>
+
+      <h2>特色服務：<em>只有在這裡才有</em></h2>
+
+      <p>除了一般觀光行程，胡志明市還有許多台灣旅遊團不會帶您去的特色服務。雲想老司機憑藉多年在地人脈，帶您體驗最道地、最精彩的越南特色服務。</p>
+
+      <p>詳細服務內容請聯繫客服諮詢，我們的Sophia客服小姐會為您一一說明，保證讓您的胡志明市之旅超乎預期。</p>
+
+    </div>
+
+    <div class="article-tags">
+      <span class="article-tag"># 越南旅遊</span>
+      <span class="article-tag"># 胡志明市</span>
+      <span class="article-tag"># 行程攻略</span>
+      <span class="article-tag"># 深度遊</span>
+      <span class="article-tag"># 夜生活</span>
+    </div>
+
+    <div class="article-share">
+      <span class="share-label">分享</span>
+      <button class="share-btn">📘</button>
+      <button class="share-btn">🐦</button>
+      <button class="share-btn">💬</button>
+      <button class="share-btn">🔗</button>
+    </div>
+
+    <div class="article-nav">
+      <a href="#" class="article-nav-item">
+        <div class="article-nav-label">← 上一篇</div>
+        <div class="article-nav-title">泰國曼谷夜生活全攻略</div>
+      </a>
+      <a href="#" class="article-nav-item" style="text-align:right;">
+        <div class="article-nav-label">下一篇 →</div>
+        <div class="article-nav-title">日本京都春季限定行程</div>
+      </a>
+    </div>
+  </article>
+
+  <!-- Sidebar -->
+  <aside class="article-sidebar">
+    <div class="sidebar-sticky">
+
+      <!-- CS Panel -->
+      <div class="sidebar-widget">
+        <div class="sidebar-widget-title">立即諮詢</div>
+        <div class="cs-sidebar-panel">
+          <div class="cs-sidebar-header">
+            <div class="cs-avatar">
+              <img src="uploads/ChatGPT Image 2026年5月1日 下午08_00_14.png" alt="Sophia" style="width:100%;height:100%;object-fit:cover;object-position:center top;" onerror="this.style.display='none';this.parentNode.innerHTML='👩‍✈️';">
+            </div>
+            <div>
+              <div class="cs-name">Sophia · 禮賓專員</div>
+              <div class="cs-role">🟢 線上服務中</div>
+            </div>
+          </div>
+          <div class="cs-channels">
+            <a href="#" class="cs-channel-btn">
+              <span class="cs-channel-icon">💬</span>
+              <div><div class="cs-channel-name">LINE 即時諮詢</div><div class="cs-channel-detail">@yunxiang_travel</div></div>
+            </a>
+            <a href="#" class="cs-channel-btn">
+              <span class="cs-channel-icon">📱</span>
+              <div><div class="cs-channel-name">WhatsApp</div><div class="cs-channel-detail">+886 2 1234 5678</div></div>
+            </a>
+            <a href="#" class="cs-channel-btn">
+              <span class="cs-channel-icon">✈️</span>
+              <div><div class="cs-channel-name">Telegram</div><div class="cs-channel-detail">@yunxiang_cs</div></div>
+            </a>
+            <a href="#" class="cs-channel-btn">
+              <span class="cs-channel-icon">📞</span>
+              <div><div class="cs-channel-name">客服電話</div><div class="cs-channel-detail">0800-123-456（免費）</div></div>
+            </a>
+          </div>
+          <div class="cs-footer">服務時間 09:00–22:00 (GMT+8)</div>
+        </div>
+      </div>
+
+      <!-- Related -->
+      <div class="sidebar-widget">
+        <div class="sidebar-widget-title">相關文章</div>
+        <div class="related-item">
+          <div class="related-thumb">🇹🇭</div>
+          <div class="related-info">
+            <div class="related-title">泰國曼谷5天4夜行程規劃</div>
+            <div class="related-date">2026-04-15</div>
+          </div>
+        </div>
+        <div class="related-item">
+          <div class="related-thumb">🇯🇵</div>
+          <div class="related-info">
+            <div class="related-title">京都春季限定：賞櫻私房景點</div>
+            <div class="related-date">2026-03-28</div>
+          </div>
+        </div>
+        <div class="related-item">
+          <div class="related-thumb">🇹🇼</div>
+          <div class="related-info">
+            <div class="related-title">台灣在地人帶路：台北美食地圖</div>
+            <div class="related-date">2026-03-10</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+</div>
+
+</body>
+</html>

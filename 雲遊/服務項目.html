@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>服務項目 · 雲遊國際</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500;600&family=Be+Vietnam+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/_shell.css">
+<style>
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1100px;
+    margin: 24px auto 80px;
+  }
+  .service-card {
+    background: var(--black2);
+    border: 1px solid rgba(200,169,110,0.12);
+    padding: 36px 32px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .service-card:hover { border-color: rgba(200,169,110,0.5); }
+  .service-card-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0.3; transition: opacity 0.4s; z-index: 0;
+  }
+  .service-card:hover .service-card-bg { opacity: 0.5; }
+  .service-card-veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(120deg, rgba(15,13,9,0.92) 0%, rgba(15,13,9,0.65) 60%, rgba(15,13,9,0.4) 100%);
+    z-index: 0;
+  }
+  .service-card-tag {
+    position: relative; z-index: 1;
+    font-size: 10px; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase;
+    margin-bottom: 14px; border: 1px solid rgba(200,169,110,0.35);
+    display: inline-block; padding: 3px 10px; background: rgba(15,13,9,0.4);
+  }
+  .service-card-title {
+    position: relative; z-index: 1;
+    font-family: var(--font-serif); font-size: 26px; font-weight: 400;
+    color: var(--white); margin-bottom: 12px; letter-spacing: 0.03em;
+  }
+  .service-card-desc {
+    position: relative; z-index: 1;
+    font-size: 13px; color: var(--text-muted); line-height: 1.8;
+  }
+  .service-card-more {
+    position: relative; z-index: 1; margin-top: 20px;
+    font-size: 11px; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .contact-cta {
+    margin: 40px auto 80px;
+    max-width: 900px;
+    text-align: center;
+    padding: 48px 24px;
+    border: 1px solid rgba(200,169,110,0.2);
+    background: linear-gradient(135deg, var(--black2), var(--black3));
+  }
+  .contact-cta-title {
+    font-family: var(--font-serif); font-size: 28px; font-weight: 300;
+    color: var(--white); margin-bottom: 12px;
+  }
+  .contact-cta-title em { color: var(--gold); font-style: italic; }
+  .contact-cta-desc {
+    font-size: 14px; color: var(--text-muted); line-height: 1.8;
+    max-width: 480px; margin: 0 auto 28px;
+  }
+  .contact-cta-btns { display: inline-flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .btn-primary {
+    background: var(--gold); color: var(--black); border: none;
+    padding: 12px 28px; font-size: 12px; letter-spacing: 0.18em;
+    text-transform: uppercase; cursor: pointer; font-weight: 600;
+    font-family: inherit; text-decoration: none; display: inline-block;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+  .btn-outline {
+    background: transparent; border: 1px solid rgba(200,169,110,0.4);
+    color: var(--gold); padding: 11px 26px; font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
+    font-family: inherit; text-decoration: none; display: inline-block;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
+
+  @media (max-width: 720px) {
+    .services-grid { grid-template-columns: 1fr; margin: 16px 16px 60px; }
+    .service-card { padding: 28px 22px; min-height: 0; }
+    .service-card-title { font-size: 22px; }
+    .contact-cta { margin: 24px 16px 60px; padding: 36px 20px; }
+    .contact-cta-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div data-shell-top data-shell-active="service"></div>
+
+<section class="page-hero">
+  <div class="page-eyebrow">Our Services</div>
+  <h1 class="page-title">服務 <em>項目</em></h1>
+  <p class="page-subtitle">從機場接送、客製行程到當地娛樂安排，全部一站式包辦。<br>24 小時專人服務，旅途任何細節都不需自己操心。</p>
+  <div class="page-rule"></div>
+</section>
+
+<div class="services-grid">
+  <a class="service-card" href="#visa">
+    <div class="service-card-bg" style="background-image:url(uploads/svc-visa.png)"></div>
+    <div class="service-card-veil"></div>
+    <span class="service-card-tag">Visa</span>
+    <h3 class="service-card-title">代辦簽證</h3>
+    <p class="service-card-desc">正規簽證公司代辦，免手續費，護照一拍即可辦理，急件最快 3 個工作天完成。</p>
+    <div class="service-card-more">了解更多 →</div>
+  </a>
+  <a class="service-card" href="#transfer">
+    <div class="service-card-bg" style="background-image:url(uploads/svc-transfer.png)"></div>
+    <div class="service-card-veil"></div>
+    <span class="service-card-tag">Transfer</span>
+    <h3 class="service-card-title">機場接送</h3>
+    <p class="service-card-desc">專人司機舉牌接送，往返機場與飯店，附贈當地網卡一張，全程中文溝通無障礙。</p>
+    <div class="service-card-more">了解更多 →</div>
+  </a>
+  <a class="service-card" href="#charter">
+    <div class="service-card-bg" style="background-image:url(uploads/svc-charter.png)"></div>
+    <div class="service-card-veil"></div>
+    <span class="service-card-tag">Charter</span>
+    <h3 class="service-card-title">包車服務</h3>
+    <p class="service-card-desc">市內市外皆可安排包車，私人導遊隨行，靈活彈性調整行程，深度體驗在地風光。</p>
+    <div class="service-card-more">了解更多 →</div>
+  </a>
+  <a class="service-card" href="#hotel">
+    <div class="service-card-bg" style="background-image:url(uploads/svc-hotel.png)"></div>
+    <div class="service-card-veil"></div>
+    <span class="service-card-tag">Hotel</span>
+    <h3 class="service-card-title">訂房服務</h3>
+    <p class="service-card-desc">代訂各星級飯店及酒店式公寓，量身搭配預算與需求，享有 VIP 協議價。</p>
+    <div class="service-card-more">了解更多 →</div>
+  </a>
+  <a class="service-card" href="#custom">
+    <div class="service-card-bg" style="background-image:url(uploads/svc-custom.png)"></div>
+    <div class="service-card-veil"></div>
+    <span class="service-card-tag">Custom</span>
+    <h3 class="service-card-title">客製行程</h3>
+    <p class="service-card-desc">根據偏好打造獨一無二的行程，深度體驗文化與美食，旅伴媒合服務一併安排。</p>
+    <div class="service-card-more">了解更多 →</div>
+  </a>
+  <a class="service-card" href="#entertainment">
+    <div class="service-card-bg" style="background-image:url(uploads/svc-entertainment.png)"></div>
+    <div class="service-card-veil"></div>
+    <span class="service-card-tag">Entertainment</span>
+    <h3 class="service-card-title">娛樂服務</h3>
+    <p class="service-card-desc">Spa、桑拿、KTV、水療、泳池 Villa、員工旅遊、生日 Party 等一站式安排。</p>
+    <div class="service-card-more">了解更多 →</div>
+  </a>
+</div>
+
+<div class="contact-cta">
+  <h2 class="contact-cta-title">想了解 <em>更多細節</em>？</h2>
+  <p class="contact-cta-desc">每位旅客的需求都不一樣。聯絡客服，我們會根據您的喜好與預算，提供最適合的方案。</p>
+  <div class="contact-cta-btns">
+    <a class="btn-primary" href="https://line.me/" target="_blank" rel="noopener noreferrer">LINE 諮詢</a>
+    <a class="btn-outline" href="tel:0800123456">撥打客服 0800-123-456</a>
+  </div>
+</div>
+
+<div data-shell-bottom></div>
+
+<script src="js/_shell.js"></script>
+
+</body>
+</html>

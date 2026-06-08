@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"name": "雲遊",
+			"path": "雲遊"
+		},
+		{
+			"name": "elfmodels",
+			"path": "elfmodels"
+		},
+		{
+			"name": "admin",
+			"path": "admin"
+		}
+	],
+	"settings": {
+		"liveServer.settings.port": 5501,
+		"liveServer.settings.multiRootWorkspaceName": "雲遊"
+	}
+}

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分類 / 商家 — 雲遊後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="_admin.js"></script>
+<style>
+  .breadcrumb { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); margin-bottom:20px; flex-wrap:wrap; }
+  .breadcrumb a { color:var(--gold); text-decoration:none; cursor:pointer; }
+  .breadcrumb a:hover { text-decoration:underline; }
+  .view-tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:20px; gap:2px; }
+  .view-tab { padding:8px 20px; cursor:pointer; font-size:13px; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .view-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+  .cat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+  .cat-card { background:var(--bg2); border:1px solid var(--border); border-radius:6px; overflow:hidden; cursor:pointer; transition:border-color 0.15s; }
+  .cat-card:hover { border-color:var(--gold); }
+  .cat-card-img { width:100%; height:100px; object-fit:cover; background:var(--bg3); display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:12px; }
+  .cat-card-img img { width:100%; height:100%; object-fit:cover; }
+  .cat-card-body { padding:10px 12px; }
+  .cat-card-name { font-size:13px; font-weight:500; }
+  .cat-card-en { font-size:11px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.06em; }
+  .cat-card-edit { float:right; background:none; border:none; color:var(--muted); cursor:pointer; font-size:12px; padding:2px 6px; }
+  .cat-card-edit:hover { color:var(--gold); }
+  .rating-cell { display:flex; align-items:center; gap:4px; }
+  .rating-cell .star { color:var(--gold); font-size:13px; }
+</style>
+</head>
+<body>
+<main class="admin-main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <h1 class="page-title" id="page-title">分類管理</h1>
+
+  <!-- 分類篩選列 -->
+  <div class="toolbar" id="cat-toolbar">
+    <select id="filter-country" class="adm-select" style="width:160px;" onchange="countryChanged()">
+      <option value="">選擇國家</option>
+    </select>
+    <button class="btn-primary toolbar-right" onclick="openCatPanel()">＋ 新增分類</button>
+  </div>
+
+  <!-- 商家工具列（drill-down 後顯示） -->
+  <div class="toolbar" id="vendor-toolbar" style="display:none;">
+    <button class="btn-primary toolbar-right" onclick="openVendorPanel()">＋ 新增商家</button>
+  </div>
+
+  <!-- 分類卡片 view -->
+  <div id="cat-view">
+    <div class="cat-grid" id="cat-grid"></div>
+  </div>
+
+  <!-- 商家列表 view -->
+  <div id="vendor-view" style="display:none;">
+    <table class="adm-table">
+      <thead>
+        <tr><th>名稱</th><th>地區</th><th>價格</th><th>評分</th><th>推薦</th><th>上架</th><th></th></tr>
+      </thead>
+      <tbody id="vendor-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- 分類 Panel -->
+<div id="cat-panel-overlay" class="panel-overlay" style="display:none;" onclick="closeCatPanel(event)">
+  <div class="panel" onclick="event.stopPropagation()">
+    <div class="panel-title">
+      <span id="cat-panel-heading">新增分類</span>
+      <button class="panel-close" onclick="closeCatPanel()">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">分類代碼 *</label>
+        <input id="cf-code" class="adm-input" placeholder="e.g. sauna">
+      </div>
+      <div class="form-group">
+        <label class="form-label">所屬國家 *</label>
+        <select id="cf-country" class="adm-select"></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">中文名稱 *</label>
+        <input id="cf-name" class="adm-input" placeholder="e.g. 越式桑拿">
+      </div>
+      <div class="form-group">
+        <label class="form-label">英文名稱</label>
+        <input id="cf-name-en" class="adm-input" placeholder="e.g. Sauna">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">分類圖片 URL</label>
+      <input id="cf-img" class="adm-input" placeholder="https://...">
+      <div id="cf-img-preview" style="margin-top:8px;"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">卡片尺寸</label>
+      <select id="cf-size" class="adm-select">
+        <option value="normal">normal（標準）</option>
+        <option value="tall">tall（高牌）</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">自訂連結（填了則點卡直接開此 URL，留空走商家列表）</label>
+      <input id="cf-link" class="adm-input" placeholder="https://...（選填）">
+    </div>
+    <div class="form-group">
+      <label class="form-label">排序</label>
+      <input id="cf-sort" class="adm-input" type="number" value="0">
+    </div>
+    <div class="panel-actions">
+      <button class="btn-danger" id="cf-btn-delete" onclick="doCatDelete()" style="margin-right:auto;display:none;">刪除</button>
+      <button class="btn-ghost" onclick="closeCatPanel()">取消</button>
+      <button class="btn-primary" onclick="doCatSave()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 商家 Panel -->
+<div id="vd-panel-overlay" class="panel-overlay" style="display:none;" onclick="closeVendorPanel(event)">
+  <div class="panel" onclick="event.stopPropagation()" style="width:560px;">
+    <div class="panel-title">
+      <span id="vd-panel-heading">新增商家</span>
+      <button class="panel-close" onclick="closeVendorPanel()">✕</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">名稱 *</label>
+        <input id="vf-title" class="adm-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Slug（URL ID）</label>
+        <input id="vf-slug" class="adm-input" placeholder="e.g. cruise-dinner">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">地區</label>
+        <input id="vf-region" class="adm-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">營業時間</label>
+        <input id="vf-hours" class="adm-input" placeholder="e.g. 09:00–22:00">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">價格（NTD，留空＝請洽客服）</label>
+        <input id="vf-price" class="adm-input" type="number" placeholder="">
+      </div>
+      <div class="form-group">
+        <label class="form-label">價格後綴</label>
+        <input id="vf-price-suffix" class="adm-input" placeholder="e.g.  / 人起">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">評分</label>
+      <div id="vf-stars"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">評論數</label>
+      <input id="vf-review-count" class="adm-input" type="number" value="0">
+    </div>
+    <div class="form-group" style="display:flex;gap:24px;align-items:center;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;">
+        <label class="toggle"><input type="checkbox" id="vf-recommended"><span class="toggle-slider"></span></label>
+        推薦
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;">
+        <label class="toggle"><input type="checkbox" id="vf-active" checked><span class="toggle-slider"></span></label>
+        上架
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="form-label">簡述</label>
+      <textarea id="vf-desc" class="adm-textarea"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">重點列表</label>
+      <div id="vf-bullet-container"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">封面圖 URL</label>
+      <input id="vf-img" class="adm-input">
+      <div id="vf-img-preview" style="margin-top:8px;"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">相簿（每行一個 URL）</label>
+      <div id="vf-gallery-container"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">地址</label>
+      <input id="vf-address" class="adm-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">電話</label>
+      <input id="vf-phone" class="adm-input">
+    </div>
+    <div class="form-group">
+      <label class="form-label">詳細介紹</label>
+      <textarea id="vf-intro" class="adm-textarea" style="min-height:100px;"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Highlights</label>
+      <div id="vf-hl-container"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">排序</label>
+      <input id="vf-sort" class="adm-input" type="number" value="0">
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn-danger" id="vd-btn-delete" onclick="doVendorDelete()" style="margin-right:auto;display:none;">刪除</button>
+      <button class="btn-ghost" onclick="closeVendorPanel()">取消</button>
+      <button class="btn-primary" onclick="doVendorSave()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let countries = [];
+let categories = [];
+let vendors = [];
+let currentCountry = null;
+let currentCat = null;   // { id, code, name }
+let editCatId = null;
+let editVendorId = null;
+let starWidget = null;
+let bulletWidget = null;
+let galleryWidget = null;
+let hlWidget = null;
+
+(async () => {
+  const session = await requireAuth();
+  if (!session) return;
+  injectSidebar(session);
+
+  const { data: c } = await sb.from('countries').select('code,name,flag').order('sort_order');
+  countries = c || [];
+
+  const sel = document.getElementById('filter-country');
+  countries.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.code; o.textContent = `${c.flag || ''} ${c.name}`;
+    sel.appendChild(o);
+  });
+
+  // auto-select if only one country
+  if (countries.length === 1) {
+    sel.value = countries[0].code;
+    await countryChanged();
+  }
+})();
+
+async function countryChanged() {
+  currentCountry = document.getElementById('filter-country').value || null;
+  currentCat = null;
+  showCatView();
+  if (!currentCountry) { document.getElementById('cat-grid').innerHTML = ''; return; }
+  await loadCategories();
+}
+
+async function loadCategories() {
+  if (!currentCountry) return;
+  const { data } = await sb.from('categories')
+    .select('*')
+    .eq('country_code', currentCountry)
+    .neq('size', 'feature')
+    .order('sort_order');
+  categories = data || [];
+  renderCatGrid();
+}
+
+function renderCatGrid() {
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = '';
+  if (!categories.length) {
+    grid.innerHTML = '<div style="color:var(--muted);font-size:13px;grid-column:1/-1;">尚無分類</div>';
+    return;
+  }
+  categories.forEach(cat => {
+    const card = document.createElement('div');
+    card.className = 'cat-card';
+    card.innerHTML = `
+      <div class="cat-card-img">${cat.img ? `<img src="${cat.img}" onerror="this.parentElement.textContent='無圖片'">` : '無圖片'}</div>
+      <div class="cat-card-body">
+        <button class="cat-card-edit" onclick="event.stopPropagation();openCatPanel(${cat.id})">編輯</button>
+        <div class="cat-card-name">${cat.name}</div>
+        <div class="cat-card-en">${cat.name_en || ''}</div>
+        ${cat.link ? `<div style="font-size:11px;color:var(--gold);margin-top:4px;">🔗 外部連結</div>` : ''}
+      </div>`;
+    card.addEventListener('click', () => drillInto(cat));
+    grid.appendChild(card);
+  });
+}
+
+function drillInto(cat) {
+  if (cat.link) { window.open(cat.link, '_blank'); return; }
+  currentCat = cat;
+  showVendorView();
+  loadVendors();
+}
+
+function showCatView() {
+  document.getElementById('cat-view').style.display = '';
+  document.getElementById('vendor-view').style.display = 'none';
+  document.getElementById('cat-toolbar').style.display = '';
+  document.getElementById('vendor-toolbar').style.display = 'none';
+  document.getElementById('page-title').textContent = '分類管理';
+  renderBreadcrumb();
+}
+
+function showVendorView() {
+  document.getElementById('cat-view').style.display = 'none';
+  document.getElementById('vendor-view').style.display = '';
+  document.getElementById('cat-toolbar').style.display = 'none';
+  document.getElementById('vendor-toolbar').style.display = '';
+  document.getElementById('page-title').textContent = currentCat.name + '　商家列表';
+  renderBreadcrumb();
+}
+
+function renderBreadcrumb() {
+  const el = document.getElementById('breadcrumb');
+  const c = countries.find(x => x.code === currentCountry);
+  if (!currentCountry) { el.innerHTML = ''; return; }
+  let html = `<a onclick="backToCountry()">${c?.flag || ''} ${c?.name || currentCountry}</a>`;
+  if (currentCat) html += `<span>›</span><span style="color:var(--text);">${currentCat.name}</span>`;
+  el.innerHTML = html;
+}
+
+function backToCountry() {
+  currentCat = null;
+  showCatView();
+}
+
+// ── 商家列表 ──────────────────────────────────────────────────────────────
+async function loadVendors() {
+  if (!currentCat) return;
+  const cityFilter = getCitiesOfCountry();
+  let q = sb.from('vendors').select('*').eq('cat_code', currentCat.code).order('sort_order').order('title');
+  if (cityFilter.length) q = q.in('city_code', cityFilter);
+  const { data } = await q;
+  vendors = data || [];
+  renderVendorTable();
+}
+
+function getCitiesOfCountry() { return []; } // 全部顯示，後續可細化
+
+function renderVendorTable() {
+  const tbody = document.getElementById('vendor-tbody');
+  tbody.innerHTML = '';
+  vendors.forEach(v => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:500;">${v.title}</td>
+      <td style="color:var(--muted);">${v.region || '—'}</td>
+      <td style="color:var(--muted);">${v.price_twd != null ? 'NT$' + v.price_twd.toLocaleString() + (v.price_suffix || '') : '請洽客服'}</td>
+      <td><div class="rating-cell"><span class="star">★</span>${v.rating ?? '—'}</div></td>
+      <td>${v.is_recommended ? '<span class="badge badge-gold">推薦</span>' : ''}</td>
+      <td>${v.is_active ? '<span class="badge badge-green">上架</span>' : '<span class="badge badge-muted">下架</span>'}</td>
+      <td><button class="btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="openVendorPanel('${v.id}')">編輯</button></td>`;
+    tbody.appendChild(tr);
+  });
+  if (!vendors.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);text-align:center;padding:24px;">尚無商家</td></tr>';
+  }
+}
+
+// ── 分類 Panel ────────────────────────────────────────────────────────────
+function openCatPanel(id) {
+  editCatId = id || null;
+  const r = id ? categories.find(x => x.id === id) : null;
+  document.getElementById('cat-panel-heading').textContent = r ? '編輯分類' : '新增分類';
+  document.getElementById('cf-code').value    = r?.code    || '';
+  document.getElementById('cf-code').disabled = !!r;
+  document.getElementById('cf-name').value    = r?.name    || '';
+  document.getElementById('cf-name-en').value = r?.name_en || '';
+  document.getElementById('cf-img').value     = r?.img     || '';
+  document.getElementById('cf-size').value    = r?.size    || 'normal';
+  document.getElementById('cf-link').value    = r?.link    || '';
+  document.getElementById('cf-sort').value    = r?.sort_order ?? 0;
+  document.getElementById('cf-btn-delete').style.display = r ? 'inline-block' : 'none';
+
+  const sel = document.getElementById('cf-country');
+  sel.innerHTML = '';
+  countries.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.code; o.textContent = `${c.flag || ''} ${c.name}`;
+    if (r ? r.country_code === c.code : c.code === currentCountry) o.selected = true;
+    sel.appendChild(o);
+  });
+
+  previewCatImg(r?.img || '');
+  document.getElementById('cat-panel-overlay').style.display = 'flex';
+}
+
+function closeCatPanel(e) {
+  if (e && e.target !== document.getElementById('cat-panel-overlay')) return;
+  document.getElementById('cat-panel-overlay').style.display = 'none';
+}
+
+document.getElementById('cf-img').addEventListener('input', e => previewCatImg(e.target.value));
+function previewCatImg(url) {
+  const el = document.getElementById('cf-img-preview');
+  el.innerHTML = url ? `<img src="${url}" style="max-width:100%;max-height:100px;border-radius:4px;border:1px solid var(--border);" onerror="this.style.display='none'">` : '';
+}
+
+async function doCatSave() {
+  const code    = document.getElementById('cf-code').value.trim().toLowerCase();
+  const name    = document.getElementById('cf-name').value.trim();
+  const country = document.getElementById('cf-country').value;
+  if (!code || !name || !country) { toast('代碼、名稱、國家為必填', 'error'); return; }
+
+  const payload = {
+    country_code: country, code, name,
+    name_en:    document.getElementById('cf-name-en').value.trim() || null,
+    img:        document.getElementById('cf-img').value.trim() || null,
+    size:       document.getElementById('cf-size').value,
+    link:       document.getElementById('cf-link').value.trim() || null,
+    sort_order: parseInt(document.getElementById('cf-sort').value) || 0,
+  };
+
+  const { error } = editCatId
+    ? await sb.from('categories').update(payload).eq('id', editCatId)
+    : await sb.from('categories').insert(payload);
+
+  if (error) { toast('儲存失敗：' + error.message, 'error'); return; }
+  toast('已儲存');
+  document.getElementById('cat-panel-overlay').style.display = 'none';
+  await loadCategories();
+}
+
+async function doCatDelete() {
+  if (!confirm2('確定刪除此分類？')) return;
+  const { error } = await sb.from('categories').delete().eq('id', editCatId);
+  if (error) { toast('刪除失敗：' + error.message, 'error'); return; }
+  toast('已刪除');
+  document.getElementById('cat-panel-overlay').style.display = 'none';
+  await loadCategories();
+}
+
+// ── 商家 Panel ────────────────────────────────────────────────────────────
+function openVendorPanel(id) {
+  editVendorId = id || null;
+  const v = id ? vendors.find(x => x.id === id) : null;
+  document.getElementById('vd-panel-heading').textContent = v ? '編輯商家' : '新增商家';
+  document.getElementById('vf-title').value        = v?.title        || '';
+  document.getElementById('vf-slug').value         = v?.slug         || '';
+  document.getElementById('vf-region').value       = v?.region       || '';
+  document.getElementById('vf-hours').value        = v?.hours        || '';
+  document.getElementById('vf-price').value        = v?.price_twd    ?? '';
+  document.getElementById('vf-price-suffix').value = v?.price_suffix  || '';
+  document.getElementById('vf-review-count').value = v?.review_count ?? 0;
+  document.getElementById('vf-recommended').checked = v?.is_recommended ?? false;
+  document.getElementById('vf-active').checked      = v?.is_active ?? true;
+  document.getElementById('vf-desc').value         = v?.description  || '';
+  document.getElementById('vf-img').value          = v?.img          || '';
+  document.getElementById('vf-address').value      = v?.address      || '';
+  document.getElementById('vf-phone').value        = v?.phone        || '';
+  document.getElementById('vf-intro').value        = v?.intro        || '';
+  document.getElementById('vf-sort').value         = v?.sort_order   ?? 0;
+  document.getElementById('vd-btn-delete').style.display = v ? 'inline-block' : 'none';
+
+  // Stars
+  const starsEl = document.getElementById('vf-stars');
+  starsEl.innerHTML = '';
+  starWidget = starRating(v?.rating ?? 4.5);
+  starsEl.appendChild(starWidget.el);
+
+  // Bullet list
+  const bulletEl = document.getElementById('vf-bullet-container');
+  bulletEl.innerHTML = '';
+  bulletWidget = stringList(Array.isArray(v?.bullet_list) ? v.bullet_list : []);
+  bulletEl.appendChild(bulletWidget.el);
+
+  // Gallery
+  const galleryEl = document.getElementById('vf-gallery-container');
+  galleryEl.innerHTML = '';
+  galleryWidget = stringList(Array.isArray(v?.gallery) ? v.gallery : []);
+  galleryEl.appendChild(galleryWidget.el);
+
+  // Highlights
+  const hlEl = document.getElementById('vf-hl-container');
+  hlEl.innerHTML = '';
+  hlWidget = highlightList(Array.isArray(v?.highlights) ? v.highlights : []);
+  hlEl.appendChild(hlWidget.el);
+
+  previewVendorImg(v?.img || '');
+  document.getElementById('vd-panel-overlay').style.display = 'flex';
+}
+
+function closeVendorPanel(e) {
+  if (e && e.target !== document.getElementById('vd-panel-overlay')) return;
+  document.getElementById('vd-panel-overlay').style.display = 'none';
+}
+
+document.getElementById('vf-img').addEventListener('input', e => previewVendorImg(e.target.value));
+function previewVendorImg(url) {
+  const el = document.getElementById('vf-img-preview');
+  el.innerHTML = url ? `<img src="${url}" style="max-width:100%;max-height:100px;border-radius:4px;border:1px solid var(--border);" onerror="this.style.display='none'">` : '';
+}
+
+function slugify(str) {
+  return str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
+async function doVendorSave() {
+  const title = document.getElementById('vf-title').value.trim();
+  if (!title) { toast('名稱為必填', 'error'); return; }
+  if (!currentCat) { toast('請先選擇分類', 'error'); return; }
+
+  let slug = document.getElementById('vf-slug').value.trim() || slugify(title) + '-' + Date.now();
+  const priceVal = document.getElementById('vf-price').value;
+
+  const payload = {
+    title,
+    slug,
+    cat_code:       currentCat.code,
+    region:         document.getElementById('vf-region').value.trim() || null,
+    hours:          document.getElementById('vf-hours').value.trim()  || null,
+    price_twd:      priceVal !== '' ? parseInt(priceVal) : null,
+    price_suffix:   document.getElementById('vf-price-suffix').value.trim() || null,
+    rating:         starWidget.getValue() || null,
+    review_count:   parseInt(document.getElementById('vf-review-count').value) || 0,
+    is_recommended: document.getElementById('vf-recommended').checked,
+    is_active:      document.getElementById('vf-active').checked,
+    description:    document.getElementById('vf-desc').value.trim() || null,
+    bullet_list:    bulletWidget.getValue(),
+    img:            document.getElementById('vf-img').value.trim() || null,
+    gallery:        galleryWidget.getValue(),
+    address:        document.getElementById('vf-address').value.trim() || null,
+    phone:          document.getElementById('vf-phone').value.trim() || null,
+    intro:          document.getElementById('vf-intro').value.trim() || null,
+    highlights:     hlWidget.getValue(),
+    sort_order:     parseInt(document.getElementById('vf-sort').value) || 0,
+  };
+
+  const { error } = editVendorId
+    ? await sb.from('vendors').update(payload).eq('id', editVendorId)
+    : await sb.from('vendors').insert(payload);
+
+  if (error) { toast('儲存失敗：' + error.message, 'error'); return; }
+  toast('已儲存');
+  document.getElementById('vd-panel-overlay').style.display = 'none';
+  await loadVendors();
+}
+
+async function doVendorDelete() {
+  if (!confirm2('確定刪除此商家？')) return;
+  const { error } = await sb.from('vendors').delete().eq('id', editVendorId);
+  if (error) { toast('刪除失敗：' + error.message, 'error'); return; }
+  toast('已刪除');
+  document.getElementById('vd-panel-overlay').style.display = 'none';
+  await loadVendors();
+}
+</script>
+</body>
+</html>
