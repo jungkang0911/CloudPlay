@@ -351,7 +351,7 @@
 
     async getCategories(countryCode) {
       const rows = await _sbFetch('categories', `country_code=eq.${countryCode}&order=sort_order&select=*`);
-      if (rows && rows.length) return rows;
+      if (rows && rows.length) return rows.map(r => ({ ...r, id: r.code || r.id }));
       return _categories[countryCode] || [];
     },
 
