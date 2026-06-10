@@ -701,7 +701,7 @@ function App() {
             <span style={{fontSize:'12px',color:'var(--gold-dim)'}}>試試清除篩選或更換關鍵字</span>
           </div>
         ) : items.map((it, i) => (
-          <a key={i} className="item" href={it.link || `店家詳情.html?country=${currentCountryCode}&city=${currentCityCode}&cat=${catId}&item=${it.id || i}`} target={it.link ? '_blank' : '_self'} rel={it.link ? 'noopener noreferrer' : undefined}>
+          <a key={i} className="item" href={it.link || `vendor.html?country=${currentCountryCode}&city=${currentCityCode}&cat=${catId}&item=${it.id || i}`} target={it.link ? '_blank' : '_self'} rel={it.link ? 'noopener noreferrer' : undefined}>
             <div className="item-img" style={{backgroundImage:`url(${it.img})`}}></div>
             <div className="item-body">
               <h3 className="item-title">{it.title}</h3>

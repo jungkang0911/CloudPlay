@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>店家詳情 · 雲遊國際</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+TC:wght@300;400;500;600&family=Be+Vietnam+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/_shell.css">
+<style>
+  /* ── 詳情主視覺 ── */
+  .detail-hero {
+    position: relative;
+    height: 46vh;
+    min-height: 320px;
+    max-height: 460px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+  }
+  .detail-hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(10,9,6,0.15) 0%, rgba(10,9,6,0.4) 55%, rgba(10,9,6,0.95) 100%);
+  }
+  .detail-hero-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 28px 36px;
+  }
+  .detail-breadcrumb {
+    font-size: 11px;
+    color: var(--white2);
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+    opacity: 0.85;
+  }
+  .detail-breadcrumb a { color: var(--white2); text-decoration: none; transition: color 0.2s; }
+  .detail-breadcrumb a:hover { color: var(--gold); }
+  .detail-breadcrumb .sep { margin: 0 6px; color: var(--gold); }
+  .detail-tags { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .detail-tag {
+    font-size: 11px; letter-spacing: 0.1em;
+    color: var(--gold); border: 1px solid rgba(200,169,110,0.4);
+    padding: 4px 12px; background: rgba(10,9,6,0.4); backdrop-filter: blur(4px);
+  }
+  .detail-tag.rec { background: var(--gold); color: var(--black); border-color: var(--gold); font-weight: 600; }
+  .detail-hero-title {
+    font-family: var(--font-serif);
+    font-size: clamp(34px, 5vw, 56px);
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: 0.03em;
+    line-height: 1.1;
+  }
+  .detail-hero-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .detail-hero-meta-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--white2);
+  }
+  .detail-hero-meta-item .ico { color: var(--gold); font-size: 14px; }
+  .detail-hero-rating { display: flex; align-items: center; gap: 8px; }
+  .detail-hero-rating .stars { color: var(--gold); letter-spacing: 1px; font-size: 13px; }
+  .detail-hero-rating .stars .dim { color: rgba(200,169,110,0.3); }
+  .detail-hero-rating .val { font-family: var(--font-serif); font-style: italic; font-size: 20px; color: var(--gold-light); }
+  .detail-hero-rating .cnt { font-size: 11px; color: var(--text-muted); }
+
+  /* ── 內容版面 ── */
+  .detail-layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 28px 80px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 48px;
+    align-items: start;
+  }
+  .detail-main { min-width: 0; }
+  .detail-block { margin-bottom: 44px; }
+  .detail-block:last-child { margin-bottom: 0; }
+  .block-tag {
+    font-size: 10px; letter-spacing: 0.2em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .block-tag::after { content: ''; flex: 1; height: 1px; background: rgba(200,169,110,0.15); }
+  .block-h2 {
+    font-family: var(--font-serif);
+    font-size: 28px; font-weight: 400; color: var(--white);
+    margin-bottom: 16px; letter-spacing: 0.03em;
+  }
+  .block-h2 em { color: var(--gold); font-style: italic; }
+  .block-p {
+    font-size: 15px; color: var(--white2); line-height: 1.95; font-weight: 300;
+  }
+
+  /* 推薦清單 */
+  .rec-list { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
+  .rec-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 18px 20px;
+    background: var(--black2);
+    border: 1px solid rgba(200,169,110,0.12);
+  }
+  .rec-num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 24px;
+    color: var(--gold);
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 30px;
+  }
+  .rec-text { font-size: 14px; color: var(--white2); line-height: 1.7; padding-top: 2px; }
+
+  /* 亮點卡 */
+  .highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+  .highlight-cell {
+    background: var(--black2);
+    border: 1px solid rgba(200,169,110,0.12);
+    padding: 24px 22px;
+  }
+  .highlight-cell-title {
+    font-size: 15px; color: var(--gold-light); margin-bottom: 8px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .highlight-cell-title::before { content: '✦'; color: var(--gold); font-size: 12px; }
+  .highlight-cell-desc { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+
+  /* 相簿 */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+  .gallery-img {
+    aspect-ratio: 4 / 3;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--black3);
+    border: 1px solid rgba(200,169,110,0.1);
+    cursor: pointer;
+    transition: filter 0.3s, transform 0.3s;
+    filter: brightness(0.85);
+  }
+  .gallery-img:hover { filter: brightness(1); transform: scale(1.02); }
+  .gallery-img { position: relative; }
+  .gallery-img::after {
+    content: '⤢';
+    position: absolute; right: 8px; bottom: 6px;
+    color: var(--white); font-size: 14px;
+    opacity: 0; transition: opacity 0.2s;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  }
+  .gallery-img:hover::after { opacity: 0.9; }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(8,7,4,0.94);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .lightbox.open { display: flex; opacity: 1; }
+  .lb-stage {
+    position: relative;
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 64px 80px;
+    overflow: hidden;
+  }
+  .lb-img {
+    max-width: 100%; max-height: 100%;
+    object-fit: contain;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    border: 1px solid rgba(200,169,110,0.2);
+    transition: transform 0.25s ease;
+    transform-origin: center center;
+    cursor: zoom-in;
+    user-select: none;
+  }
+  .lb-img.zoomed { cursor: zoom-out; }
+  .lb-close {
+    position: absolute; top: 22px; right: 26px;
+    width: 44px; height: 44px;
+    border: 1px solid rgba(200,169,110,0.3);
+    background: rgba(10,9,6,0.5);
+    color: var(--gold); font-size: 22px; line-height: 1;
+    cursor: pointer; z-index: 4;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .lb-close:hover { border-color: var(--gold); background: rgba(200,169,110,0.1); }
+  .lb-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px;
+    border: 1px solid rgba(200,169,110,0.3);
+    background: rgba(10,9,6,0.5);
+    color: var(--gold); font-size: 22px;
+    cursor: pointer; z-index: 4;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .lb-nav:hover { border-color: var(--gold); background: rgba(200,169,110,0.1); }
+  .lb-prev { left: 22px; }
+  .lb-next { right: 22px; }
+  .lb-counter {
+    position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+    font-size: 12px; letter-spacing: 0.15em; color: var(--white2);
+    z-index: 4;
+  }
+  .lb-counter b { color: var(--gold); font-weight: 500; }
+  .lb-thumbs {
+    position: absolute; bottom: 52px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 6px; z-index: 4; max-width: 90vw; overflow-x: auto; padding: 4px;
+  }
+  .lb-thumb {
+    width: 56px; height: 40px; object-fit: cover;
+    border: 1px solid rgba(200,169,110,0.25); cursor: pointer;
+    opacity: 0.5; transition: opacity 0.2s, border-color 0.2s; flex-shrink: 0;
+  }
+  .lb-thumb:hover { opacity: 0.85; }
+  .lb-thumb.active { opacity: 1; border-color: var(--gold); }
+  @media (max-width: 720px) {
+    .lb-stage { padding: 56px 14px 90px; }
+    .lb-nav { width: 42px; height: 42px; font-size: 18px; }
+    .lb-prev { left: 8px; } .lb-next { right: 8px; }
+    .lb-thumbs { display: none; }
+  }
+
+  /* 地圖佔位 */
+  .map-placeholder {
+    height: 220px;
+    background:
+      repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(200,169,110,0.03) 10px, rgba(200,169,110,0.03) 20px),
+      var(--black2);
+    border: 1px solid rgba(200,169,110,0.15);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; color: rgba(200,169,110,0.4); font-size: 12px; letter-spacing: 0.1em;
+  }
+  .map-placeholder .pin { font-size: 28px; }
+
+  /* ── 側欄預訂卡 ── */
+  .detail-side { position: sticky; top: 92px; }
+  .book-card {
+    background: linear-gradient(160deg, var(--black2), var(--black3));
+    border: 1px solid rgba(200,169,110,0.2);
+    padding: 28px 26px;
+  }
+  .book-card-price-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .book-card-price {
+    font-family: var(--font-serif); font-size: 32px; color: var(--gold-light); font-weight: 400;
+    margin-bottom: 22px; padding-bottom: 22px; border-bottom: 1px solid rgba(200,169,110,0.15);
+    line-height: 1.1;
+  }
+  .book-info-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 11px 0; font-size: 13px;
+    border-bottom: 1px solid rgba(200,169,110,0.07);
+  }
+  .book-info-row:last-of-type { border-bottom: none; }
+  .book-info-label { color: var(--gold); min-width: 56px; flex-shrink: 0; }
+  .book-info-val { color: var(--white2); flex: 1; line-height: 1.6; }
+  .book-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+  .book-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px; font-size: 13px; letter-spacing: 0.1em; cursor: pointer;
+    font-family: inherit; text-decoration: none; transition: all 0.2s; border: none;
+  }
+  .book-btn-primary { background: var(--gold); color: var(--black); font-weight: 600; }
+  .book-btn-primary:hover { background: var(--gold-light); }
+  .book-btn-outline { background: transparent; border: 1px solid rgba(200,169,110,0.4); color: var(--gold); }
+  .book-btn-outline:hover { border-color: var(--gold); background: rgba(200,169,110,0.05); }
+  .book-note { margin-top: 16px; font-size: 11px; color: var(--text-muted); line-height: 1.6; text-align: center; }
+
+  /* 上一頁 */
+  .back-link {
+    max-width: 1100px; margin: 0 auto; padding: 18px 28px 0;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--gold); letter-spacing: 0.08em; text-decoration: none;
+  }
+  .back-link:hover { color: var(--gold-light); }
+
+  /* 其他推薦 */
+  .more-section { max-width: 1100px; margin: 0 auto; padding: 0 28px 80px; }
+  .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .more-card {
+    background: var(--black2); border: 1px solid rgba(200,169,110,0.12);
+    text-decoration: none; color: inherit; transition: all 0.3s; overflow: hidden;
+  }
+  .more-card:hover { border-color: rgba(200,169,110,0.4); transform: translateY(-2px); }
+  .more-card-img { aspect-ratio: 16 / 10; background-size: cover; background-position: center; background-color: var(--black3); }
+  .more-card-body { padding: 16px 18px; }
+  .more-card-title { font-family: var(--font-serif); font-size: 18px; color: var(--white); margin-bottom: 6px; }
+  .more-card-meta { font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; }
+  .more-card-meta .star { color: var(--gold); }
+
+  @media (max-width: 880px) {
+    .detail-layout { grid-template-columns: 1fr; gap: 36px; }
+    .detail-side { position: static; }
+    .more-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .detail-hero { min-height: 260px; }
+    .detail-hero-inner { padding: 0 16px 24px; }
+    .detail-layout { padding: 32px 16px 60px; }
+    .highlight-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .back-link { padding: 14px 16px 0; }
+    .more-section { padding: 0 16px 60px; }
+    .more-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div data-shell-top data-shell-active=""></div>
+
+<!-- 主視覺 -->
+<section class="detail-hero" id="hero">
+  <div class="detail-hero-inner">
+    <div class="detail-breadcrumb" id="breadcrumb"></div>
+    <div class="detail-tags" id="tags"></div>
+    <h1 class="detail-hero-title" id="title">—</h1>
+    <div class="detail-hero-meta" id="meta"></div>
+  </div>
+</section>
+
+<a class="back-link" id="backLink" href="cat.html">← 返回列表</a>
+
+<!-- 內容 -->
+<div class="detail-layout">
+  <div class="detail-main">
+
+    <div class="detail-block">
+      <div class="block-tag">Introduction</div>
+      <h2 class="block-h2">關於 <em id="introName">這裡</em></h2>
+      <p class="block-p" id="intro"></p>
+    </div>
+
+    <div class="detail-block" id="recBlock">
+      <div class="block-tag">Recommended</div>
+      <h2 class="block-h2">精選 <em>推薦</em></h2>
+      <div class="rec-list" id="recList"></div>
+    </div>
+
+    <div class="detail-block" id="highlightBlock">
+      <div class="block-tag">Highlights</div>
+      <h2 class="block-h2">特色 <em>亮點</em></h2>
+      <div class="highlight-grid" id="highlightGrid"></div>
+    </div>
+
+    <div class="detail-block" id="galleryBlock">
+      <div class="block-tag">Gallery</div>
+      <h2 class="block-h2">實景 <em>相簿</em></h2>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+
+    <div class="detail-block">
+      <div class="block-tag">Location</div>
+      <h2 class="block-h2">位置 <em>資訊</em></h2>
+      <div class="map-placeholder">
+        <div class="pin">📍</div>
+        <div id="mapAddr">地圖位置</div>
+        <div style="font-size:10px;opacity:0.7">實際地圖由業主提供後嵌入</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 側欄 -->
+  <aside class="detail-side">
+    <div class="book-card">
+      <div class="book-card-price-label">參考價格</div>
+      <div class="book-card-price" id="price">請洽客服</div>
+
+      <div class="book-info-row">
+        <span class="book-info-label">營業</span>
+        <span class="book-info-val" id="infoHours">—</span>
+      </div>
+      <div class="book-info-row">
+        <span class="book-info-label">地址</span>
+        <span class="book-info-val" id="infoAddr">—</span>
+      </div>
+      <div class="book-info-row">
+        <span class="book-info-label">電話</span>
+        <span class="book-info-val" id="infoPhone">—</span>
+      </div>
+      <div class="book-info-row">
+        <span class="book-info-label">區域</span>
+        <span class="book-info-val" id="infoRegion">—</span>
+      </div>
+
+      <div class="book-btns">
+        <a class="book-btn book-btn-primary" href="https://line.me/" target="_blank" rel="noopener noreferrer">💬 LINE 預約</a>
+        <a class="book-btn book-btn-outline" href="tel:0800123456">☎ 撥打客服</a>
+      </div>
+      <div class="book-note">確認需求後由專人為您安排預訂，<br>不收任何隱藏費用。</div>
+    </div>
+  </aside>
+</div>
+
+<!-- 其他推薦 -->
+<section class="more-section" id="moreSection">
+  <div class="block-tag">More</div>
+  <h2 class="block-h2" style="margin-bottom:20px">同類 <em>其他推薦</em></h2>
+  <div class="more-grid" id="moreGrid"></div>
+</section>
+
+<div data-shell-bottom></div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose" aria-label="關閉">×</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="上一張">‹</button>
+  <div class="lb-stage" id="lbStage">
+    <img class="lb-img" id="lbImg" alt="" />
+  </div>
+  <button class="lb-nav lb-next" id="lbNext" aria-label="下一張">›</button>
+  <div class="lb-thumbs" id="lbThumbs"></div>
+  <div class="lb-counter"><b id="lbCur">1</b> / <span id="lbTotal">1</span></div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/_db.js"></script>
+<script src="js/_shell.js"></script>
+<script>
+  (async function () {
+    const DB = window.DB;
+    const params = new URLSearchParams(location.search);
+    const countryCode = params.get('country') || 'vn';
+    const cityCode    = params.get('city')    || localStorage.getItem('yy_city') || 'hcm';
+    const catId       = params.get('cat')     || 'attractions';
+    const itemRef     = params.get('item');
+
+    const { country, city } = await DB.findCity(cityCode);
+    const catName  = await DB.getCatName(catId);
+    const item     = await DB.getItem(cityCode, catId, itemRef);
+    const allItems = await DB.getItems(cityCode, catId);
+
+    function stars(v) {
+      const full  = Math.floor(v);
+      const half  = v - full >= 0.5;
+      const empty = 5 - full - (half ? 1 : 0);
+      return '★'.repeat(full) + (half ? '★' : '') + '<span class="dim">' + '★'.repeat(empty) + '</span>';
+    }
+
+    document.title = item.title + ' · 雲遊國際';
+
+    // Hero
+    document.getElementById('hero').style.backgroundImage = `url(${item.img})`;
+    const catUrl = `cat.html?country=${countryCode}&city=${cityCode}&cat=${catId}`;
+    document.getElementById('breadcrumb').innerHTML =
+      `<a href="index.html">首頁</a><span class="sep">/</span>` +
+      `<a href="${catUrl}">${country.name} · ${city.name} · ${catName}</a>` +
+      `<span class="sep">/</span>${item.title}`;
+    document.getElementById('backLink').href = catUrl;
+
+    // Tags
+    let tagsHtml = `<span class="detail-tag">${city.name}</span><span class="detail-tag">${item.region || ''}</span>`;
+    if (item.rec) tagsHtml += `<span class="detail-tag rec">推薦</span>`;
+    document.getElementById('tags').innerHTML = tagsHtml;
+
+    document.getElementById('title').textContent     = item.title;
+    document.getElementById('introName').textContent = item.title;
+
+    // Meta
+    document.getElementById('meta').innerHTML =
+      `<div class="detail-hero-meta-item"><span class="ico">🕑</span>${item.hours || '—'}</div>` +
+      `<div class="detail-hero-meta-item"><span class="ico">📍</span>${item.region || '—'}</div>` +
+      `<div class="detail-hero-meta-item detail-hero-rating">` +
+        `<span class="stars">${stars(item.rating || 0)}</span>` +
+        `<span class="val">${(item.rating || 0).toFixed(1)}</span>` +
+        `<span class="cnt">${(item.count || 0).toLocaleString()} 評</span>` +
+      `</div>`;
+
+    // Intro
+    document.getElementById('intro').textContent =
+      item.intro || item.desc || `${item.title} 是 ${city.name} ${catName} 的推薦選擇，更多細節歡迎聯絡客服。`;
+
+    // Recommended list
+    if (item.list && item.list.length) {
+      document.getElementById('recList').innerHTML = item.list.map((li, i) =>
+        `<div class="rec-row"><div class="rec-num">${String(i + 1).padStart(2, '0')}</div><div class="rec-text">${li}</div></div>`
+      ).join('');
+    } else {
+      document.getElementById('recBlock').style.display = 'none';
+    }
+
+    // Highlights
+    if (item.highlights && item.highlights.length) {
+      document.getElementById('highlightGrid').innerHTML = item.highlights.map(h =>
+        `<div class="highlight-cell"><div class="highlight-cell-title">${h.t}</div><div class="highlight-cell-desc">${h.d}</div></div>`
+      ).join('');
+    } else {
+      document.getElementById('highlightBlock').style.display = 'none';
+    }
+
+    // Gallery
+    const galleryBlock = document.getElementById('galleryBlock');
+    const STOCK = [
+      'uploads/ChatGPT Image 2026年5月1日 下午08_06_22.png',
+      'uploads/ChatGPT Image 2026年5月1日 下午08_06_39.png',
+      'uploads/ChatGPT Image 2026年5月1日 下午08_06_32.png',
+      'uploads/ChatGPT Image 2026年5月1日 下午08_04_35.png',
+      'uploads/ChatGPT Image 2026年5月1日 下午08_00_14.png',
+      'uploads/banner-vietnam.png',
+    ];
+    let gallery = (item.gallery && item.gallery.length) ? item.gallery.slice() : [];
+    if (item.img && !gallery.includes(item.img)) gallery.unshift(item.img);
+    for (const g of STOCK) {
+      if (gallery.length >= 4) break;
+      if (g && !gallery.includes(g)) gallery.push(g);
+    }
+    if (gallery.length >= 2) {
+      document.getElementById('galleryGrid').innerHTML = gallery.map((g, gi) =>
+        `<div class="gallery-img" data-gi="${gi}" style="background-image:url(${g})"></div>`
+      ).join('');
+      setupLightbox(gallery);
+    } else {
+      galleryBlock.style.display = 'none';
+    }
+
+    // Map
+    document.getElementById('mapAddr').textContent = item.address || item.region || city.name;
+
+    // Side card
+    const cur = DB.currentCcy();
+    document.getElementById('price').textContent =
+      item.priceTWD != null ? DB.formatPrice(item.priceTWD, cur, item.priceSuffix) : (item.price || '請洽客服');
+    document.getElementById('infoHours').textContent  = item.hours   || '—';
+    document.getElementById('infoAddr').textContent   = item.address || '—';
+    document.getElementById('infoPhone').textContent  = item.phone   || '—';
+    document.getElementById('infoRegion').textContent = `${country.name} · ${city.name} · ${item.region || ''}`;
+
+    // More (same category)
+    const more = allItems.filter(it => (it.id || '') !== (item.id || '')).slice(0, 3);
+    if (more.length) {
+      document.getElementById('moreGrid').innerHTML = more.map(it =>
+        `<a class="more-card" href="vendor.html?country=${countryCode}&city=${cityCode}&cat=${catId}&item=${it.id || ''}">
+          <div class="more-card-img" style="background-image:url(${it.img})"></div>
+          <div class="more-card-body">
+            <div class="more-card-title">${it.title}</div>
+            <div class="more-card-meta"><span>${it.region || ''}</span><span class="star">★ ${(it.rating || 0).toFixed(1)}</span></div>
+          </div>
+        </a>`
+      ).join('');
+    } else {
+      document.getElementById('moreSection').style.display = 'none';
+    }
+
+    // ── Lightbox ──
+    function setupLightbox(imgs) {
+      const lb      = document.getElementById('lightbox');
+      const lbImg   = document.getElementById('lbImg');
+      const lbCur   = document.getElementById('lbCur');
+      const lbTotal = document.getElementById('lbTotal');
+      const lbThumbs = document.getElementById('lbThumbs');
+      let idx = 0, zoomed = false;
+
+      lbTotal.textContent = imgs.length;
+      lbThumbs.innerHTML  = imgs.map((g, i) =>
+        `<img class="lb-thumb" data-ti="${i}" src="${g}" alt="" />`
+      ).join('');
+
+      function render() {
+        lbImg.src = imgs[idx];
+        lbCur.textContent = idx + 1;
+        zoomed = false;
+        lbImg.classList.remove('zoomed');
+        lbImg.style.transform = 'scale(1)';
+        lbThumbs.querySelectorAll('.lb-thumb').forEach((t, i) =>
+          t.classList.toggle('active', i === idx));
+      }
+      function open(i)  { idx = i; render(); lb.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      function close()  { lb.classList.remove('open'); document.body.style.overflow = ''; }
+      function go(d)    { idx = (idx + d + imgs.length) % imgs.length; render(); }
+
+      document.getElementById('galleryGrid').addEventListener('click', e => {
+        const cell = e.target.closest('.gallery-img');
+        if (cell) open(parseInt(cell.dataset.gi, 10));
+      });
+      document.getElementById('lbClose').addEventListener('click', close);
+      document.getElementById('lbPrev').addEventListener('click', e => { e.stopPropagation(); go(-1); });
+      document.getElementById('lbNext').addEventListener('click', e => { e.stopPropagation(); go(1); });
+      lbThumbs.addEventListener('click', e => {
+        const t = e.target.closest('.lb-thumb');
+        if (t) { idx = parseInt(t.dataset.ti, 10); render(); }
+      });
+      lb.addEventListener('click', e => { if (e.target === lb || e.target.id === 'lbStage') close(); });
+      lbImg.addEventListener('click', e => {
+        e.stopPropagation();
+        zoomed = !zoomed;
+        lbImg.classList.toggle('zoomed', zoomed);
+        lbImg.style.transform = zoomed ? 'scale(2)' : 'scale(1)';
+      });
+      document.addEventListener('keydown', e => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') close();
+        else if (e.key === 'ArrowLeft') go(-1);
+        else if (e.key === 'ArrowRight') go(1);
+      });
+      let startX = 0;
+      document.getElementById('lbStage').addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+      document.getElementById('lbStage').addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
