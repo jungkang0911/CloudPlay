@@ -1026,9 +1026,11 @@ function App() {
     setBannerIdx(0);
   }
 
-  function goCategory(catId) {
+  function goCategory(cat) {
+    const catId = typeof cat === 'object' ? cat.id : cat;
+    const link  = typeof cat === 'object' ? cat.link : null;
+    if (link) { window.open(link, '_blank'); return; }
     if (catId === 'feature') {
-      // 特色卡片導到該國家總覽（用 attractions 當預設）
       window.location.href = `cat.html?country=${currentCountry.code}&city=${currentCity.code}&cat=attractions&feature=1`;
       return;
     }
@@ -1187,7 +1189,7 @@ function App() {
             <button
               key={cat.id}
               className={`cat-tile${cat.size === 'feature' ? ' feature' : ''}`}
-              onClick={() => goCategory(cat.id)}
+              onClick={() => goCategory(cat)}
               style={cat.size === 'feature' ? {gridColumn:'span 2'} : {}}
             >
               {cat.img && (
