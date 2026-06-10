@@ -42,6 +42,22 @@
       ],
     },
     {
+      code: 'kr', name: '韓國', flag: '🇰🇷',
+      featureTitle: '樂遊韓國', featureSub: '潮流與千年傳統交融',
+      bannerImg: '',
+      cities: [
+        { code: 'sel', name: '首爾', en: 'Seoul',
+          bannerImg: '',
+          regions: ['全部區域', '明洞', '弘大', '江南', '北村韓屋村', '梨泰院'] },
+        { code: 'bus', name: '釜山', en: 'Busan',
+          bannerImg: '',
+          regions: ['全部區域', '海雲台', '廣安里', '南浦洞', '甘川文化村'] },
+        { code: 'jju', name: '濟州', en: 'Jeju',
+          bannerImg: '',
+          regions: ['全部區域', '濟州市', '西歸浦', '城山日出峰', '涯月'] },
+      ],
+    },
+    {
       code: 'cn', name: '中國', flag: '🇨🇳',
       featureTitle: '樂遊中國', featureSub: '千年文化古都',
       bannerImg: '',
@@ -304,7 +320,20 @@
 
     async getCountries() {
       const rows = await _sbFetch('countries', 'select=*,cities(*)&order=sort_order');
-      if (rows && rows.length) { DB.countries = rows; return rows; }
+      if (rows && rows.length) {
+        const mapped = rows.map(c => ({
+          ...c,
+          featureTitle: c.feature_title || c.featureTitle || '',
+          featureSub:   c.feature_sub   || c.featureSub   || '',
+          bannerImg:    c.banner_img     || c.bannerImg    || '',
+          cities: (c.cities || []).map(ci => ({
+            ...ci,
+            bannerImg: ci.banner_img || ci.bannerImg || '',
+          })),
+        }));
+        DB.countries = mapped;
+        return mapped;
+      }
       return _countries;
     },
 
