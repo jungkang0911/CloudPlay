@@ -505,8 +505,8 @@ function App() {
   const [searchValue,        setSearchValue]        = useState('');
   const [drawerOpen,         setDrawerOpen]         = useState(false);
   const [cityMenuOpen,       setCityMenuOpen]       = useState(false);
-  const LANG_LABELS = { tc:{flag:'🇹🇼',label:'繁中'}, vi:{flag:'🇻🇳',label:'VI'}, ja:{flag:'🇯🇵',label:'日本語'}, en:{flag:'🇬🇧',label:'EN'} };
-  const LANG_ORDER  = ['tc','vi','ja','en'];
+  const LANG_LABELS = { tc:{flag:'🇹🇼',label:'繁中'}, sc:{flag:'🇨🇳',label:'简中'}, vi:{flag:'🇻🇳',label:'VI'}, ja:{flag:'🇯🇵',label:'日本語'}, en:{flag:'🇬🇧',label:'EN'} };
+  const LANG_ORDER  = ['tc','sc','vi','ja','en'];
   const [lang, setLang] = useState(() => localStorage.getItem('yy_lang') || 'tc');
   const cityRef = useRef(null);
 
