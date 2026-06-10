@@ -276,6 +276,7 @@
       gallery:     r.gallery || [],
       intro:       r.intro || '',
       highlights:  r.highlights || [],
+      link:        r.link || r.external_link || '',
     };
   }
 
