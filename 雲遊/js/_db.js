@@ -346,13 +346,13 @@
 
     // Sync version for immediate render (no Supabase fallback)
     getCategoriesSync(countryCode) {
-      return _categories[countryCode] || _categories.vn;
+      return _categories[countryCode] || [];
     },
 
     async getCategories(countryCode) {
       const rows = await _sbFetch('categories', `country_code=eq.${countryCode}&order=sort_order&select=*`);
       if (rows && rows.length) return rows;
-      return _categories[countryCode] || _categories.vn;
+      return _categories[countryCode] || [];
     },
 
     async getCatName(catCode) {

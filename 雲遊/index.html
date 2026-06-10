@@ -962,7 +962,13 @@ function App() {
 
   // Data state — seeds from local DB for immediate render, refreshes from Supabase when connected
   const [countries,  setCountries]  = useState(window.DB.countries);
-  const [categories, setCategories] = useState(() => window.DB.getCategoriesSync('vn'));
+  const [categories, setCategories] = useState(() => {
+    const saved = localStorage.getItem('yy_city') || '';
+    for (const c of window.DB.countries)
+      for (const ci of c.cities)
+        if (ci.code === saved) return window.DB.getCategoriesSync(c.code);
+    return window.DB.getCategoriesSync(window.DB.countries[0]?.code || 'vn');
+  });
   const [marqueeItems, setMarqueeItems] = useState(['✦ 一站式觀光，從機場到飯店全程無憂 · 24H 中文客服在線 · 客製行程量身打造 · 越南｜日本｜泰國｜台灣 ✦']);
 
   // 找出目前城市、國家
