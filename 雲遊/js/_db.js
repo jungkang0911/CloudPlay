@@ -41,6 +41,22 @@
           regions: ['全部區域', '心齋橋', '難波', '梅田', '天王寺'] },
       ],
     },
+    {
+      code: 'cn', name: '中國', flag: '🇨🇳',
+      featureTitle: '樂遊中國', featureSub: '千年文化古都',
+      bannerImg: '',
+      cities: [
+        { code: 'sha', name: '上海', en: 'Shanghai',
+          bannerImg: '',
+          regions: ['全部區域', '外灘', '靜安區', '徐匯區', '浦東新區'] },
+        { code: 'bjg', name: '北京', en: 'Beijing',
+          bannerImg: '',
+          regions: ['全部區域', '故宮周邊', '三里屯', '王府井', '朝陽區'] },
+        { code: 'gzh', name: '廣州', en: 'Guangzhou',
+          bannerImg: '',
+          regions: ['全部區域', '天河區', '越秀區', '白雲區', '番禺區'] },
+      ],
+    },
   ];
 
   const _categories = {

@@ -241,4 +241,64 @@ window.I18N = {
     },
   },
 
+  sc: {
+    currency: 'CNY',
+    marquee: '✦ 一站式观光，从机场到酒店全程无忧 · 24H 中文客服在线 · 定制行程量身打造 · 越南｜日本｜泰国｜台湾 ✦',
+    nav: {
+      menu: '菜单',
+      home: '首页', services: '服务项目', steps: '出行流程',
+      faq: '常见问题', about: '关于我们',
+      contact: '联络客服', lang: '语言',
+    },
+    footer: {
+      tagline: '以尊贵的眼光，探索世界每一个值得被记住的角落。',
+      copy: '© 2026 云游国际 · All rights reserved.',
+    },
+    cs: {
+      agent: 'Sophia · 礼宾专员', online: '在线服务中',
+      line: 'LINE 即时咨询', phone: '客服电话',
+      phone_detail: '0800-123-456（免费）',
+    },
+    page: {
+      services: {
+        eyebrow: 'Our Services',
+        title: '服务 <em>项目</em>',
+        subtitle: '从机场接送、定制行程到当地娱乐安排，全部一站式包办。<br>24 小时专人服务，旅途任何细节都不需自己操心。',
+        more: '了解更多 →',
+        cta_title: '想了解 <em>更多细节</em>？',
+        cta_desc: '每位旅客的需求都不一样。联络客服，我们会根据您的喜好与预算，提供最适合的方案。',
+        cta_line: 'LINE 咨询',
+        cta_phone: '拨打客服 0800-123-456',
+      },
+      'how-it-works': {
+        eyebrow: 'How It Works',
+        title: '出行 <em>流程</em>',
+        subtitle: '从规划到启程，5 个步骤即可完成。<br>每个步骤都有专人协助，初次出国的旅客也不用担心。',
+        detail_title: '每一步 <em>都有专人协助</em>',
+        detail_sub: '— 流程细节说明 —',
+        cta_title: '准备好 <em>启程</em> 了吗？',
+        cta_line: 'LINE 立即咨询',
+        cta_services: '查看服务项目',
+      },
+      faq: {
+        eyebrow: 'Frequently Asked',
+        title: '常见 <em>问题</em>',
+        subtitle: '整理旅客最常询问的问题，帮您快速找到答案。<br>如有其他疑问，欢迎随时联络客服。',
+        all: '全部',
+        cta_title: '还有 <em>其他问题</em>？',
+        cta_desc: '欢迎直接联络我们的客服团队，24 小时在线为您服务。',
+        cta_line: 'LINE 咨询',
+        cta_phone: '拨打客服',
+      },
+      about: {
+        eyebrow: 'About Us',
+        title: '关于 <em>我们</em>',
+        back: '← 返回首页',
+      },
+      index: {
+        banner_cta: '精品行程',
+      },
+    },
+  },
+
 };

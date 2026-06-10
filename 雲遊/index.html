@@ -917,10 +917,11 @@ const { useState, useEffect, useRef } = React;
 
 // ─── 語言設定 ─────────────────────────────────────────
 const LANGS = {
-  tc: { code: 'tc', label: '繁中',  flag: '🇹🇼', bodyClass: '',        currency: 'TWD' },
-  vi: { code: 'vi', label: 'VI',    flag: '🇻🇳', bodyClass: 'lang-vi', currency: 'VND' },
+  tc: { code: 'tc', label: '繁中',   flag: '🇹🇼', bodyClass: '',        currency: 'TWD' },
+  sc: { code: 'sc', label: '简中',   flag: '🇨🇳', bodyClass: 'lang-sc', currency: 'CNY' },
+  vi: { code: 'vi', label: 'VI',     flag: '🇻🇳', bodyClass: 'lang-vi', currency: 'VND' },
   ja: { code: 'ja', label: '日本語', flag: '🇯🇵', bodyClass: 'lang-ja', currency: 'JPY' },
-  en: { code: 'en', label: 'EN',    flag: '🇬🇧', bodyClass: '',        currency: 'USD' },
+  en: { code: 'en', label: 'EN',     flag: '🇬🇧', bodyClass: '',        currency: 'USD' },
 };
 const _t = (key) => {
   const data = (window.I18N && window.I18N[localStorage.getItem('yy_lang') || 'tc']) || (window.I18N && window.I18N.tc) || {};

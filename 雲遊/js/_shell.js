@@ -1,12 +1,13 @@
 /* 共用 navbar / drawer / footer 注入器 + i18n 套用 */
 (function() {
   const LANGS = {
-    tc: { flag: '🇹🇼', label: '繁中', currency: 'TWD' },
-    vi: { flag: '🇻🇳', label: 'VI',   currency: 'VND' },
+    tc: { flag: '🇹🇼', label: '繁中',   currency: 'TWD' },
+    sc: { flag: '🇨🇳', label: '简中',   currency: 'CNY' },
+    vi: { flag: '🇻🇳', label: 'VI',     currency: 'VND' },
     ja: { flag: '🇯🇵', label: '日本語', currency: 'JPY' },
-    en: { flag: '🇬🇧', label: 'EN',   currency: 'USD' },
+    en: { flag: '🇬🇧', label: 'EN',     currency: 'USD' },
   };
-  const LANG_ORDER = ['tc', 'vi', 'ja', 'en'];
+  const LANG_ORDER = ['tc', 'sc', 'vi', 'ja', 'en'];
   let curLang = localStorage.getItem('yy_lang') || 'tc';
   if (!LANGS[curLang]) curLang = 'tc';
 
@@ -25,6 +26,11 @@
       { code: 'tky', name: '東京', en: 'Tokyo' },
       { code: 'kyt', name: '京都', en: 'Kyoto' },
       { code: 'osk', name: '大阪', en: 'Osaka' },
+    ]},
+    { code: 'cn', name: '中國', flag: '🇨🇳', cities: [
+      { code: 'sha', name: '上海', en: 'Shanghai' },
+      { code: 'bjg', name: '北京', en: 'Beijing' },
+      { code: 'gzh', name: '廣州', en: 'Guangzhou' },
     ]},
   ];
 
@@ -154,7 +160,8 @@
   }
 
   function applyBodyClass() {
-    document.body.classList.remove('lang-vi', 'lang-ja');
+    document.body.classList.remove('lang-sc', 'lang-vi', 'lang-ja');
+    if (curLang === 'sc') document.body.classList.add('lang-sc');
     if (curLang === 'vi') document.body.classList.add('lang-vi');
     if (curLang === 'ja') document.body.classList.add('lang-ja');
   }
