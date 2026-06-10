@@ -70,15 +70,10 @@
       <span id="cat-panel-heading">新增分類</span>
       <button class="panel-close" onclick="closeCatPanel()">✕</button>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">分類代碼 *</label>
-        <input id="cf-code" class="adm-input" placeholder="e.g. sauna">
-      </div>
-      <div class="form-group">
-        <label class="form-label">所屬國家 *</label>
-        <select id="cf-country" class="adm-select"></select>
-      </div>
+    <input id="cf-code" type="hidden">
+    <div class="form-group">
+      <label class="form-label">所屬國家 *</label>
+      <select id="cf-country" class="adm-select"></select>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -374,8 +369,7 @@ function openCatPanel(id) {
   editCatId = id || null;
   const r = id ? categories.find(x => x.id === id) : null;
   document.getElementById('cat-panel-heading').textContent = r ? '編輯分類' : '新增分類';
-  document.getElementById('cf-code').value    = r?.code    || '';
-  document.getElementById('cf-code').disabled = !!r;
+  document.getElementById('cf-code').value = r?.code || '';
   document.getElementById('cf-name').value    = r?.name    || '';
   document.getElementById('cf-name-en').value = r?.name_en || '';
   document.getElementById('cf-img').value     = r?.img     || '';
@@ -409,13 +403,16 @@ function previewCatImg(url) {
 }
 
 async function doCatSave() {
-  const code    = document.getElementById('cf-code').value.trim().toLowerCase();
   const name    = document.getElementById('cf-name').value.trim();
+  const nameEn  = document.getElementById('cf-name-en').value.trim();
   const country = document.getElementById('cf-country').value;
-  if (!code || !name || !country) { toast('代碼、名稱、國家為必填', 'error'); return; }
+  if (!name || !country) { toast('名稱、國家為必填', 'error'); return; }
+
+  const code = document.getElementById('cf-code').value.trim() || null;
 
   const payload = {
-    country_code: country, code, name,
+    country_code: country, name,
+    ...(code ? { code } : {}),
     name_en:    document.getElementById('cf-name-en').value.trim() || null,
     img:        document.getElementById('cf-img').value.trim() || null,
     size:       document.getElementById('cf-size').value,
